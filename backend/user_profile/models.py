@@ -1,10 +1,11 @@
 from django.db import models
 
-# Create your models here.
+
+
 class User_profile(models.Model):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
     cellphone = models.CharField(max_length=20)
     perfil_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)  ## revisar a ideia de upload_to
     birthday = models.DateField(blank=True, null=True)
