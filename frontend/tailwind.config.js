@@ -20,7 +20,11 @@ module.exports = {
     colors: {
       ...colors,
     },
-    extend: {
+    fontFamily: {
+      varela: ['"Varela Round"', 'sans-serif'],
+      fredoka: ['"Fredoka"', 'cursive'],
+    },
+    extend: { 
       minHeight: {
         "screen-75": "75vh",
       },

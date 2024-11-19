@@ -7,7 +7,7 @@
             <form @submit.prevent="handleSubmit">
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">First Name</label>
+                  <label class="block uppercase text-blueGray-600 text-xs mb-2">First Name</label>
                   <input
                     type="text"
                     v-model="form.firstName"
@@ -18,7 +18,7 @@
                   <p v-if="errors.firstName" class="text-red-500 text-xs">{{ errors.firstName }}</p>
                 </div>
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Last Name</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Last Name</label>
                   <input
                     type="text"
                     v-model="form.lastName"
@@ -31,7 +31,7 @@
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Data de Nascimento</label>
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Data de Nascimento</label>
                 <input
                   type="date"
                   v-model="form.birthDate"
@@ -42,7 +42,7 @@
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Email</label>
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Email</label>
                 <input
                   type="email"
                   v-model="form.email"
@@ -54,7 +54,7 @@
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Username</label>
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Username</label>
                 <input
                   type="text"
                   v-model="form.username"
@@ -67,7 +67,7 @@
 
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Password</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Password</label>
                   <input
                     type="password"
                     v-model="form.password"
@@ -78,7 +78,7 @@
                   <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                 </div>
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Confirm Password</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirm Password</label>
                   <input
                     type="password"
                     v-model="form.confirmPassword"
@@ -109,7 +109,7 @@
 
               <div class="text-center mt-6">
                 <button
-                  class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                  class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-varela uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                 >
                   Create Account
@@ -121,6 +121,7 @@
       </div>
     </div>
   </div>
+  
 </template>
 
 <script>

@@ -11,6 +11,13 @@ Document
 Use a better box model (opinionated).
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Varela+Round&display=swap');
+
+.fa {
+  font-family: unset;
+}
+
+
 *,
 ::before,
 ::after {
@@ -57,15 +64,17 @@ Improve consistency of default fonts in all browsers. (https://github.com/sindre
 
 body {
   font-family:
-		system-ui,
-		-apple-system, /* Firefox supports this but not yet `system-ui` */
+		'system-ui',
+		'-apple-system', /* Firefox supports this but not yet `system-ui` */
 		'Segoe UI',
-		Roboto,
-		Helvetica,
-		Arial,
-		sans-serif,
+		'Roboto',
+		'Helvetica',
+		'Arial',
+		'sans-serif',
 		'Apple Color Emoji',
-		'Segoe UI Emoji';
+		'Segoe UI Emoji',
+    fredoka,
+    varela;
 }
 
 /*
@@ -340,7 +349,8 @@ ul {
  */
 
 html {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
+  font-family: 'Varela Round', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
+  'Fredoka'; /* 1 */
   line-height: 1.5; /* 2 */
 }
 
