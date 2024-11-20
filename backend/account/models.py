@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-class Account:
+class Account(models.Model):
     """
     Aggregates user account information and provides methods to manage user states.
 
