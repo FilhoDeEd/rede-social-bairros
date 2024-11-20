@@ -59,7 +59,7 @@ class Account(models.Model):
     last_login = models.DateTimeField(null=True, blank=True)
     last_activity = models.DateTimeField(null=True, blank=True)
 
-    last_password_change = models.DateTimeField(nullu=True, blank=True)
+    last_password_change = models.DateTimeField(null=True, blank=True)
     last_neighborhood_change = models.DateTimeField(null=True, blank=True)
 
     muted = models.BooleanField(default=False)
