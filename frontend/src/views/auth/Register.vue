@@ -125,7 +125,7 @@
 </template>
 
 <script>
-
+import { ENDPOINTS } from '../../../../api.js';
 export default {
   data() {
     return {
@@ -208,7 +208,7 @@ export default {
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
       try {
-        const response = await fetch("http://sua-api.com/api/register/", {
+        const response = await fetch(ENDPOINTS.REGISTER, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this.form),
