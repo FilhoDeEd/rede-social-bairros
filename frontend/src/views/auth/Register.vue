@@ -8,17 +8,17 @@
             <form @submit.prevent="handleSubmit">
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">First Name</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Nome</label>
                   <input type="text" v-model="form.firstName" @change="validateField('firstName')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="First Name" />
+                    placeholder="Nome" />
                   <p v-if="errors.firstName" class="text-red-500 text-xs">{{ errors.firstName }}</p>
                 </div>
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Last Name</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Sobrenome</label>
                   <input type="text" v-model="form.lastName" @change="validateField('lastName')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Last Name" />
+                    placeholder="Sobrenome" />
                   <p v-if="errors.lastName" class="text-red-500 text-xs">{{ errors.lastName }}</p>
                 </div>
               </div>
@@ -39,26 +39,26 @@
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Username</label>
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Nome de Usuário</label>
                 <input type="text" v-model="form.username" @change="validateField('username')"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Username" />
+                  placeholder="Nome de Usuário" />
                 <p v-if="errors.username" class="text-red-500 text-xs">{{ errors.username }}</p>
               </div>
 
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Password</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Senha</label>
                   <input type="password" v-model="form.password" @change="validateField('password')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Password" />
+                    placeholder="" />
                   <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                 </div>
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirm Password</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar senha</label>
                   <input type="password" @change="validateField('confirmPassword')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Confirm Password" />
+                    placeholder="" />
                   <p v-if="errors.confirmPassword" class="text-red-500 text-xs">{{ errors.confirmPassword }}</p>
                 </div>
               </div>
@@ -68,8 +68,8 @@
                   <input id="customCheckLogin" type="checkbox" v-model="form.agree" @change="validateField('agree')"
                     class="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150" />
                   <span class="ml-2 text-sm font-semibold text-blueGray-600">
-                    I agree with the
-                    <a href="javascript:void(0)" class="text-emerald-500">Privacy Policy</a>
+                    Concordo com as 
+                    <a href="javascript:void(0)" class="text-emerald-500">Políticas de Privacidade</a>
                   </span>
                 </label>
                 <p v-if="errors.agree" class="text-red-500 text-xs">{{ errors.agree }}</p>
@@ -79,7 +79,7 @@
                 <button
                   class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-varela uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit">
-                  Create Account
+                  Criar conta
                 </button>
               </div>
             </form>
@@ -95,7 +95,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Selecione o Estado</label>
                 <select v-model="selectedState" @change="fetchCities"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                  <option value="">Selecione um Estado</option>
+                  <option value="">-</option>
                   <option v-for="state in states" :key="state.id" :value="state.id">
                     {{ state.name }}
                   </option>
