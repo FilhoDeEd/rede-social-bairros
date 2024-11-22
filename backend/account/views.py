@@ -1,67 +1,85 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-import json
+from typing import Dict
+from account.serializers import AccountSerializer, UserSerializer
 
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login, logout
-from .forms import CreateUserForm
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.db import transaction, IntegrityError
+
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
-@ensure_csrf_cookie
-@require_http_methods(['GET'])
-def set_csrf_token(request):
+def add_errors(errors: Dict, serializer_errors: Dict):
+    for field, error in serializer_errors.items():
+        if field in errors:
+            errors[field].extend(error)
+        else:
+            errors[field] = error
+
+
+class AccountRegisterView(APIView):
     """
-    We set the CSRF cookie on the frontend.
+    Handles user create account.
     """
-    return JsonResponse({'message': 'CSRF cookie set'})
+    def post(self, request):
+        data = request.data
+
+        user_data = {
+            'username': data.pop('username', ''),
+            'password': data.pop('password', ''),
+        }
+
+        profile_data = {
+            'state': data.pop('state', ''),
+            'city': data.pop('city', ''),
+            'neighborhood': data.pop('neighborhood', ''),
+        }
+
+        user_serializer = UserSerializer(data=user_data)
+        account_serializer = AccountSerializer(data=data)
+        # profile_serializer = ProfileSerializer(data=profile_data)
+
+        errors = {}
+
+        # Validar cada serializer e acumular erros
+        if not user_serializer.is_valid():
+            add_errors(errors=errors, serializer_errors=user_serializer.errors)
+
+        if not account_serializer.is_valid():
+            add_errors(errors=errors, serializer_errors=account_serializer.errors)
+        
+        # if not profile_serializer.is_valid():
+        #     add_errors(errors=errors, account_serializer=profile_serializer.errors)
+
+        if errors:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with transaction.atomic():
+                user = user_serializer.save()
+                account = account_serializer.save(user=user)
+                # profile = profile_serializer.save(account=account)
+                token = Token.objects.create(user=user)
+        except Exception as e:
+            return Response({'detail': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 
-@require_http_methods(['POST'])
-def login_view(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))
-        email = data['email']
-        password = data['password']
-    except json.JSONDecodeError:
-        return JsonResponse(
-            {'success': False, 'message': 'Invalid JSON'}, status=400
-        )
+class AccountLoginView(APIView):
+    """
+    Handles user login requests.
+    """
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-    user = authenticate(request, username=email, password=password)
+        user = authenticate(username=username, password=password)
 
-    if user:
-        login(request, user)
-        return JsonResponse({'success': True})
-    return JsonResponse(
-        {'success': False, 'message': 'Invalid credentials'}, status=401
-    )
-
-
-def logout_view(request):
-    logout(request)
-    return JsonResponse({'message': 'Logged out'})
-
-
-@require_http_methods(['GET'])
-def user(request):
-    if request.user.is_authenticated:
-        return JsonResponse(
-            {'username': request.user.username, 'email': request.user.email}
-        )
-    return JsonResponse(
-        {'message': 'Not logged in'}, status=401
-    )
-
-
-@require_http_methods(['POST'])
-def register(request):
-    data = json.loads(request.body.decode('utf-8'))
-    form = CreateUserForm(data)
-    if form.is_valid():
-        form.save()
-        return JsonResponse({'success': 'User registered successfully'}, status=201)
-    else:
-        errors = form.errors.as_json()
-        return JsonResponse({'error': errors}, status=400)
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key}, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
