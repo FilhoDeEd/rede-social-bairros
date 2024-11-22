@@ -8,4 +8,5 @@ export const ENDPOINTS = {
   STATES: `${BASE_URL}/states`,
   CITIES: `${BASE_URL}/cities`,
   NEIGHBORHOODS:`${BASE_URL}/neighborhoods`,
+  VERIFYTOKEN:`${BASE_URL}/verify-token`,
 };
