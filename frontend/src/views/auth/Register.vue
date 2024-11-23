@@ -153,7 +153,7 @@ export default {
         email: "",
         username: "",
         password: "",
-        confirmPassword="",
+        confirmPassword: "",
         agree_policy: false,
         state: "", // Estado selecionado
         locality: "", // Cidade selecionada
