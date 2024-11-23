@@ -1,0 +1,32 @@
+POST http://localhost:8000/account/register/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "johndoet",
+    "password": "password123",
+    "name": "Márcio",
+    "surname": "Silva",
+    "birthday": "1920-01-01",
+    "email": "johndoet@example.com",
+    "agree_policy": false
+}
+
+######
+
+POST http://localhost:8000/account/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "johndote@example.com",
+    "password": "password123"
+}
+
+######
+
+POST http://localhost:8000/account/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "johndoet",
+    "password": "password123"
+}
