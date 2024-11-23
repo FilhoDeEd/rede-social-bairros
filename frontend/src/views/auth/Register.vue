@@ -9,25 +9,25 @@
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Nome</label>
-                  <input type="text" v-model="form.firstName" @change="validateField('firstName')"
+                  <input type="text" v-model="form.name" @change="validateField('name')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     placeholder="Nome" />
-                  <p v-if="errors.firstName" class="text-red-500 text-xs">{{ errors.firstName }}</p>
+                  <p v-if="errors.firstName" class="text-red-500 text-xs">{{ errors.name }}</p>
                 </div>
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Sobrenome</label>
-                  <input type="text" v-model="form.lastName" @change="validateField('lastName')"
+                  <input type="text" v-model="form.surname" @change="validateField('surname')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     placeholder="Sobrenome" />
-                  <p v-if="errors.lastName" class="text-red-500 text-xs">{{ errors.lastName }}</p>
+                  <p v-if="errors.surname" class="text-red-500 text-xs">{{ errors.surname }}</p>
                 </div>
               </div>
 
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Data de Nascimento</label>
-                <input type="date" v-model="form.birthDate" @change="validateField('birthDate')"
+                <input type="date" v-model="form.birthday" @change="validateField('birthday')"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
-                <p v-if="errors.birthDate" class="text-red-500 text-xs">{{ errors.birthDate }}</p>
+                <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
               </div>
 
               <div class="relative w-full mb-3">
@@ -56,7 +56,7 @@
                 </div>
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar senha</label>
-                  <input type="password" @change="validateField('confirmPassword')"
+                  <input type="password" v-model="form.confirmPassword" @change="validateField('confirmPassword')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     placeholder="" />
                   <p v-if="errors.confirmPassword" class="text-red-500 text-xs">{{ errors.confirmPassword }}</p>
@@ -65,14 +65,14 @@
 
               <div>
                 <label class="inline-flex items-center cursor-pointer">
-                  <input id="customCheckLogin" type="checkbox" v-model="form.agree" @change="validateField('agree')"
+                  <input id="customCheckLogin" type="checkbox" v-model="form.agree_policy" @change="validateField('agree_policy')"
                     class="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150" />
                   <span class="ml-2 text-sm font-semibold text-blueGray-600">
                     Concordo com as 
                     <a href="javascript:void(0)" class="text-emerald-500">Políticas de Privacidade</a>
                   </span>
                 </label>
-                <p v-if="errors.agree" class="text-red-500 text-xs">{{ errors.agree }}</p>
+                <p v-if="errors.agree_policy" class="text-red-500 text-xs">{{ errors.agree_policy }}</p>
               </div>
 
               <div class="text-center mt-6">
@@ -147,16 +147,16 @@ export default {
   data() {
     return {
       form: {
-        firstName: "",
-        lastName: "",
-        birthDate: "",
+        name: "",
+        surname: "",
+        birthday: "",
         email: "",
         username: "",
         password: "",
-        confirmPassword: "",
-        agree: false,
+        confirmPassword="",
+        agree_policy: false,
         state: "", // Estado selecionado
-        city: "", // Cidade selecionada
+        locality: "", // Cidade selecionada
         neighborhood: "", // Bairro selecionado
       },
       errors: {},
@@ -197,12 +197,12 @@ export default {
       }
     },
     async fetchNeighborhoods() {
-      if (!this.form.city) {
+      if (!this.form.locality) {
         this.neighborhoods = [];
         return;
       }
       try {
-        const response = await fetch(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.city}`);
+        const response = await fetch(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.locality}`);
         this.neighborhoods = await response.json();
       } catch (error) {
         alert("Erro ao carregar os bairros.");
@@ -221,16 +221,16 @@ export default {
       };
 
       switch (field) {
-        case "firstName":
-          this.errors.firstName = this.form.firstName ? "" : "First Name is required.";
+        case "name":
+          this.errors.firstName = this.form.name ? "" : "First Name is required.";
           break;
-        case "lastName":
-          this.errors.lastName = this.form.lastName ? "" : "Last Name is required.";
+        case "surname":
+          this.errors.lastName = this.form.surname ? "" : "Last Name is required.";
           break;
-        case "birthDate":
-          if (!this.form.birthDate) {
+        case "birthday":
+          if (!this.form.birthday) {
             this.errors.birthDate = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthDate) < 16) {
+          } else if (calculateAge(this.form.birthday) < 16) {
             this.errors.birthDate = "You must be at least 16 years old.";
           } else {
             this.errors.birthDate = "";
@@ -260,14 +260,14 @@ export default {
             this.errors.confirmPassword = "";
           }
           break;
-        case "agree":
-          this.errors.agree = this.form.agree ? "" : "You must agree to the Privacy Policy.";
+        case "agree_policy":
+          this.errors.agree = this.form.agree_policy ? "" : "You must agree to the Privacy Policy.";
           break;
         case "state":
           this.errors.state = this.form.state ? "" : "You must select a State.";
           break;
-        case "city":
-          this.errors.city = this.form.city ? "" : "You must select a City.";
+        case "locality":
+          this.errors.city = this.form.locality ? "" : "You must select a City.";
           break;
         case "neighborhood":
           this.errors.neighborhood = this.form.neighborhood ? "" : "You must select a Neighborhood.";
