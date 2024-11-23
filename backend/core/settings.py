@@ -21,9 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account'
+    'account',
     'corsheaders',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 
@@ -69,6 +70,12 @@ DATABASES = {
 }
 
 
+AUTHENTICATION_BACKENDS = [
+    'account.backends.EmailOrUsernameBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -85,7 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True

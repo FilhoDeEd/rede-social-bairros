@@ -1,10 +1,11 @@
 from django.urls import path
-from . import views
+from account.views import (
+    AccountRegisterView,
+    AccountLoginView
+)
 
 urlpatterns = [
-    path('api/set-csrf-token', views.set_csrf_token, name='set_csrf_token'),
-    path('api/login', views.login_view, name='login'),
-    path('api/logout', views.logout_view, name='logout'),
-    path('api/user', views.user, name='user'),
-    path('api/register', views.register, name='register'),
+    path('register/', AccountRegisterView.as_view(), name='register'),
+    path('login/', AccountLoginView.as_view(), name='login'),
+    #path('logout', views.logout_view, name='logout')
 ]
