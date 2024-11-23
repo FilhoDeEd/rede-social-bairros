@@ -147,16 +147,15 @@ export default {
   data() {
     return {
       form: {
-        firstName: "",
-        lastName: "",
-        birthDate: "",
+        name: "",
+        surname: "",
+        birthday: "",
         email: "",
         username: "",
         password: "",
-        confirmPassword: "",
-        agree: false,
+        agree_policy: false,
         state: "", // Estado selecionado
-        city: "", // Cidade selecionada
+        locality: "", // Cidade selecionada
         neighborhood: "", // Bairro selecionado
       },
       errors: {},
@@ -197,12 +196,12 @@ export default {
       }
     },
     async fetchNeighborhoods() {
-      if (!this.form.city) {
+      if (!this.form.locality) {
         this.neighborhoods = [];
         return;
       }
       try {
-        const response = await fetch(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.city}`);
+        const response = await fetch(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.locality}`);
         this.neighborhoods = await response.json();
       } catch (error) {
         alert("Erro ao carregar os bairros.");
@@ -221,16 +220,16 @@ export default {
       };
 
       switch (field) {
-        case "firstName":
-          this.errors.firstName = this.form.firstName ? "" : "First Name is required.";
+        case "name":
+          this.errors.firstName = this.form.name ? "" : "First Name is required.";
           break;
-        case "lastName":
-          this.errors.lastName = this.form.lastName ? "" : "Last Name is required.";
+        case "surname":
+          this.errors.lastName = this.form.surname ? "" : "Last Name is required.";
           break;
-        case "birthDate":
-          if (!this.form.birthDate) {
+        case "birthday":
+          if (!this.form.birthday) {
             this.errors.birthDate = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthDate) < 16) {
+          } else if (calculateAge(this.form.birthday) < 16) {
             this.errors.birthDate = "You must be at least 16 years old.";
           } else {
             this.errors.birthDate = "";
@@ -260,14 +259,14 @@ export default {
             this.errors.confirmPassword = "";
           }
           break;
-        case "agree":
-          this.errors.agree = this.form.agree ? "" : "You must agree to the Privacy Policy.";
+        case "agree_policy":
+          this.errors.agree = this.form.agree_policy ? "" : "You must agree to the Privacy Policy.";
           break;
         case "state":
           this.errors.state = this.form.state ? "" : "You must select a State.";
           break;
-        case "city":
-          this.errors.city = this.form.city ? "" : "You must select a City.";
+        case "locality":
+          this.errors.city = this.form.locality ? "" : "You must select a City.";
           break;
         case "neighborhood":
           this.errors.neighborhood = this.form.neighborhood ? "" : "You must select a Neighborhood.";

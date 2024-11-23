@@ -95,7 +95,7 @@
 
 <script>
 import { useRouter } from "vue-router";
-import ForgotPassword from "../auth/ForgotPassword.vue";
+import ForgotPassword from "../../components/Modal/ForgotPassword.vue";
 import logo from "@/assets/img/logo-alternative-medium.png";
 import { ENDPOINTS } from "../../../../api.js";
 
