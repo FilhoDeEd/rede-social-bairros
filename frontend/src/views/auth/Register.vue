@@ -135,7 +135,7 @@
                 <select v-model="form.state" @change="[fetchCities,validateField('state')]"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                   <option value="">Selecione um Estado</option>
-                  <option v-for="state in states" :key="state.id" :value="state.id">
+                  <option v-for="state in states" :key="state.code" :value="state.code">
                     {{ state.name }}
                   </option>
                 </select>
@@ -146,7 +146,7 @@
                 <select v-model="form.locality" @change="[fetchNeighborhoods,validateField('locality')]"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                   <option value="">Selecione uma Cidade</option>
-                  <option v-for="city in cities" :key="city.id" :value="city.id">
+                  <option v-for="city in cities" :key="city.name" :value="city.name">
                     {{ city.name }}
                   </option>
                 </select>
@@ -160,7 +160,7 @@
                   class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500"
                 >
                   <option value="">Selecione um Bairro</option>
-                  <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
+                  <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
                     {{ neighborhood.name }}
                   </option>
                 </select>
@@ -224,7 +224,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.CITIES}?stateId=${this.form.state}`);
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}`);
         this.cities = response.data;
         this.neighborhoods = []; // Resetar bairros ao alterar a cidade
       } catch (error) {
@@ -237,7 +237,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.locality}`);
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}`);
         this.neighborhoods = response.data;
       } catch (error) {
         alert("Erro ao carregar os bairros.");
