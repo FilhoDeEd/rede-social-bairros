@@ -1,4 +1,3 @@
-# Test to get the list of all Brazilian states (UFs)
 GET http://localhost:8000/user_profile/states/ HTTP/1.1
 Accept: application/json
 
