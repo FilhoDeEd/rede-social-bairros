@@ -1,5 +1,6 @@
 from django.db import models
-from accounts import models
+from account.models import Account
+
 
 class UfChoices(models.TextChoices):
     AC = 'AC', 'Acre'
@@ -37,11 +38,19 @@ class Neighborhood(models.Model):
     locality = models.CharField(max_length=255)
     country = models.CharField(max_length=255, default='Brazil')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'state', 'locality', 'country'],
+                name='unique_neighborhood'
+            )
+        ]
+
     def __str__(self):
-        return f"{self.name}, {self.locality}, {self.state}"
+        return f'{self.name}, {self.locality}, {self.state}'
 
 
-class User_profile(models.Model):
+class UserProfile(models.Model):
 
     #checar todos os status possíveis e ver se algum garante "vantagens"
 
@@ -58,7 +67,7 @@ class User_profile(models.Model):
 
     trust_rate = models.FloatField()
     active = models.BooleanField(default=True)
-    neighborhood = models.ForeignKey(Neighborhood,)
+    #neighborhood = models.ForeignKey(Neighborhood,)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
 
     #parte comentada para analise posterior
