@@ -4284,3 +4284,26 @@ select {
 
 @media (min-width: 1536px) {
 }
+
+/*------------------------------------------------------------------------------*/
+
+/* Container geral das linhas */
+.rowForProfile {
+  display: flex;
+  flex-direction: row; /* Alinha os itens em linha */
+  justify-content: space-between; /* Espaço entre os itens */
+  width: 100%; /* Garante que os itens ocupem toda a largura */
+}
+
+/* Ajuste para a linha inferior */
+.rowForProfile:nth-child(2) {
+  justify-content: center; /* Centraliza os itens na segunda linha */
+ 
+}
+
+/* Itens individuais */
+.itemForProfile {
+  flex: 1; /* Faz os itens crescerem igualmente */
+  text-align: center; /* Centraliza o texto dentro de cada item */
+}
+
