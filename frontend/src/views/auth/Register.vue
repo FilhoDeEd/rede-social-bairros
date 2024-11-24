@@ -224,7 +224,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.CITIES}?stateCode=${this.form.state}`);
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}`);
         this.cities = response.data;
         this.neighborhoods = []; // Resetar bairros ao alterar a cidade
       } catch (error) {
@@ -237,7 +237,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}?city=${this.form.locality}`);
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}`);
         this.neighborhoods = response.data;
       } catch (error) {
         alert("Erro ao carregar os bairros.");
