@@ -154,7 +154,7 @@ export default {
 
       // Formatar o objeto a ser enviado: se for email, enviar como "email", senão enviar como "username"
       const loginData = isEmail
-        ? { email: this.form.emailOrUsername }
+        ? { username: this.form.emailOrUsername }
         : { username: this.form.emailOrUsername };
       const dataToSend = { ...loginData, password: this.form.password };
 
@@ -164,7 +164,7 @@ export default {
 
         // Manipulação de sucesso
         alert(response.data.message || 'Login successful!');
-        this.router.push(ENDPOINTS.HOME); // Redireciona para a home ou outra página
+        this.router.push('/home'); // Redireciona para a home ou outra página
       } catch (error) {
         // Manipulação de erro
         if (error.response) {

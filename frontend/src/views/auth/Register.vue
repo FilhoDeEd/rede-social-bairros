@@ -132,7 +132,7 @@
             <form @submit.prevent="handleLocationSubmit">
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
-                <select v-model="form.state" @change="[fetchCities,validateField('state')]"
+                <select v-model="form.state" @change="onStateChange"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                   <option value="">Selecione um Estado</option>
                   <option v-for="state in states" :key="state.code" :value="state.code">
@@ -143,7 +143,7 @@
 
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                <select v-model="form.locality" @change="[fetchNeighborhoods,validateField('locality')]"
+                <select v-model="form.locality" @change="onCityChange"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                   <option value="">Selecione uma Cidade</option>
                   <option v-for="city in cities" :key="city.name" :value="city.name">
@@ -177,8 +177,10 @@
 <script>
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+
 import { ENDPOINTS } from '../../../../api.js';
 
+/*eslint-disable*/
 export default {
   data() {
     return {
@@ -204,11 +206,16 @@ export default {
   setup() {
     const router = useRouter();
     return { router };
+
   },
   async mounted() {
     await this.fetchStates();
   },
   methods: {
+    onStateChange(event){
+      this.fetchCities();
+      this.validateField('state');
+    },
     async fetchStates() {
       try {
         const response = await axios.get(ENDPOINTS.STATES);
@@ -224,12 +231,16 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}`);
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
         this.cities = response.data;
         this.neighborhoods = []; // Resetar bairros ao alterar a cidade
       } catch (error) {
         alert("Erro ao carregar as cidades.");
       }
+    },
+    onCityChange(event){
+      this.fetchNeighborhoods();
+      this.validateField('locality');
     },
     async fetchNeighborhoods() {
       if (!this.form.locality) {
@@ -237,7 +248,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}`);
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
         this.neighborhoods = response.data;
       } catch (error) {
         alert("Erro ao carregar os bairros.");
@@ -320,7 +331,7 @@ export default {
         });
 
         alert(response.data.message || "Conta criada com sucesso!");
-        this.router.push(ENDPOINTS.LOGIN);
+        this.router.push('/auth/login');
       } catch (error) {
         if (error.response && error.response.data.errors) {
           for (const [field, messages] of Object.entries(error.response.data.errors)) {

@@ -23,8 +23,10 @@ class CityListAPIView(ListAPIView):
         if state_code not in UfChoices.values:
             raise NotFound(f"State '{state_code}' not found.")
 
-        cities = Neighborhood.objects.filter(state=state_code).values_list('locality', flat=True).distinct()
-        return Response(list(cities), status=HTTP_200_OK)
+        cities_list = Neighborhood.objects.filter(state=state_code).values_list('locality', flat=True).distinct()
+        cities = [{'name': city} for city in cities_list]
+
+        return Response(cities, status=HTTP_200_OK)
 
 
 class NeighborhoodListAPIView(ListAPIView):
@@ -35,8 +37,11 @@ class NeighborhoodListAPIView(ListAPIView):
         if state_code not in UfChoices.values:
             raise NotFound(f"State {state_code} not found.")
 
-        neighborhoods = Neighborhood.objects.filter(state=state_code, locality=city_name).values_list('name', flat=True)
-        if not neighborhoods.exists():
+        neighborhoods_list = Neighborhood.objects.filter(state=state_code, locality=city_name).values_list('name', flat=True)
+        if not neighborhoods_list.exists():
             raise NotFound(f"No neighborhoods found for city '{city_name}' in state '{state_code}'.")
+        
+        neighborhoods = [{'name': neighborhoods} for neighborhoods in neighborhoods_list]
 
-        return Response(list(neighborhoods), status=HTTP_200_OK)
+
+        return Response(neighborhoods, status=HTTP_200_OK)
