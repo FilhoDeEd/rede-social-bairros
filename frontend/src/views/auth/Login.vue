@@ -105,13 +105,14 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import axios from 'axios'; // Importar o axios
 import { ENDPOINTS } from '../../../../api.js';
 
 export default {
   data() {
     return {
       form: {
-        emailOrUsername: '',  // Pode ser email ou username
+        emailOrUsername: '', // Pode ser email ou username
         password: ''
       },
       errors: {}
@@ -152,26 +153,27 @@ export default {
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
       // Formatar o objeto a ser enviado: se for email, enviar como "email", senão enviar como "username"
-      const loginData = isEmail ? { email: this.form.emailOrUsername } : { username: this.form.emailOrUsername };
+      const loginData = isEmail
+        ? { username: this.form.emailOrUsername }
+        : { username: this.form.emailOrUsername };
       const dataToSend = { ...loginData, password: this.form.password };
 
-      const response = await fetch(ENDPOINTS.LOGIN, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSend),
-      });
+      try {
+        // Requisição HTTP usando axios
+        const response = await axios.post(ENDPOINTS.LOGIN, dataToSend);
 
-      if (response.ok) {
-        const data = await response.json();
-        alert(data.message || 'Login successful!');
-        this.router.push(ENDPOINTS.HOME); // Redireciona para a home ou outra página
-      } else {
-        const errorText = await response.text(); // Resposta como texto
-        try {
-          const errorData = JSON.parse(errorText); // Tenta fazer o parse manualmente
-          alert(errorData.message || 'Something went wrong.');
-        } catch (error) {
-          console.error("Error parsing JSON:", errorText);
+        // Manipulação de sucesso
+        alert(response.data.message || 'Login successful!');
+        this.router.push('/home'); // Redireciona para a home ou outra página
+      } catch (error) {
+        // Manipulação de erro
+        if (error.response) {
+          // Resposta do servidor com status de erro
+          const errorMessage = error.response.data.message || 'Something went wrong.';
+          alert(errorMessage);
+        } else {
+          // Erros fora do escopo do servidor (exemplo: falha de rede)
+          console.error("Error:", error.message);
           alert('Unexpected error occurred.');
         }
       }
@@ -179,3 +181,4 @@ export default {
   }
 };
 </script>
+

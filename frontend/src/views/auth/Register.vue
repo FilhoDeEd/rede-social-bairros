@@ -6,67 +6,104 @@
           class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
           <div class="flex-auto px-4 lg:px-10 py-10">
             <form @submit.prevent="handleSubmit">
+              <!-- Nome e Sobrenome -->
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Nome</label>
-                  <input type="text" v-model="form.name" @change="validateField('name')"
+                  <input
+                    type="text"
+                    v-model="form.name"
+                    @change="validateField('name')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Nome" />
-                  <p v-if="errors.firstName" class="text-red-500 text-xs">{{ errors.name }}</p>
+                    placeholder="Nome"
+                  />
+                  <p v-if="errors.name" class="text-red-500 text-xs">{{ errors.name }}</p>
                 </div>
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Sobrenome</label>
-                  <input type="text" v-model="form.surname" @change="validateField('surname')"
+                  <input
+                    type="text"
+                    v-model="form.surname"
+                    @change="validateField('surname')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Sobrenome" />
+                    placeholder="Sobrenome"
+                  />
                   <p v-if="errors.surname" class="text-red-500 text-xs">{{ errors.surname }}</p>
                 </div>
               </div>
 
+              <!-- Data de Nascimento -->
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Data de Nascimento</label>
-                <input type="date" v-model="form.birthday" @change="validateField('birthday')"
-                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+                <input
+                  type="date"
+                  v-model="form.birthday"
+                  @change="validateField('birthday')"
+                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                />
                 <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
               </div>
 
+              <!-- Email -->
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Email</label>
-                <input type="email" v-model="form.email" @change="validateField('email')"
+                <input
+                  type="email"
+                  v-model="form.email"
+                  @change="validateField('email')"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Email" />
+                  placeholder="Email"
+                />
                 <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
               </div>
 
+              <!-- Nome de Usuário -->
               <div class="relative w-full mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Nome de Usuário</label>
-                <input type="text" v-model="form.username" @change="validateField('username')"
+                <input
+                  type="text"
+                  v-model="form.username"
+                  @change="validateField('username')"
                   class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Nome de Usuário" />
+                  placeholder="Nome de Usuário"
+                />
                 <p v-if="errors.username" class="text-red-500 text-xs">{{ errors.username }}</p>
               </div>
 
+              <!-- Senha e Confirmar Senha -->
               <div class="flex gap-4 space-x-4">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Senha</label>
-                  <input type="password" v-model="form.password" @change="validateField('password')"
+                  <input
+                    type="password"
+                    v-model="form.password"
+                    @change="validateField('password')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="" />
+                  />
                   <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                 </div>
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar senha</label>
-                  <input type="password" v-model="form.confirmPassword" @change="validateField('confirmPassword')"
+                  <input
+                    type="password"
+                    v-model="form.confirmPassword"
+                    @change="validateField('confirmPassword')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="" />
+                  />
                   <p v-if="errors.confirmPassword" class="text-red-500 text-xs">{{ errors.confirmPassword }}</p>
                 </div>
               </div>
 
+              <!-- Concordar com Políticas -->
               <div>
                 <label class="inline-flex items-center cursor-pointer">
-                  <input id="customCheckLogin" type="checkbox" v-model="form.agree_policy" @change="validateField('agree_policy')"
-                    class="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150" />
+                  <input
+                    id="customCheckLogin"
+                    type="checkbox"
+                    v-model="form.agree_policy"
+                    @change="validateField('agree_policy')"
+                    class="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                  />
                   <span class="ml-2 text-sm font-semibold text-blueGray-600">
                     Concordo com as 
                     <a href="javascript:void(0)" class="text-emerald-500">Políticas de Privacidade</a>
@@ -75,10 +112,12 @@
                 <p v-if="errors.agree_policy" class="text-red-500 text-xs">{{ errors.agree_policy }}</p>
               </div>
 
+              <!-- Botão de Enviar -->
               <div class="text-center mt-6">
                 <button
                   class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-varela uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                  type="submit">
+                  type="submit"
+                >
                   Criar conta
                 </button>
               </div>
@@ -92,43 +131,39 @@
           <div class="flex-auto px-4 lg:px-10 py-10">
             <form @submit.prevent="handleLocationSubmit">
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Selecione o Estado</label>
-                <select v-model="selectedState" @change="fetchCities"
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
+                <select v-model="form.state" @change="onStateChange"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                  <option value="">-</option>
-                  <option v-for="state in states" :key="state.id" :value="state.id">
+                  <option value="">Selecione um Estado</option>
+                  <option v-for="state in states" :key="state.code" :value="state.code">
                     {{ state.name }}
                   </option>
                 </select>
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Selecione a Cidade</label>
-                <select v-model="selectedCity" @change="fetchNeighborhoods"
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
+                <select v-model="form.locality" @change="onCityChange"
                   class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                   <option value="">Selecione uma Cidade</option>
-                  <option v-for="city in cities" :key="city.id" :value="city.id">
+                  <option v-for="city in cities" :key="city.name" :value="city.name">
                     {{ city.name }}
                   </option>
                 </select>
               </div>
 
               <div class="relative w-full mt-4">
-                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairros</label>
-                <div class="overflow-auto bg-white rounded shadow-lg max-h-64">
-                  <table class="w-full text-left">
-                    <thead>
-                      <tr>
-                        <th class="px-4 py-2 border-b border-gray-200">Bairro</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="neighborhood in neighborhoods" :key="neighborhood.id">
-                        <td class="px-4 py-2 border-b border-gray-200">{{ neighborhood.name }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
+                <select
+                  v-model="form.neighborhood"
+                  @change = "validateField('neighborhood')"
+                  class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500"
+                >
+                  <option value="">Selecione um Bairro</option>
+                  <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
+                    {{ neighborhood.name }}
+                  </option>
+                </select>
               </div>
             </form>
           </div>
@@ -140,9 +175,11 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { ENDPOINTS } from '../../../../api.js';
 
+/*eslint-disable*/
 export default {
   data() {
     return {
@@ -168,16 +205,20 @@ export default {
   setup() {
     const router = useRouter();
     return { router };
+
   },
   async mounted() {
-    // Busca os estados ao carregar o componente
     await this.fetchStates();
   },
   methods: {
+    onStateChange(event){
+      this.fetchCities();
+      this.validateField('state');
+    },
     async fetchStates() {
       try {
-        const response = await fetch(ENDPOINTS.STATES);
-        this.states = await response.json();
+        const response = await axios.get(ENDPOINTS.STATES);
+        this.states = response.data;
       } catch (error) {
         alert("Erro ao carregar os estados.");
       }
@@ -189,12 +230,16 @@ export default {
         return;
       }
       try {
-        const response = await fetch(`${ENDPOINTS.CITIES}?stateId=${this.form.state}`);
-        this.cities = await response.json();
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
+        this.cities = response.data;
         this.neighborhoods = []; // Resetar bairros ao alterar a cidade
       } catch (error) {
         alert("Erro ao carregar as cidades.");
       }
+    },
+    onCityChange(event){
+      this.fetchNeighborhoods();
+      this.validateField('locality');
     },
     async fetchNeighborhoods() {
       if (!this.form.locality) {
@@ -202,8 +247,8 @@ export default {
         return;
       }
       try {
-        const response = await fetch(`${ENDPOINTS.NEIGHBORHOODS}?cityId=${this.form.locality}`);
-        this.neighborhoods = await response.json();
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
+        this.neighborhoods = response.data;
       } catch (error) {
         alert("Erro ao carregar os bairros.");
       }
@@ -222,89 +267,80 @@ export default {
 
       switch (field) {
         case "name":
-          this.errors.firstName = this.form.name ? "" : "First Name is required.";
+          this.errors.name = this.form.name ? "" : "O nome é obrigatório.";
           break;
         case "surname":
-          this.errors.lastName = this.form.surname ? "" : "Last Name is required.";
+          this.errors.surname = this.form.surname ? "" : "O sobrenome é obrigatório.";
           break;
         case "birthday":
           if (!this.form.birthday) {
-            this.errors.birthDate = "Birth Date is required.";
+            this.errors.birthday = "A data de nascimento é obrigatória.";
           } else if (calculateAge(this.form.birthday) < 16) {
-            this.errors.birthDate = "You must be at least 16 years old.";
+            this.errors.birthday = "Você deve ter pelo menos 16 anos.";
           } else {
-            this.errors.birthDate = "";
+            this.errors.birthday = "";
           }
           break;
         case "email":
           if (!this.form.email) {
-            this.errors.email = "Email is required.";
+            this.errors.email = "O email é obrigatório.";
           } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
-            this.errors.email = "Invalid email format.";
+            this.errors.email = "Formato de email inválido.";
           } else {
             this.errors.email = "";
           }
           break;
         case "username":
-          this.errors.username = this.form.username ? "" : "Username is required.";
+          this.errors.username = this.form.username ? "" : "O nome de usuário é obrigatório.";
           break;
         case "password":
-          this.errors.password = this.form.password ? "" : "Password is required.";
+          this.errors.password = this.form.password ? "" : "A senha é obrigatória.";
           break;
         case "confirmPassword":
           if (!this.form.confirmPassword) {
-            this.errors.confirmPassword = "Confirm Password is required.";
+            this.errors.confirmPassword = "A confirmação de senha é obrigatória.";
           } else if (this.form.password !== this.form.confirmPassword) {
-            this.errors.confirmPassword = "Passwords do not match.";
+            this.errors.confirmPassword = "As senhas não coincidem.";
           } else {
             this.errors.confirmPassword = "";
           }
           break;
         case "agree_policy":
-          this.errors.agree = this.form.agree_policy ? "" : "You must agree to the Privacy Policy.";
+          this.errors.agree_policy = this.form.agree_policy ? "" : "Você deve concordar com a Política de Privacidade.";
           break;
         case "state":
-          this.errors.state = this.form.state ? "" : "You must select a State.";
+          this.errors.state = this.form.state ? "" : "Você deve selecionar um estado.";
           break;
         case "locality":
-          this.errors.city = this.form.locality ? "" : "You must select a City.";
+          this.errors.locality = this.form.locality ? "" : "Você deve selecionar uma cidade.";
           break;
         case "neighborhood":
-          this.errors.neighborhood = this.form.neighborhood ? "" : "You must select a Neighborhood.";
+          this.errors.neighborhood = this.form.neighborhood ? "" : "Você deve selecionar um bairro.";
           break;
       }
     },
     async handleSubmit() {
-      // Validate all fields
       Object.keys(this.form).forEach((field) => this.validateField(field));
 
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
       try {
-        const response = await fetch(ENDPOINTS.REGISTER, {
-          method: "POST",
+        const response = await axios.post(ENDPOINTS.REGISTER, this.form, {
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.form),
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (data.errors) {
-            for (const [field, messages] of Object.entries(data.errors)) {
-              this.errors[field] = messages.join(" ");
-            }
-          }
-          throw new Error(data.message || "Failed to register.");
-        }
-
-        alert(data.message || "Account created successfully!");
-        this.router.push(ENDPOINTS.LOGIN); // Redirecionar para a página de login
+        alert(response.data.message || "Conta criada com sucesso!");
+        this.router.push('/auth/login');
       } catch (error) {
-        alert(error.message || "Something went wrong.");
+        if (error.response && error.response.data.errors) {
+          for (const [field, messages] of Object.entries(error.response.data.errors)) {
+            this.errors[field] = messages.join(" ");
+          }
+        } else {
+          alert(error.message || "Algo deu errado.");
+        }
       }
     },
   },
 };
 </script>
-

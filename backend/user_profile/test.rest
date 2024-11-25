@@ -1,0 +1,12 @@
+GET http://localhost:8000/user_profile/states/ HTTP/1.1
+Accept: application/json
+
+#####
+
+GET http://localhost:8000/user_profile/cities/SP HTTP/1.1
+Accept: application/json
+
+#####
+
+GET http://localhost:8000/user_profile/neighborhoods/SP/Piracicaba HTTP/1.1
+Accept: application/json

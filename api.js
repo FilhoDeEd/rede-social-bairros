@@ -1,11 +1,13 @@
 const BASE_URL = "http://localhost:8000";
+const ACCOUNT_URL = `${BASE_URL}/account`;
+const USER_PROFILE_URL = `${BASE_URL}/user_profile`;
 
 // Endpoints centralizados
 export const ENDPOINTS = {
-  REGISTER: `${BASE_URL}/register/`,
-  LOGIN: `${BASE_URL}/login/`,
+  REGISTER: `${ACCOUNT_URL}/register/`,
+  LOGIN: `${ACCOUNT_URL}/login/`,
   USERS: `${BASE_URL}/users/`,
-  STATES: `${BASE_URL}/states`,
-  CITIES: `${BASE_URL}/cities`,
-  NEIGHBORHOODS:`${BASE_URL}/neighborhoods`,
+  STATES: `${USER_PROFILE_URL}/states`,
+  CITIES: `${USER_PROFILE_URL}/cities`,
+  NEIGHBORHOODS:`${USER_PROFILE_URL}/neighborhoods`,
 };
