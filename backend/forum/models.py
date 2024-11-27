@@ -5,11 +5,12 @@ from user_profile.models import Neighborhood, UserProfile
 
 
 class Forum(models.Model):
+    owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT, editable=False)
+
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, editable=False)
     description = models.TextField(max_length=2047)
-    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT)
-    owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
 
     # Campos de estatísticas (melhor fazer um cálculo complexo mas que não atulizar o tempo todo, somente de tempos em tempos)
         # Por hora, vamos só contar os inscritos
@@ -51,16 +52,22 @@ class Forum(models.Model):
         super().save(*args, **kwargs)
 
     def add_subscriber(self):
-        """Adiciona um inscrito ao fórum."""
+        """
+        Adiciona um inscrito ao fórum.
+        """
         self.subscribers_count += 1
 
     def remove_subscriber(self):
-        """Remove um inscrito do fórum."""
+        """
+        Remove um inscrito do fórum.
+        """
         if self.subscribers_count > 0:
             self.subscribers_count -= 1
 
     def calculate_popularity(self):
-        """Calcula popularidade com base em métricas do fórum."""
+        """
+        Calcula popularidade com base em métricas do fórum.
+        """
         self.popularity = self.subscribers_count * 10
 
     def __str__(self):

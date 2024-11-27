@@ -18,7 +18,7 @@ class ForumSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'slug', 'creation_date', 'update_date', 'subscribers_count', 'popularity']
 
 
-class ListForunsSerializer(serializers.ModelSerializer):
+class ForumListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Forum
         fields = [

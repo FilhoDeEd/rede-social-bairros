@@ -59,13 +59,13 @@ class AccountRegisterView(APIView):
         try:
             with transaction.atomic():
                 user = user_serializer.save()
-                account = account_serializer.save(user=user)
-                # profile = profile_serializer.save(account=account)
-                token = Token.objects.create(user=user)
+                # user_profile = profile_serializer.save()
+                account_serializer.save(user=user) #, active_user_profile=user_profile)
+                Token.objects.create(user=user)
         except Exception as e:
             return Response({'detail': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+        return Response({'detail': 'Success.'}, status=status.HTTP_201_CREATED)
 
 
 class AccountLoginView(APIView):
@@ -78,8 +78,14 @@ class AccountLoginView(APIView):
 
         user = authenticate(username=username, password=password)
 
+        account_serializer = AccountSerializer(user.account)
+        # profile_serializer = UserProfileSerializer(user.account.active_user_profile)
+
+        data = account_serializer
+        # data |= profile_serializer
+
         if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_200_OK)
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key, 'data': data}, status=status.HTTP_200_OK)
         else:
-            return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
