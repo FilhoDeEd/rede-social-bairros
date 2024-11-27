@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from user_profile.models import UserProfile
 
 
 class Account(models.Model):
@@ -11,6 +12,8 @@ class Account(models.Model):
     --------
     - **user (OneToOneField)**: A one-to-one relationship with the `User` model. Links the account to the user.
       Deleting the user cascades and deletes the associated account.
+    - **active_user_profile (OneToOneField)**: A one-to-one relationship with the `UserProfile` model. Links the account to the
+      currenty user profile.
     - **name (CharField)**: The user's first name.
     - **surname (CharField)**: The user's last name.
     - **birthday (DateField)**: The user's date of birth.
@@ -33,6 +36,7 @@ class Account(models.Model):
     Methods:
     --------
     - **login_active (property)**: Returns `True` if the associated `User` is active, otherwise `False`.
+    - **set_active_user_profile(user_profile: UserProfile)**: Change active user profile.
     - **mute(days: int)**: Mutes the user for a given number of days and updates mute-related fields.
     - **unmute()**: Unmutes the user by resetting mute-related fields (`muted`, `mute_date`, `mute_days`).
     - **ban()**: Deactivates the user by setting their `User`'s `is_active` field to `False`.
@@ -45,8 +49,10 @@ class Account(models.Model):
     This model serves as an extended profile for users, encapsulating additional account-specific data
     beyond what is provided by Django's default `User` model.
     """
-    
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    active_user_profile = models.OneToOneField(UserProfile, on_delete=models.PROTECT)
+
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     birthday = models.DateField()
@@ -54,10 +60,10 @@ class Account(models.Model):
     agree_policy = models.BooleanField()
 
     email = models.EmailField(unique=True)
-    email_notifications = models.BooleanField(default=True)
+    email_notifications = models.BooleanField(default=True) # Pode vir direto no cadastro
 
     last_login = models.DateTimeField(null=True, blank=True)
-    last_activity = models.DateTimeField(null=True, blank=True)
+    last_activity = models.DateTimeField(null=True, blank=True) # Usar isso onde?
 
     last_password_change = models.DateTimeField(null=True, blank=True)
     last_neighborhood_change = models.DateTimeField(null=True, blank=True)
@@ -79,7 +85,23 @@ class Account(models.Model):
         This is determined by the `is_active` status of the linked `User` model.
         """
         return self.user.is_active
-    
+
+    def set_active_user_profile(self, user_profile: UserProfile):
+        """
+        Set active UserProfile.
+
+        Args:
+            user_profile (UserProfile): The new active UserProfile.
+        """
+        if self.active_user_profile:
+            self.active_user_profile.active = False
+            self.active_user_profile.save()
+        
+        self.active_user_profile = user_profile
+        user_profile.active = True
+        user_profile.save()
+        self.save()
+
     def mute(self, days: int) -> None:
         """
         Mutes the user for a specified number of days.
