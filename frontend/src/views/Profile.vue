@@ -64,9 +64,10 @@
                   </h3>
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
-                    <input type="text" id="username-input" v-model="form.username" :readonly="!editMode"
+                    <input type="text" :placeholder="editMode ? '' : 'username'" id="username-input"
+                      v-model="form.username" :readonly="!editMode" @focus="onFocus" @blur="onBlur"
                       class="border-none outline-none text-blueGray-400 font-bold uppercase focus:ring-0 focus:outline-none text-center"
-                      placeholder="Username" />
+                     />
                   </div>
                 </div>
                 <!-- Biografia -->
@@ -248,38 +249,6 @@ import team2 from "@/assets/img/team-2-800x800.jpg";
 import { ENDPOINTS } from '../../../api.js';
 
 
-const inputs = document.querySelectorAll('input');
-const uploadButton = document.getElementById('upload-button');
-let isEditing = false;
-
-document.getElementById('edit-button').addEventListener('click', () => {
-  isEditing = !isEditing;
-
-  if (isEditing) {
-    // Ativar edição
-    inputs.forEach((input) => {
-      input.removeAttribute('readonly');
-      input.style.pointerEvents = 'auto';
-      if (input.id === 'username-input') {
-        input.dataset.placeholder = input.placeholder; // Salva o placeholder
-        input.placeholder = ''; // Torna o placeholder invisível
-      }
-    });
-    uploadButton.style.display = 'block';
-  } else {
-    // Desativar edição
-    inputs.forEach((input) => {
-      input.setAttribute('readonly', true);
-      input.style.pointerEvents = 'none';
-      if (input.id === 'username-input') {
-        input.placeholder = input.dataset.placeholder; // Restaura o placeholder
-      }
-    });
-    uploadButton.style.display = 'none';
-  }
-});
-
-
 export default {
   components: {
     Navbar,
@@ -323,6 +292,15 @@ export default {
         }
       }
       this.editMode = !this.editMode;
+    },
+    onFocus() {
+      // Quando o campo ganha foco, removemos o placeholder
+      if (this.editMode) {
+        this.username = ''; // Se o editMode estiver ativo, limpamos o valor.
+      }
+    },
+    onBlur() {
+      // Quando o campo perde o foco, você pode restaurar o valor padrão ou realizar outras ações
     },
 
     async handleImageUpload(event) {
