@@ -25,10 +25,26 @@
               <div class="px-6 justify-end">
                 <div class="flex flex-wrap justify-end">
                   <div class="w-full lg:w-3/12 lg:order-2" style="padding-left: 100px;">
-                    <div class="relative">
-                      <img alt="..." :src="team2"
+                    <div class="relative group">
+                      <!-- Exibe a imagem de perfil -->
+                      <img alt="Profile Picture" :src="profileImage || team2"
                         class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
+
+                      <!-- Botão de upload visível no modo de edição -->
+                      <div v-if="editMode"
+                        class="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <label for="uploadImage" class="flex flex-col items-center cursor-pointer">
+                          <i class="fas fa-upload text-white text-2xl"></i>
+                          <span class="text-white text-sm">Editar</span>
+                        </label>
+                        <!-- Input oculto -->
+                        <input id="uploadImage" type="file" accept="image/*" @change="handleImageUpload"
+                          class="hidden" />
+                      </div>
                     </div>
+
+
+
                   </div>
 
                   <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
@@ -48,11 +64,22 @@
                   </h3>
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
-                    <input type="text" v-model="form.username" :readonly="!editMode"
+                    <input type="text" id="username-input" v-model="form.username" :readonly="!editMode"
                       class="border-none outline-none text-blueGray-400 font-bold uppercase focus:ring-0 focus:outline-none text-center"
                       placeholder="Username" />
                   </div>
                 </div>
+                <!-- Biografia -->
+                <div class="relative mt-6">
+                  <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
+                  <div class="overflow-hidden">
+                    <textarea id="bio-textarea" v-model="form.bio" :readonly="!editMode"
+                      class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                      rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
+                  </div>
+                  <p v-if="errors.bio" class="text-red-500 text-xs mt-2">{{ errors.bio }}</p>
+                </div>
+
 
                 <!-- Linha superior: div1, div2, div3 -->
                 <div class="rowForProfile mt-10 py-10 border-t border-blueGray-200 text-center">
@@ -218,9 +245,40 @@ import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
 
 import team2 from "@/assets/img/team-2-800x800.jpg";
-
-
 import { ENDPOINTS } from '../../../api.js';
+
+
+const inputs = document.querySelectorAll('input');
+const uploadButton = document.getElementById('upload-button');
+let isEditing = false;
+
+document.getElementById('edit-button').addEventListener('click', () => {
+  isEditing = !isEditing;
+
+  if (isEditing) {
+    // Ativar edição
+    inputs.forEach((input) => {
+      input.removeAttribute('readonly');
+      input.style.pointerEvents = 'auto';
+      if (input.id === 'username-input') {
+        input.dataset.placeholder = input.placeholder; // Salva o placeholder
+        input.placeholder = ''; // Torna o placeholder invisível
+      }
+    });
+    uploadButton.style.display = 'block';
+  } else {
+    // Desativar edição
+    inputs.forEach((input) => {
+      input.setAttribute('readonly', true);
+      input.style.pointerEvents = 'none';
+      if (input.id === 'username-input') {
+        input.placeholder = input.dataset.placeholder; // Restaura o placeholder
+      }
+    });
+    uploadButton.style.display = 'none';
+  }
+});
+
 
 export default {
   components: {
@@ -235,8 +293,9 @@ export default {
         username: "",
         password: "",
       },
+      profileImage: null, // Variável para armazenar a nova imagem ou a atual
       errors: {},
-      editMode: false, // Inicialmente, os campos são somente leitura
+      editMode: false, // Determina se o formulário está em modo de edição
       team2,
     };
   },
@@ -244,6 +303,7 @@ export default {
     await this.fetchState();
   },
   methods: {
+
     async fetchState() {
       try {
         const response = await axios.get(ENDPOINTS.USERS);
@@ -264,6 +324,34 @@ export default {
       }
       this.editMode = !this.editMode;
     },
+
+    async handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validação opcional para tipo e tamanho do arquivo
+      if (!file.type.startsWith("image/")) {
+        alert("Por favor, selecione um arquivo de imagem válido.");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert("A imagem deve ter no máximo 5MB.");
+        return;
+      }
+
+      // Pré-visualização da imagem
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profileImage = e.target.result;
+      };
+      reader.readAsDataURL(file);
+
+      // Caso queira enviar a imagem ao servidor:
+      // const formData = new FormData();
+      // formData.append("profileImage", file);
+      // await axios.post(ENDPOINTS.UPLOAD_PROFILE_IMAGE, formData);
+    },
+
 
     validateField(field) {
       const calculateAge = (birthDate) => {
@@ -338,13 +426,14 @@ export default {
 </script>
 
 <style scoped>
-  #dataLocation {
- /* Cria espaço suficiente entre dataProfile e dataLocation */
-    padding-top: 200px;
-  }
-  .bg-white {
-    padding-top: 20px;
-    padding-bottom: 2rem; /* Adiciona um espaço interno inferior */
-  }
-</style>
+#dataLocation {
+  /* Cria espaço suficiente entre dataProfile e dataLocation */
+  padding-top: 200px;
+}
 
+.bg-white {
+  padding-top: 20px;
+  padding-bottom: 2rem;
+  /* Adiciona um espaço interno inferior */
+}
+</style>
