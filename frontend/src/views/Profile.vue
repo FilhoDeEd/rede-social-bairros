@@ -199,7 +199,7 @@
               <div class="px-6 justify-end">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
-                  <select v-model="form.state" @change="[fetchCities, validateField('state')]"
+                  <select v-model="form.state" @change="[fetchCities, validateField('state')]" :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                     <option value="">Selecione um Estado</option>
                     <option v-for="state in states" :key="state.code" :value="state.code">
@@ -210,9 +210,9 @@
 
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]"
+                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]" :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option value="">Selecione uma Cidade</option>
+                    <option value="" >Selecione uma Cidade</option>
                     <option v-for="city in cities" :key="city.name" :value="city.name">
                       {{ city.name }}
                     </option>
@@ -221,7 +221,7 @@
 
                 <div class="relative w-full mt-4">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
-                  <select v-model="form.neighborhood" @change="validateField('neighborhood')"
+                  <select v-model="form.neighborhood" @change="validateField('neighborhood')" :disabled="!editMode"
                     class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
                     <option value="">Selecione um Bairro</option>
                     <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
