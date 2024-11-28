@@ -51,7 +51,6 @@ class Neighborhood(models.Model):
 
 
 class UserProfile(models.Model):
-
     #checar todos os status possíveis e ver se algum garante "vantagens"
 
     STATUS_CHOICES = [
@@ -60,18 +59,15 @@ class UserProfile(models.Model):
         # ('banned', 'Banned'),
     ]
 
-    name = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    cellphone = models.CharField(max_length=20)
 
     trust_rate = models.FloatField()
     active = models.BooleanField(default=True)
-    #neighborhood = models.ForeignKey(Neighborhood,)
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    id_account = models.ForeignKey(Account, on_delete=models.PROTECT)
 
     #parte comentada para analise posterior
-    #id_account = models.ForeignKey(accounts)
+    
     #perfil_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     
     def __str__(self):
