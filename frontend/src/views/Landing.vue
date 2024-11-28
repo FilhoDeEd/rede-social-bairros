@@ -16,12 +16,13 @@
             class="w-full h-full absolute opacity-75 bg-black"
           ></span>
         </div>
-        <div class="container relative mx-auto">
+        <div v-if="userStore.user.isAuthenticated"
+         class="container relative mx-auto">
           <div class="items-center flex flex-wrap">
             <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
               <div class="pr-12">
                 <h1 class="text-white font-semibold text-5xl">
-                  Your story starts with us.
+                  {{ userStore.user.name }}
                 </h1>
                 <p class="mt-4 text-lg text-blueGray-200">
                   This is a simple example of a Landing Page you can build using
@@ -598,6 +599,8 @@
 <script>
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
+import { useUserStore } from './store/user';
+import axios from 'axios';
 
 import team1 from "@/assets/img/team-1-800x800.jpg";
 import team2 from "@/assets/img/team-2-800x800.jpg";
@@ -605,6 +608,14 @@ import team3 from "@/assets/img/team-3-800x800.jpg";
 import team4 from "@/assets/img/team-4-470x470.png";
 
 export default {
+  setup(){
+    const userStore = useUserStore()
+
+    return{
+      userStore
+    } 
+  },
+
   data() {
     return {
       team1,
@@ -617,5 +628,22 @@ export default {
     Navbar,
     FooterComponent,
   },
+  methods:{
+    onBeforeMount(){
+      this.userStore.initStore()
+
+      const token = this.userStore.user.access
+
+      if (token){
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      }
+      else{
+        axios.defaults.headers.common["Authorization"] = "";
+      }
+
+    }
+  },
 };
+
+
 </script>

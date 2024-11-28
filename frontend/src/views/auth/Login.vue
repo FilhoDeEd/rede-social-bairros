@@ -107,6 +107,7 @@
 import { useRouter } from 'vue-router';
 import axios from 'axios'; // Importar o axios
 import { ENDPOINTS } from '../../../../api.js';
+import { useUserStore } from '../../store/user.js';
 
 export default {
   data() {
@@ -120,7 +121,8 @@ export default {
   },
   setup() {
     const router = useRouter();
-    return { router };
+    const userStore = useUserStore()
+    return { router, userStore };
   },
   methods: {
     // Validação de campos
@@ -143,8 +145,6 @@ export default {
 
     // Função de login
     async handleLogin() {
-      // Verificar qual campo foi preenchido: email ou username
-      const isEmail = /\S+@\S+\.\S+/.test(this.form.emailOrUsername);
 
       // Validar os campos
       Object.keys(this.form).forEach((field) => this.validateField(field));
@@ -152,20 +152,31 @@ export default {
       // Verifica se há erros
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
-      // Formatar o objeto a ser enviado: se for email, enviar como "email", senão enviar como "username"
-      const loginData = isEmail
-        ? { username: this.form.emailOrUsername }
-        : { username: this.form.emailOrUsername };
-      const dataToSend = { ...loginData, password: this.form.password };
-
+      // Formatar o objeto a ser enviado: se for email, enviar como "email", senão enviar como "username
+      
       try {
         // Requisição HTTP usando axios
-        const response = await axios.post(ENDPOINTS.LOGIN, dataToSend);
+        await axios
+          .post(ENDPOINTS.LOGIN, this.form)
+          .then(response =>{
+            this.userStore.setToken(response.data)
+            axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+          })
+          .catch(error =>{
+            alert(error)
+          });
 
-        // Manipulação de sucesso
-        alert(response.data.message || 'Login successful!');
-        this.router.push('/home'); // Redireciona para a home ou outra página
+        await axios
+          .get('api/me')
+          .then(response =>{
+            this.userStore.setUserInfo(response.data)
+            this.router.push('/home')
+          })
+          .catch(error =>{
+            alert(error)
+          })
       } catch (error) {
+
         // Manipulação de erro
         if (error.response) {
           // Resposta do servidor com status de erro
