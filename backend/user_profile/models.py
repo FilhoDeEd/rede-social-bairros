@@ -34,8 +34,8 @@ class UfChoices(models.TextChoices):
 
 class Neighborhood(models.Model):
     name = models.CharField(max_length=255)
-    state = models.CharField(max_length=2, choices=UfChoices.choices)
     locality = models.CharField(max_length=255)
+    state = models.CharField(max_length=2, choices=UfChoices.choices)
     country = models.CharField(max_length=255, default='Brazil')
 
     class Meta:
@@ -51,24 +51,22 @@ class Neighborhood(models.Model):
 
 
 class UserProfile(models.Model):
+    class StatusChoices(models.TextChoices):
+        RECEM_CHEGADO = 'RC', 'Recém Chegado'
+        VIZINHO_CURIOSO = 'VC', 'Vizinho Curioso'
+        VIZINHO_ATENTO = 'VA', 'Vizinho Atento'
+        VIZINHO_COLABORADOR = 'VL', 'Vizinho Colaborador'
+        VIZINHO_CONFIAVEL = 'VF', 'Vizinho Confiável'
+        VIZINHO_NOTAVEL = 'VN', 'Vizinho Notável'
+        VIZINHO_INSPIRADOR = 'VI', 'Vizinho Inspirador'
+        GUARDIAO_DO_BAIRRO = 'GB', 'Guardião do Bairro'
+        SABIO_DA_COMUNIDADE = 'SC', 'Sábio da Comunidade'
 
-    #checar todos os status possíveis e ver se algum garante "vantagens"
-
-    STATUS_CHOICES = [
-        # ('active', 'Active'),
-        # ('inactive', 'Inactive'),
-        # ('banned', 'Banned'),
-    ]
-
-
-    trust_rate = models.FloatField()
+    trust_rate = models.FloatField(default=100.0)
     active = models.BooleanField(default=True)
-    neighborhood = models.ForeignKey(Neighborhood,)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    id_account = models.ForeignKey(Account)
-
-    #parte comentada para analise posterior
-    
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT)
+    status = models.CharField(max_length=255, choices=StatusChoices.choices, default=StatusChoices.RECEM_CHEGADO)
+    account = models.ForeignKey(Account, null=True, blank=True, on_delete=models.SET_NULL)
     #perfil_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     
     def __str__(self):
