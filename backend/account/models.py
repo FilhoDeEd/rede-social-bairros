@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from user_profile.models import UserProfile
 
 
 class Account(models.Model):
@@ -49,13 +48,18 @@ class Account(models.Model):
     This model serves as an extended profile for users, encapsulating additional account-specific data
     beyond what is provided by Django's default `User` model.
     """
+    class GendersChoices(models.TextChoices):
+        FEMALE = 'F', 'Feminino'
+        MALE = 'M', 'Masculino'
+        OTHER = 'O', 'Outro'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    active_user_profile = models.OneToOneField(UserProfile, on_delete=models.PROTECT)
+    #active_user_profile = models.OneToOneField('user_profile.models.UserProfile', on_delete=models.PROTECT)
 
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     birthday = models.DateField()
+    gender = models.CharField(max_length=5, null=True, blank=True, choices=GendersChoices.choices)
     cellphone = models.CharField(max_length=255, null=True, blank=True)
     agree_policy = models.BooleanField()
 
@@ -86,21 +90,21 @@ class Account(models.Model):
         """
         return self.user.is_active
 
-    def set_active_user_profile(self, user_profile: UserProfile):
-        """
-        Set active UserProfile.
+    # def set_active_user_profile(self, user_profile: UserProfile):
+    #     """
+    #     Set active UserProfile.
 
-        Args:
-            user_profile (UserProfile): The new active UserProfile.
-        """
-        if self.active_user_profile:
-            self.active_user_profile.active = False
-            self.active_user_profile.save()
+    #     Args:
+    #         user_profile (UserProfile): The new active UserProfile.
+    #     """
+    #     if self.active_user_profile:
+    #         self.active_user_profile.active = False
+    #         self.active_user_profile.save()
         
-        self.active_user_profile = user_profile
-        user_profile.active = True
-        user_profile.save()
-        self.save()
+    #     self.active_user_profile = user_profile
+    #     user_profile.active = True
+    #     user_profile.save()
+    #     self.save()
 
     def mute(self, days: int) -> None:
         """

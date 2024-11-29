@@ -1,3 +1,4 @@
+
 <template>
   <div id="app">
     <router-view />
@@ -12,30 +13,25 @@ import { onBeforeMount } from 'vue';
 import { useUserStore } from './store/user';
 import axios from 'axios';
 
-export default{
-  setup(){
-    const userStore = useUserStore()
+export default {
+  setup() {
+    const userStore = useUserStore();
+    
+    onBeforeMount(() => {
+      userStore.initStore();
 
-    return{
-      userStore
-    } 
-  },
+      const token = userStore.user.access;
 
-  methods:{
-    onBeforeMount(){
-      this.userStore.initStore()
-
-      const token = this.userStore.user.access
-
-      if (token){
+      if (token) {
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      }
-      else{
+      } else {
         axios.defaults.headers.common["Authorization"] = "";
       }
+    });
 
-    }
+    return {
+      userStore
+    };
   }
-
-}
+};
 </script>

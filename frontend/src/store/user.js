@@ -61,7 +61,7 @@ export const useUserStore = defineStore({
             }
         },
 
-        setToken(){
+        setToken(data){
             console.log('setToken',data)
 
             this.user.access = data.access

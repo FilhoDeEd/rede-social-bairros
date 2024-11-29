@@ -160,7 +160,7 @@
                   class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500"
                 >
                   <option value="">Selecione um Bairro</option>
-                  <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
+                  <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
                     {{ neighborhood.name }}
                   </option>
                 </select>
@@ -329,7 +329,7 @@ export default {
           headers: { "Content-Type": "application/json" },
         });
 
-        alert(response.data.message || "Conta criada com sucesso!");
+        console.log("Conta criada com sucesso!");
         this.router.push('/auth/login');
       } catch (error) {
         if (error.response && error.response.data.errors) {
