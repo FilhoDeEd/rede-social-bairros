@@ -599,7 +599,7 @@
 <script>
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
-import { useUserStore } from './store/user';
+import { useUserStore } from '../store/user';
 import axios from 'axios';
 
 import team1 from "@/assets/img/team-1-800x800.jpg";

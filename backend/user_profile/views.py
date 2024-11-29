@@ -40,11 +40,11 @@ class NeighborhoodListAPIView(ListAPIView):
         if state_code not in UfChoices.values:
             raise NotFound(f"State {state_code} not found.")
 
-        neighborhoods_list = Neighborhood.objects.filter(state=state_code, locality=city_name).values_list('name', flat=True)
-        if not neighborhoods_list.exists():
+        neighborhoods = Neighborhood.objects.filter(state=state_code, locality=city_name)
+        if not neighborhoods.exists():
             raise NotFound(f"No neighborhoods found for city '{city_name}' in state '{state_code}'.")
         
-        neighborhoods = [{'name': neighborhoods} for neighborhoods in neighborhoods_list]
+        neighborhoods = [{'id': neighborhood.id, 'name': neighborhood.name} for neighborhood in neighborhoods]
 
 
         return Response(neighborhoods, status=status.HTTP_200_OK)
