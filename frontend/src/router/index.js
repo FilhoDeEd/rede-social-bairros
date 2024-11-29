@@ -60,6 +60,10 @@ const routes = [
           path: "/auth/register",
           component: Register,
         },
+        {
+          path:"/",
+          component: Login
+        },
       ],
     },
     {
@@ -67,13 +71,17 @@ const routes = [
       component: Home,
     },
     {
+      path: "/index",
+      component: Index,
+    },
+    {
       path: "/profile",
       component: Profile,
     },
-    {
-      path: "/",
-      component: Index,
-    },
+    // {
+    //   path: "/",
+    //   component: Index,
+    // },
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ];
 
