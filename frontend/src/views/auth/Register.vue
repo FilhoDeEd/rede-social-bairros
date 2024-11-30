@@ -294,7 +294,13 @@ export default {
           this.errors.username = this.form.username ? "" : "O nome de usuário é obrigatório.";
           break;
         case "password":
-          this.errors.password = this.form.password ? "" : "A senha é obrigatória.";
+        this.errors.password = this.form.password
+          ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
+            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+          : "A senha é obrigatória.";
           break;
         case "confirmPassword":
           if (!this.form.confirmPassword) {
