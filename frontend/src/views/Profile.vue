@@ -65,7 +65,11 @@
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
                     <input type="text" :placeholder="editMode ? '' : 'username'" id="username-input"
-                      v-model="form.username" :readonly="!editMode" @focus="onFocus" @blur="onBlur"
+                      v-model="form.username"
+                       :readonly="!editMode"
+                       :value="userStore.user.access ? userStore.user.name :''"
+                      @focus="onFocus" @blur="onBlur"
+
                       class="border-none outline-none text-blueGray-400 font-bold uppercase focus:ring-0 focus:outline-none text-center"
                      />
                   </div>
@@ -244,9 +248,10 @@
 import axios from "axios";
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
-
+import onBeforeMount from "vue"
 import team2 from "@/assets/img/team-2-800x800.jpg";
 import { ENDPOINTS } from '../../../api.js';
+import { useUserStore } from '../../store/user.js';
 
 
 export default {
@@ -268,10 +273,31 @@ export default {
       team2,
     };
   },
+
+  onBeforeMount(){
+      this.userStore.initStore()
+
+      const token = this.userStore.user.access
+
+      if (token){
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      }
+      else{
+        axios.defaults.headers.common["Authorization"] = "";
+      }
+
+    }
+
   async mounted() {
     await this.fetchState();
   },
   methods: {
+    setup(){
+      const userStore = useUserStore()
+      return{
+        userStore
+      } 
+    },
 
     async fetchState() {
       try {
@@ -366,8 +392,14 @@ export default {
           this.errors.username = this.form.username ? "" : "Username is required.";
           break;
         case "password":
-          this.errors.password = this.form.password ? "" : "Password is required.";
-          break;
+          this.errors.password = this.form.password
+            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
+              (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+              (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+              (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+              (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+            : "A senha é obrigatória.";
+            break;
       }
 
     },

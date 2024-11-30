@@ -55,7 +55,7 @@ export const useUserStore = defineStore({
                 this.user.isAutheticated = true
 
 
-                this.refreshToken()
+                // this.refreshToken()
 
                 console.log("User initialized", this.user)
             }
