@@ -36,3 +36,18 @@ Content-Type: application/json
 
 GET http://localhost:8000/account/detail/ HTTP/1.1
 Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+
+######
+
+POST http://localhost:8000/account/edit/ HTTP/1.1
+Authorization: Token 970a983577039f485fc19516cd520747c7fd1b85
+Content-Type: application/json
+
+{ 
+    "name": "Tiago",
+    "surname": "Silva",
+    "birthday": "1920-01-01",
+    "cellphone": "+55(19)98789-1234",
+    "gender": "O",
+    "biography": "era uma fez um belo site que um dia..."
+}
