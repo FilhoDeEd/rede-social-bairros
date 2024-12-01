@@ -1,5 +1,5 @@
 from typing import Dict
-from account.serializers import AccountSerializer, UserSerializer
+from account.serializers import AccountSerializer, UserSerializer, UpdateAccountSerializer
 
 from django.contrib.auth import authenticate
 from django.db import transaction
@@ -83,7 +83,7 @@ class LoginView(APIView):
             return Response({'access': token.key}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
+ 
 class DetailAccountView(APIView):
     """
     """
@@ -112,3 +112,33 @@ class DetailAccountView(APIView):
         data |= neighborhood_serializer.data
 
         return Response(data, status=status.HTTP_200_OK)
+    
+class UpdateProfileView(APIView):
+    """
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        
+        data = request.data
+        account = request.user.account
+
+        account_serializer = UpdateAccountSerializer(account,data=data)
+
+        errors = {}
+
+        if not account_serializer.is_valid():
+            add_errors(errors=errors, serializer_errors=account_serializer.errors)
+        
+        if errors:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+
+            account = account_serializer.save()
+                
+        except Exception as e:
+            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'detail': 'Success.'}, status=status.HTTP_201_CREATED)
