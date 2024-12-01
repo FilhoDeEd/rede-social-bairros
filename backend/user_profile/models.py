@@ -70,4 +70,4 @@ class UserProfile(models.Model):
     #perfil_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     
     def __str__(self):
-        return f"{self.name} {self.surname}"
+        return f'{self.name} {self.surname}'

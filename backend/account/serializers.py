@@ -6,7 +6,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password']
+        fields = ['username', 'password']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -20,9 +20,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    account_id = serializers.IntegerField(source='id', read_only=True)
+
     class Meta:
         model = Account
-        fields = ['id', 'name', 'surname', 'birthday', 'email', 'agree_policy']
+        fields = ['account_id', 'name', 'surname', 'gender', 'birthday', 'email', 'cellphone', 'agree_policy']
 
     def validate_agree_policy(self, value):
         if not value:
