@@ -5,13 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from user_profile.models import Neighborhood, UfChoices, UserProfile
 from rest_framework.decorators import api_view
-import json
 
 from .serializers import UserProfileSerializer
 
+
 class UFListAPIView(APIView):
     """
-    Returns the list of all Brazilian states (UFs).
+    Returns the list of all states (UFs).
     """
     def get(self, request, *args, **kwargs):
         ufs = [{'code': uf.value, 'name': uf.label} for uf in UfChoices]
@@ -26,7 +26,7 @@ class CityListAPIView(ListAPIView):
         if state_code not in UfChoices.values:
             raise NotFound(f"State '{state_code}' not found.")
 
-        cities_list = Neighborhood.objects.filter(state=state_code).values_list('locality', flat=True).distinct()
+        cities_list = Neighborhood.objects.filter(state=state_code).values_list('locality', flat=True).distinct().order_by('locality')
         cities = [{'name': city} for city in cities_list]
 
         return Response(cities, status=status.HTTP_200_OK)
@@ -40,11 +40,12 @@ class NeighborhoodListAPIView(ListAPIView):
         if state_code not in UfChoices.values:
             raise NotFound(f"State {state_code} not found.")
 
-        neighborhoods = Neighborhood.objects.filter(state=state_code, locality=city_name)
+        neighborhoods = Neighborhood.objects.filter(state=state_code, locality=city_name).values_list('id', 'name').order_by('name')
+        print(neighborhoods)
         if not neighborhoods.exists():
             raise NotFound(f"No neighborhoods found for city '{city_name}' in state '{state_code}'.")
         
-        neighborhoods = [{'id': neighborhood.id, 'name': neighborhood.name} for neighborhood in neighborhoods]
+        neighborhoods = [{'id': neighborhood[0], 'name': neighborhood[1]} for neighborhood in neighborhoods]
 
 
         return Response(neighborhoods, status=status.HTTP_200_OK)
