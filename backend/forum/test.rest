@@ -1,0 +1,16 @@
+POST http://localhost:8000/forum/register/
+Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+Content-Type: application/json
+
+{
+  "title": "Example Forum Title",
+  "description": "This is an example description for the forum."
+}
+
+######
+
+GET http://localhost:8000/forum/list/?page=1
+Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+
+
+
