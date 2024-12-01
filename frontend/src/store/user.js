@@ -44,7 +44,7 @@ export const useUserStore = defineStore({
                 this.user.gender= localStorage.getItem('user.gender'),
                 this.user.biography= localStorage.getItem('user.biography'),
                 this.user.birthday= localStorage.getItem('user.birthday'),
-                this.user.birthday= localStorage.getItem('user.status'),
+                this.user.status= localStorage.getItem('user.status'),
 
                 
                 this.user.state= localStorage.getItem('user.state'),
@@ -55,7 +55,7 @@ export const useUserStore = defineStore({
                 this.user.isAutheticated = true
 
 
-                this.refreshToken()
+                // this.refreshToken()
 
                 console.log("User initialized", this.user)
             }

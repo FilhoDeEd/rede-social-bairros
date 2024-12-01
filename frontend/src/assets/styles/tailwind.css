@@ -5339,3 +5339,37 @@ select {
   }
 }
 
+.group {
+  position: relative;
+}
+
+.group img {
+  border-radius: 50%;
+}
+
+.group div {
+  display: none;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  justify-content: start;
+  align-items: start;
+  position: absolute;
+  top: 0;
+  left: -10px;
+  right: 0;
+  bottom: 0;
+}
+
+.group:hover div {
+  display: flex;
+}
+
+
+input[readonly],
+textarea[readonly] {
+  user-select: none; /* Impede seleção de texto */
+  pointer-events: none; /* Desativa cliques no elemento */
+  background-color: transparent; /* Remove o fundo de destaque */
+  cursor: default; /* Altera o cursor para um que não sugere edição */
+  outline: none; /* Remove o contorno de foco */
+}
