@@ -28,6 +28,7 @@
                     <div class="relative group">
                       <!-- Exibe a imagem de perfil -->
                       <img alt="Profile Picture" :src="profileImage || team2"
+                        :value="userStore.user.access ? userStore.user.username : ''"
                         class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
 
                       <!-- Botão de upload visível no modo de edição -->
@@ -59,21 +60,23 @@
                 </div>
 
                 <div class="text-center mt-12">
-                  <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                    Nome
-                  </h3>
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
-                    <input type="text" :placeholder="editMode ? '' : 'username'" id="username-input"
-                      v-model="form.username"
-                       :readonly="!editMode"
-                       :value="userStore.user.access ? userStore.user.name :''"
-                      @focus="onFocus" @blur="onBlur"
-
-                      class="border-none outline-none text-blueGray-400 font-bold uppercase focus:ring-0 focus:outline-none text-center"
-                     />
+                    <!-- Campo editável para o Nome -->
+                    <input type="text" id="name" 
+                    v-model="form.name"
+                    :readonly="!editMode" 
+                    @focus="onFocus"
+                    @blur="onBlur"
+                    class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
+                  </div>
+                  <div class="text-sm leading-normal mt-2 text-blueGray-400 font-semibold uppercase">
+                    <!-- Exibição somente leitura do Username -->
+                    <span>{{ userStore.user.username }}</span>
                   </div>
                 </div>
+
+
                 <!-- Biografia -->
                 <div class="relative mt-6">
                   <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
@@ -101,7 +104,7 @@
                             d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
                         </svg>
                       </div>
-                      <input type="text" id="phone-input" :readonly="!editMode" v-model="form.phone"
+                      <input type="text" id="phone-input" v-model="form.phone" :readonly="!editMode"
                         @change="validateField('phone')" aria-describedby="helper-text-explanation"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
@@ -121,7 +124,7 @@
                           <path d="M18 8.9l-7 4.2-7-4.2V14.5a2.5 2.5 0 002.5 2.5h9a2.5 2.5 0 002.5-2.5V8.9z" />
                         </svg>
                       </div>
-                      <input type="email" id="UserEmail" :readonly="!editMode" v-model="form.email"
+                      <input type="email" id="UserEmail" v-model="form.email" :readonly="!editMode"
                         @change="validateField('email')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
@@ -141,7 +144,7 @@
                             d="M10 2a4 4 0 00-4 4v2a2 2 0 01-2 2v4a4 4 0 004 4h4a4 4 0 004-4v-4a2 2 0 01-2-2V6a4 4 0 00-4-4zm-1 6V6a1 1 0 112 0v2h-2z" />
                         </svg>
                       </div>
-                      <input type="password" id="password-input" :readonly="!editMode" v-model="form.password"
+                      <input type="password" id="password-input" v-model="form.password" :readonly="!editMode"
                         @change="validateField('password')" placeholder="Senha"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
@@ -166,7 +169,7 @@
                             d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
                         </svg>
                       </div>
-                      <input type="date" id="birthdate-input" :readonly="!editMode" v-model="form.birthDate"
+                      <input type="date" id="birthdate-input" v-model="form.birthDate" :readonly="!editMode"
                         @change="validateField('birthDate')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
@@ -179,7 +182,7 @@
                     <label for="gender-select"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gênero:</label>
                     <div class="relative">
-                      <select id="gender-select" name="gender" :disabled="!editMode"
+                      <select id="gender-select" name="gender" v-model="form.gender" :disabled="!editMode"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="" disabled selected>Selecione um gênero</option>
                         <option value="male">Masculino</option>
@@ -214,11 +217,13 @@
 
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]" :disabled="!editMode"
+                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]"
+                    :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option value="" >Selecione uma Cidade</option>
+                    <option value="">Selecione uma Cidade</option>
                     <option v-for="city in cities" :key="city.name" :value="city.name">
                       {{ city.name }}
+
                     </option>
                   </select>
                 </div>
@@ -262,10 +267,19 @@ export default {
   data() {
     return {
       form: {
-        phone: "",
-        email: "",
+        name: "",
         username: "",
+        email: "",
         password: "",
+        cellphone: "",
+        gender: "",
+        biografy: "",
+        birthday: "",
+        status: "",
+        state: "",
+        locality: "",
+        neighborhood: "",
+        neighborhood_id: "",
       },
       profileImage: null, // Variável para armazenar a nova imagem ou a atual
       errors: {},
@@ -274,29 +288,29 @@ export default {
     };
   },
 
-  onBeforeMount(){
-      this.userStore.initStore()
+  onBeforeMount() {
+    this.userStore.initStore()
 
-      const token = this.userStore.user.access
+    const token = this.userStore.user.access
 
-      if (token){
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      }
-      else{
-        axios.defaults.headers.common["Authorization"] = "";
-      }
-
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     }
+    else {
+      axios.defaults.headers.common["Authorization"] = "";
+    }
+
+  },
 
   async mounted() {
     await this.fetchState();
   },
   methods: {
-    setup(){
+    setup() {
       const userStore = useUserStore()
-      return{
+      return {
         userStore
-      } 
+      }
     },
 
     async fetchState() {
@@ -394,12 +408,12 @@ export default {
         case "password":
           this.errors.password = this.form.password
             ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-              (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-              (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-              (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-              (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
             : "A senha é obrigatória.";
-            break;
+          break;
       }
 
     },
