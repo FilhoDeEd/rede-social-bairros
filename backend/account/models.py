@@ -61,6 +61,7 @@ class Account(models.Model):
     birthday = models.DateField()
     gender = models.CharField(max_length=5, null=True, blank=True, choices=GendersChoices.choices)
     cellphone = models.CharField(max_length=255, null=True, blank=True)
+    biography = models.CharField(max_length=4095, null=True, blank=True)
     agree_policy = models.BooleanField()
 
     email = models.EmailField(unique=True)

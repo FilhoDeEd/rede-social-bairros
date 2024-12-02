@@ -19,10 +19,12 @@ class ForumSerializer(serializers.ModelSerializer):
 
 
 class ForumListSerializer(serializers.ModelSerializer):
+    forum_id = serializers.IntegerField(source='id', read_only=True)
+
     class Meta:
         model = Forum
         fields = [
-            'id',
+            'forum_id',
             'title',
             'description',
             'slug',

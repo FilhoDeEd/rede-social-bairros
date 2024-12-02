@@ -12,6 +12,8 @@ from forum.models import Forum
 from rest_framework import status
 from rest_framework.response import Response
 
+from user_profile.models import UserProfile
+
 
 class ForumRegisterView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -32,21 +34,35 @@ class ForumRegisterView(APIView):
         
         try:
             with transaction.atomic():
-                user_profile = request.user.account.active_user_profile
-                forum = forum_serializer.save(owner=user_profile, neighboorhood=user_profile.neighboorhood)
+                account = request.user.account
+                user_profile = UserProfile.objects.get(account=account, active=True)
+                forum_serializer.save(owner=user_profile, neighborhood=user_profile.neighborhood)
         except Exception as e:
-            return Response({'detail': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': f'An unexpected error occurred. {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'detail': 'Success.'}, status=status.HTTP_201_CREATED)
 
 
 class ForumListView(ListAPIView):
-    queryset = Forum.objects.all()  # Define o queryset base
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     serializer_class = ForumListSerializer
-    filter_backends = [SearchFilter, OrderingFilter]  # Adiciona filtros de busca e ordenação
-    search_fields = ['title', 'description']  # Campos para busca (e.g., name contains value)
-    ordering_fields = ['subscribers_count', 'popularity', 'creation_date']  # Ordenação permitida
-    ordering = ['-creation_date']  # Ordenação padrão (mais recentes primeiro)
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title', 'description']
+    ordering_fields = ['subscribers_count', 'popularity', 'creation_date']
+    ordering = ['-creation_date']
+
+    def get_queryset(self):
+        account = self.request.user.account
+        
+        try:
+            user_profile = UserProfile.objects.get(account=account, active=True)
+        except UserProfile.DoesNotExist:
+            return Forum.objects.none()
+        
+        neighborhood = user_profile.neighborhood
+        return Forum.objects.filter(neighborhood=neighborhood)
 
 
 # Listar os foruns (o sistema de busca já vem aqui) (retornar dados simples de vários foruns)
