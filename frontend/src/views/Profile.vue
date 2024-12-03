@@ -288,13 +288,15 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import axios from "axios";
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
 import { onBeforeMount } from "vue"
 import team2 from "@/assets/img/team-2-800x800.jpg";
 import { ENDPOINTS } from '../../../api.js';
-import { useUserStore } from '../src/store/user.js';
+import { useUserStore } from '../store/user.js';
 
 
 export default {

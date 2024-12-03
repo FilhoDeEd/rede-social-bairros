@@ -31,8 +31,8 @@ class AccountSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Agree to the terms and conditions.')
         return value
 
-class UpdateAccountSerializer(serializers.ModelSerializer):
 
+class UpdateAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = [ 'name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']
+        fields = ['email', 'name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']

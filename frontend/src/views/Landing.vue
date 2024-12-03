@@ -12,11 +12,11 @@
 
     <!-- Botões de Paginação -->
     <div>
-      <button @click="fetchForums(forumStore.currentPage - 1, token)" 
+      <button @click="fetchForums(forumStore.currentPage - 1)"  
               :disabled="!forumStore.previous || forumStore.isLoading">
         Página Anterior
       </button>
-      <button @click="fetchForums(forumStore.currentPage + 1, token)" 
+      <button @click="fetchForums(forumStore.currentPage + 1)"
               :disabled="!forumStore.next || forumStore.isLoading">
         Próxima Página
       </button>
@@ -28,29 +28,34 @@
 </template>
 
 <script>
-import { useForumStore } from '@/stores/forumStore'; // Certifique-se de ajustar o caminho
-import { useUserStore } from '../../store/user.js';
+import { useForumStore } from '../store/forum.js';
+import { useUserStore } from '../store/user.js';
+import { onBeforeMount } from 'vue';
 
 export default {
   setup() {
     const forumStore = useForumStore();
-    const userStore = useUserStore()
-
+    const userStore = useUserStore();
 
     // Carrega os fóruns na montagem do componente
     onBeforeMount(() => {
       userStore.initStore();
-      if (userStore.user.isAutheticated) {
-        fetchForums(page=1)
+      if (userStore.user.isAuthenticated) {
+        forumStore.fetchForums(1); // Chama a função para carregar os fóruns
       } else {
-        alert("Usuário Não Autorizado")
-      }    
+        alert("Usuário Não Autorizado");
+      }
     });
+
+    // Função para chamar a fetch de fóruns
+    const fetchForums = (page) => {
+      forumStore.fetchForums(page);
+    };
 
     return {
       forumStore,
-      fetchForums,
       userStore,
+      fetchForums, // Adiciona a função fetchForums ao template
     };
   },
 };
