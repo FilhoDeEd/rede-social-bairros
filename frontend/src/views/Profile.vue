@@ -43,11 +43,9 @@
                           class="hidden" />
                       </div>
                     </div>
-
-
-
                   </div>
 
+                  <!-- Edit mode -->
                   <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                     <div class="py-6 px-3 mt-32 sm:mt-0">
                       <button id="editButton"
@@ -59,17 +57,28 @@
                   </div>
                 </div>
 
+                <!-- Input nome -->
                 <div class="text-center mt-12">
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
                     <!-- Campo editável para o Nome -->
                     <input type="text" id="name" 
-                    v-model="form.name"
+                    v-model="form.name" 
                     :readonly="!editMode" 
                     @focus="onFocus"
                     @blur="onBlur"
+                    :value="userStore.user.access ? userStore.user.name :''"
+                    class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
+                    
+                    <input type="text" id="surname" 
+                    v-model="form.surname" 
+                    :readonly="!editMode" 
+                    @focus="onFocus"
+                    @blur="onBlur"
+                    :value="userStore.user.access ? userStore.user.surname :''"
                     class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
                   </div>
+                  <!-- Input username -->
                   <div class="text-sm leading-normal mt-2 text-blueGray-400 font-semibold uppercase">
                     <!-- Exibição somente leitura do Username -->
                     <span>{{ userStore.user.username }}</span>
@@ -81,9 +90,12 @@
                 <div class="relative mt-6">
                   <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
                   <div class="overflow-hidden">
-                    <textarea id="bio-textarea" v-model="form.bio" :readonly="!editMode"
-                      class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
-                      rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
+                    <textarea id="bio-textarea" 
+                    v-model="form.bio" 
+                    :readonly="!editMode"
+                    :value="userStore.user.access ? userStore.user.biography :''"
+                    class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                    rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
                   </div>
                   <p v-if="errors.bio" class="text-red-500 text-xs mt-2">{{ errors.bio }}</p>
                 </div>
@@ -104,7 +116,10 @@
                             d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
                         </svg>
                       </div>
-                      <input type="text" id="phone-input" v-model="form.phone" :readonly="!editMode"
+                      <input type="text" id="cellphone" 
+                      v-model="form.phone" 
+                      :readonly="!editMode"
+                      :value="userStore.user.access ? userStore.user.cellphone :''"
                         @change="validateField('phone')" aria-describedby="helper-text-explanation"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
@@ -124,7 +139,10 @@
                           <path d="M18 8.9l-7 4.2-7-4.2V14.5a2.5 2.5 0 002.5 2.5h9a2.5 2.5 0 002.5-2.5V8.9z" />
                         </svg>
                       </div>
-                      <input type="email" id="UserEmail" v-model="form.email" :readonly="!editMode"
+                      <input type="email" id="UserEmail" 
+                      v-model="form.email" 
+                      :readonly="!editMode"
+                      :value="userStore.user.access ? userStore.user.email :''"
                         @change="validateField('email')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
@@ -132,7 +150,7 @@
                     </div>
                   </div>
 
-                  <!-- Senha -->
+                  <!-- Senha
                   <div class="itemForProfile">
                     <label for="password-input"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Senha:</label>
@@ -144,21 +162,24 @@
                             d="M10 2a4 4 0 00-4 4v2a2 2 0 01-2 2v4a4 4 0 004 4h4a4 4 0 004-4v-4a2 2 0 01-2-2V6a4 4 0 00-4-4zm-1 6V6a1 1 0 112 0v2h-2z" />
                         </svg>
                       </div>
-                      <input type="password" id="password-input" v-model="form.password" :readonly="!editMode"
+                      <input type="password" id="password-input" 
+                      v-model="form.password" 
+                      :readonly="!editMode"
+                      :value="userStore.user.access ? userStore.user.password :''"
                         @change="validateField('password')" placeholder="Senha"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
                       <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Linha inferior -->
                 <div class="rowForProfile mt-10 py-10 text-center">
 
                   <!-- Data de Nascimento -->
                   <div class="itemForProfile">
-                    <label for="birthdate-input"
+                    <label for="birthday-input"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Data
                       de Nascimento:</label>
                     <div class="relative">
@@ -169,11 +190,14 @@
                             d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
                         </svg>
                       </div>
-                      <input type="date" id="birthdate-input" v-model="form.birthDate" :readonly="!editMode"
-                        @change="validateField('birthDate')"
+                      <input type="date" id="birthday-input" 
+                      v-model="form.birthday" 
+                      :readonly="!editMode"
+                      :value="userStore.user.access ? userStore.user.birthday :''"
+                        @change="validateField('birthday')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
-                      <p v-if="errors.birthDate" class="text-red-500 text-xs">{{ errors.birthDate }}</p>
+                      <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                     </div>
                   </div>
 
@@ -182,16 +206,19 @@
                     <label for="gender-select"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gênero:</label>
                     <div class="relative">
-                      <select id="gender-select" name="gender" v-model="form.gender" :disabled="!editMode"
+                      <select id="gender-select" name="gender" 
+                      v-model="form.gender" 
+                      :disabled="!editMode"
+                      :value="userStore.user.access ? userStore.user.gender :''"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="" disabled selected>Selecione um gênero</option>
-                        <option value="male">Masculino</option>
-                        <option value="female">Feminino</option>
-                        <option value="nonbinary">Não-Binário</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
                       </select>
                     </div>
                   </div>
-
+                </div>
                 </div>
               </div>
             </div>
@@ -206,7 +233,11 @@
               <div class="px-6 justify-end">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
-                  <select v-model="form.state" @change="[fetchCities, validateField('state')]" :disabled="!editMode"
+                  <select 
+                  v-model="form.state"
+                  :value="userStore.user.access ? userStore.user.state :''"
+                  @change="[fetchCities, validateField('state')]" 
+                  :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                     <option value="">Selecione um Estado</option>
                     <option v-for="state in states" :key="state.code" :value="state.code">
@@ -217,7 +248,10 @@
 
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]"
+                  <select 
+                  v-model="form.locality" 
+                  :value="userStore.user.access ? userStore.user.locality :''"
+                  @change="[fetchNeighborhoods, validateField('locality')]"
                     :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                     <option value="">Selecione uma Cidade</option>
@@ -230,10 +264,14 @@
 
                 <div class="relative w-full mt-4">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
-                  <select v-model="form.neighborhood" @change="validateField('neighborhood')" :disabled="!editMode"
+                  <select 
+                  v-model="form.neighborhood"
+                  :value="userStore.user.access ? userStore.user.neighborhood :''"
+                   @change="validateField('neighborhood')" 
+                   :disabled="!editMode"
                     class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
                     <option value="">Selecione um Bairro</option>
-                    <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
+                    <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
                       {{ neighborhood.name }}
                     </option>
                   </select>
@@ -253,33 +291,32 @@
 import axios from "axios";
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
-import onBeforeMount from "vue"
+import { onBeforeMount } from "vue"
 import team2 from "@/assets/img/team-2-800x800.jpg";
 import { ENDPOINTS } from '../../../api.js';
-import { useUserStore } from '../../store/user.js';
+import { useUserStore } from '../src/store/user.js';
 
 
 export default {
   components: {
     Navbar,
-    FooterComponent
+    FooterComponent,
   },
   data() {
     return {
       form: {
         name: "",
-        username: "",
+        surname: "",
         email: "",
-        password: "",
         cellphone: "",
         gender: "",
         biografy: "",
         birthday: "",
-        status: "",
         state: "",
         locality: "",
         neighborhood: "",
         neighborhood_id: "",
+        neighborhood_changed:"",
       },
       profileImage: null, // Variável para armazenar a nova imagem ou a atual
       errors: {},
@@ -288,37 +325,70 @@ export default {
     };
   },
 
-  onBeforeMount() {
-    this.userStore.initStore()
+  // Utilize o onBeforeMount diretamente como um hook dentro do ciclo de vida do Vue
 
-    const token = this.userStore.user.access
-
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-    }
-    else {
-      axios.defaults.headers.common["Authorization"] = "";
-    }
-
-  },
 
   async mounted() {
     await this.fetchState();
   },
   methods: {
     setup() {
-      const userStore = useUserStore()
-      return {
-        userStore
+      const userStore = useUserStore();
+      onBeforeMount(() => {
+      userStore.initStore();
+      const token = userStore.user.access;
+
+      if (token) {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      } else {
+        axios.defaults.headers.common["Authorization"] = "";
       }
+    });
+      return {
+        userStore,
+      };
     },
 
-    async fetchState() {
+    onStateChange(event){
+      this.fetchCities();
+      this.validateField('state');
+    },
+    async fetchStates() {
       try {
-        const response = await axios.get(ENDPOINTS.USERS);
-        this.state = response.data;
+        const response = await axios.get(ENDPOINTS.STATES);
+        this.states = response.data;
       } catch (error) {
-        alert("Erro ao carregar o estado.");
+        alert("Erro ao carregar os estados.");
+      }
+    },
+    async fetchCities() {
+      if (!this.form.state) {
+        this.cities = [];
+        this.neighborhoods = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
+        this.cities = response.data;
+        this.neighborhoods = []; // Resetar bairros ao alterar a cidade
+      } catch (error) {
+        alert("Erro ao carregar as cidades.");
+      }
+    },
+    onCityChange(event){
+      this.fetchNeighborhoods();
+      this.validateField('locality');
+    },
+    async fetchNeighborhoods() {
+      if (!this.form.locality) {
+        this.neighborhoods = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
+        this.neighborhoods = response.data;
+      } catch (error) {
+        alert("Erro ao carregar os bairros.");
       }
     },
 
@@ -333,12 +403,14 @@ export default {
       }
       this.editMode = !this.editMode;
     },
+
     onFocus() {
       // Quando o campo ganha foco, removemos o placeholder
       if (this.editMode) {
         this.username = ''; // Se o editMode estiver ativo, limpamos o valor.
       }
     },
+
     onBlur() {
       // Quando o campo perde o foco, você pode restaurar o valor padrão ou realizar outras ações
     },
@@ -370,11 +442,10 @@ export default {
       // await axios.post(ENDPOINTS.UPLOAD_PROFILE_IMAGE, formData);
     },
 
-
     validateField(field) {
-      const calculateAge = (birthDate) => {
+      const calculateAge = (birthday) => {
         const today = new Date();
-        const birth = new Date(birthDate);
+        const birth = new Date(birthday);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDifference = today.getMonth() - birth.getMonth();
         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
@@ -384,13 +455,13 @@ export default {
       };
 
       switch (field) {
-        case "birthDate":
-          if (!this.form.birthDate) {
-            this.errors.birthDate = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthDate) < 16) {
-            this.errors.birthDate = "You must be at least 16 years old.";
+        case "birthday":
+          if (!this.form.birthday) {
+            this.errors.birthday = "Birth Date is required.";
+          } else if (calculateAge(this.form.birthday) < 16) {
+            this.errors.birthday = "You must be at least 16 years old.";
           } else {
-            this.errors.birthDate = "";
+            this.errors.birthday = "";
           }
           break;
         case "email":
@@ -402,29 +473,32 @@ export default {
             this.errors.email = "";
           }
           break;
-        case "username":
-          this.errors.username = this.form.username ? "" : "Username is required.";
-          break;
-        case "password":
-          this.errors.password = this.form.password
-            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
-            : "A senha é obrigatória.";
-          break;
+        // case "username":
+        //   this.errors.username = this.form.username ? "" : "Username is required.";
+        //   break;
+        // case "password":
+        //   this.errors.password = this.form.password
+        //     ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
+        //     (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+        //     (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+        //     (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+        //     (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+        //     : "A senha é obrigatória.";
+        //   break;
       }
-
     },
+
     async handleSubmit() {
       // Validate all fields
+      if (this.form.neighborhood_id != useUserStore.user.neighborhood_id){
+        this.form.neighborhood_changed = true
+      }
       Object.keys(this.form).forEach((field) => this.validateField(field));
 
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
       try {
-        const response = await fetch(ENDPOINTS.PROFILE, {
+        const response = await fetch(ENDPOINTS.EDIT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this.form),
@@ -440,13 +514,16 @@ export default {
           }
           throw new Error(data.message || "Failed to save.");
         }
+        else{
+          useUserStore.setUserInfo(this.form);
+        }
       } catch (error) {
         alert(error.message || "Something went wrong.");
       }
     },
-
-  }
+  },
 };
+
 </script>
 
 <style scoped>

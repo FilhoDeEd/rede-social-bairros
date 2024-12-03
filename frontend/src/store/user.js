@@ -8,7 +8,7 @@ export const useUserStore = defineStore({
     state: () => ({
         user:{
             isAutheticated: false,
-            acess: null,
+            access: null,
             refresh: null,
 
             id: null,

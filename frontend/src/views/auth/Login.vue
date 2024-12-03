@@ -152,7 +152,6 @@ export default {
       // Verifica se há erros
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
-      // Formatar o objeto a ser enviado: se for email, enviar como "email", senão enviar como "username
       
       try {
         // Requisição HTTP usando axios
@@ -167,15 +166,15 @@ export default {
             alert(error)
           });
 
-        // await axios
-        //   .get('api/me')
-        //   .then(response =>{
-        //     this.userStore.setUserInfo(response.data)
-        //     this.router.push('/home')
-        //   })
-        //   .catch(error =>{
-        //     alert(error)
-        //   })
+        await axios
+          .get(ENDPOINTS.DETAIL)
+          .then(response =>{
+            this.userStore.setUserInfo(response.data)
+            this.router.push('/home')
+          })
+          .catch(error =>{
+            alert(error)
+          })
       } catch (error) {
 
         // Manipulação de erro
