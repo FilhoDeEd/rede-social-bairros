@@ -12,5 +12,8 @@ Content-Type: application/json
 GET http://localhost:8000/forum/list/?page=1
 Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
 
+#######
 
+POST http://localhost:8000/forum/subscribe/1/
+Authorization: Token 056831ef3d4ee2f4043daaa50d7d60394aa7dd62
 
