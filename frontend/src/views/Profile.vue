@@ -28,7 +28,7 @@
                     <div class="relative group">
                       <!-- Exibe a imagem de perfil -->
                       <img alt="Profile Picture" :src="profileImage || team2"
-                        :value="userStore.user.access ? userStore.user.username : ''"
+                        :value="userStore.user.username"
                         class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
 
                       <!-- Botão de upload visível no modo de edição -->
@@ -67,7 +67,6 @@
                     :readonly="!editMode" 
                     @focus="onFocus"
                     @blur="onBlur"
-                    :value="userStore.user.access ? userStore.user.name :''"
                     class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
                     
                     <input type="text" id="surname" 
@@ -75,7 +74,6 @@
                     :readonly="!editMode" 
                     @focus="onFocus"
                     @blur="onBlur"
-                    :value="userStore.user.access ? userStore.user.surname :''"
                     class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
                   </div>
                   <!-- Input username -->
@@ -91,13 +89,12 @@
                   <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
                   <div class="overflow-hidden">
                     <textarea id="bio-textarea" 
-                    v-model="form.bio" 
+                    v-model="form.biography" 
                     :readonly="!editMode"
-                    :value="userStore.user.access ? userStore.user.biography :''"
                     class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                     rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
                   </div>
-                  <p v-if="errors.bio" class="text-red-500 text-xs mt-2">{{ errors.bio }}</p>
+                  <p v-if="errors.biography" class="text-red-500 text-xs mt-2">{{ errors.biography }}</p>
                 </div>
 
 
@@ -106,7 +103,7 @@
 
                   <!-- Phone -->
                   <div class="itemForProfile">
-                    <label for="phone-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
+                    <label for="cellphone-input" class="block mb-2 text-sm font-medium text-gray-900 ">Phone
                       number:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
@@ -117,20 +114,19 @@
                         </svg>
                       </div>
                       <input type="text" id="cellphone" 
-                      v-model="form.phone" 
+                      v-model="form.cellphone" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.cellphone :''"
                         @change="validateField('phone')" aria-describedby="helper-text-explanation"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
-                      <p v-if="errors.phone" class="text-red-500 text-xs">{{ errors.phone }}</p>
+                      <p v-if="errors.cellphone" class="text-red-500 text-xs">{{ errors.cellphone }}</p>
                     </div>
                   </div>
 
                   <!-- Email -->
                   <div class="itemForProfile">
                     <label for="UserEmail"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email:</label>
+                      class="block mb-2 text-sm font-medium text-gray-900 ">Email:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -142,9 +138,8 @@
                       <input type="email" id="UserEmail" 
                       v-model="form.email" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.email :''"
                         @change="validateField('email')"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
                       <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
                     </div>
@@ -153,7 +148,7 @@
                   <!-- Senha
                   <div class="itemForProfile">
                     <label for="password-input"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Senha:</label>
+                      class="block mb-2 text-sm font-medium text-gray-900 ">Senha:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -165,9 +160,9 @@
                       <input type="password" id="password-input" 
                       v-model="form.password" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.password :''"
+                      :value="userStore.user.password"
                         @change="validateField('password')" placeholder="Senha"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
                       <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                     </div>
@@ -180,7 +175,7 @@
                   <!-- Data de Nascimento -->
                   <div class="itemForProfile">
                     <label for="birthday-input"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Data
+                      class="block mb-2 text-sm font-medium text-gray-900 ">Data
                       de Nascimento:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
@@ -193,9 +188,8 @@
                       <input type="date" id="birthday-input" 
                       v-model="form.birthday" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.birthday :''"
                         @change="validateField('birthday')"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
                       <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                     </div>
@@ -203,21 +197,28 @@
 
                   <!-- Gênero -->
                   <div class="itemForProfile">
-                    <label for="gender-select"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gênero:</label>
-                    <div class="relative">
-                      <select id="gender-select" name="gender" 
-                      v-model="form.gender" 
-                      :disabled="!editMode"
-                      :value="userStore.user.access ? userStore.user.gender :''"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option value="" disabled selected>Selecione um gênero</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Feminino</option>
-                        <option value="O">Outro</option>
-                      </select>
-                    </div>
-                  </div>
+  <label for="gender-select" class="block mb-2 text-sm font-medium text-gray-900">
+    Gênero:
+  </label>
+  <div class="relative">
+    <select
+      id="gender-select"
+      name="gender"
+      v-model="form.gender"
+      :disabled="!editMode"
+      class="custom-bg bg-blue-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
+             focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 
+             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  
+             dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    >
+      <option value="" disabled selected>Selecione um gênero</option>
+      <option value="M">Masculino</option>
+      <option value="F">Feminino</option>
+      <option value="O">Outro</option>
+    </select>
+  </div>
+</div>
+
                 </div>
                 </div>
               </div>
@@ -235,11 +236,10 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
                   <select 
                   v-model="form.state"
-                  :value="userStore.user.access ? userStore.user.state :''"
+                  :value="userStore.user.state"
                   @change="[fetchCities, validateField('state')]" 
                   :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option value="">Selecione um Estado</option>
                     <option v-for="state in states" :key="state.code" :value="state.code">
                       {{ state.name }}
                     </option>
@@ -250,11 +250,9 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
                   <select 
                   v-model="form.locality" 
-                  :value="userStore.user.access ? userStore.user.locality :''"
                   @change="[fetchNeighborhoods, validateField('locality')]"
                     :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option value="">Selecione uma Cidade</option>
                     <option v-for="city in cities" :key="city.name" :value="city.name">
                       {{ city.name }}
 
@@ -266,11 +264,9 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
                   <select 
                   v-model="form.neighborhood"
-                  :value="userStore.user.access ? userStore.user.neighborhood :''"
                    @change="validateField('neighborhood')" 
                    :disabled="!editMode"
                     class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
-                    <option value="">Selecione um Bairro</option>
                     <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
                       {{ neighborhood.name }}
                     </option>
@@ -289,15 +285,13 @@
 
 <script>
 /* eslint-disable */
-
 import axios from "axios";
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 import FooterComponent from "@/components/Footers/Footer.vue";
-import { onBeforeMount } from "vue"
+import { onBeforeMount, reactive } from "vue";
+import { useUserStore, apiClient } from "@/store/user.js"; // Ajuste o caminho conforme necessário
+import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
-import { ENDPOINTS } from '../../../api.js';
-import { useUserStore } from '../store/user.js';
-
 
 export default {
   components: {
@@ -312,45 +306,65 @@ export default {
         email: "",
         cellphone: "",
         gender: "",
-        biografy: "",
+        biography: "",
         birthday: "",
         state: "",
         locality: "",
         neighborhood: "",
         neighborhood_id: "",
-        neighborhood_changed:"",
+        neighborhood_changed: "",
       },
+      states: [], // Lista de estados
+      cities: [], // Lista de cidades
+      neighborhoods: [], // Lista de bairros
       profileImage: null, // Variável para armazenar a nova imagem ou a atual
       errors: {},
       editMode: false, // Determina se o formulário está em modo de edição
       team2,
     };
   },
-
-  // Utilize o onBeforeMount diretamente como um hook dentro do ciclo de vida do Vue
-
-
-  async mounted() {
-    await this.fetchState();
-  },
-  methods: {
-    setup() {
-      const userStore = useUserStore();
-      onBeforeMount(() => {
-      userStore.initStore();
-      const token = userStore.user.access;
-
-      if (token) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      } else {
-        axios.defaults.headers.common["Authorization"] = "";
-      }
+  setup() {
+    const userStore = useUserStore();
+    
+    // // Inicializar o store e configurar o token
+    // onBeforeMount(() => {
+    //   const token = userStore.user?.access;
+    //   if (token) {
+    //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    //   } else {
+    //     axios.defaults.headers.common["Authorization"] = "";
+    //   }
+    // });
+    
+    // Reactive form state
+    const form = reactive({
+      name: userStore.user?.name || "",
+      surname: userStore.user?.surname || "",
+      email: userStore.user?.email || "",
+      cellphone: userStore.user?.cellphone || "",
+      gender: userStore.user?.gender || "",
+      biography: userStore.user?.biography || "",
+      birthday: userStore.user?.birthday || "",
+      state: userStore.user?.state || "",
+      locality: userStore.user?.locality || "",
+      neighborhood: userStore.user?.neighborhood || "",
+      neighborhood_id: userStore.user?.neighborhood_id || "",
+      neighborhood_changed: false,
     });
-      return {
-        userStore,
-      };
-    },
+    console.log(form)
 
+    return {
+      userStore, // Expor o store para uso no template
+      form, // Expor o formulário reativo
+    };
+},
+
+async mounted() {
+    await this.fetchStates();
+  },
+
+
+  methods: {
     onStateChange(event){
       this.fetchCities();
       this.validateField('state');
@@ -404,50 +418,22 @@ export default {
         }
       }
       this.editMode = !this.editMode;
+      if (this.editMode==false){
+        this.handleSubmit()
+      }
     },
 
     onFocus() {
-      // Quando o campo ganha foco, removemos o placeholder
-      if (this.editMode) {
-        this.username = ''; // Se o editMode estiver ativo, limpamos o valor.
-      }
     },
-
     onBlur() {
-      // Quando o campo perde o foco, você pode restaurar o valor padrão ou realizar outras ações
     },
 
-    async handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
 
-      // Validação opcional para tipo e tamanho do arquivo
-      if (!file.type.startsWith("image/")) {
-        alert("Por favor, selecione um arquivo de imagem válido.");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert("A imagem deve ter no máximo 5MB.");
-        return;
-      }
-
-      // Pré-visualização da imagem
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.profileImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
-
-      // Caso queira enviar a imagem ao servidor:
-      // const formData = new FormData();
-      // formData.append("profileImage", file);
-      // await axios.post(ENDPOINTS.UPLOAD_PROFILE_IMAGE, formData);
-    },
 
     validateField(field) {
-      const calculateAge = (birthday) => {
+      const calculateAge = (birthDate) => {
         const today = new Date();
-        const birth = new Date(birthday);
+        const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDifference = today.getMonth() - birth.getMonth();
         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
@@ -457,13 +443,13 @@ export default {
       };
 
       switch (field) {
-        case "birthday":
-          if (!this.form.birthday) {
-            this.errors.birthday = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthday) < 16) {
-            this.errors.birthday = "You must be at least 16 years old.";
+        case "birthDate":
+          if (!this.form.birthDate) {
+            this.errors.birthDate = "Birth Date is required.";
+          } else if (calculateAge(this.form.birthDate) < 16) {
+            this.errors.birthDate = "You must be at least 16 years old.";
           } else {
-            this.errors.birthday = "";
+            this.errors.birthDate = "";
           }
           break;
         case "email":
@@ -475,58 +461,63 @@ export default {
             this.errors.email = "";
           }
           break;
-        // case "username":
-        //   this.errors.username = this.form.username ? "" : "Username is required.";
-        //   break;
-        // case "password":
-        //   this.errors.password = this.form.password
-        //     ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-        //     (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-        //     (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-        //     (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-        //     (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
-        //     : "A senha é obrigatória.";
-        //   break;
+        case "username":
+          // this.errors.username = this.form.username ? "" : "Username is required.";
+          break;
+        case "password":
+          this.errors.password = this.form.password
+            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
+              (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+              (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+              (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+              (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+            : "A senha é obrigatória.";
+          break;
       }
     },
 
     async handleSubmit() {
-      // Validate all fields
-      if (this.form.neighborhood_id != useUserStore.user.neighborhood_id){
-        this.form.neighborhood_changed = true
-      }
+      const userStore = useUserStore(); // Acessa o userStore diretamente
+      this.form.neighborhood_changed =
+        this.form.neighborhood_id !== userStore.user?.neighborhood_id;
+
       Object.keys(this.form).forEach((field) => this.validateField(field));
 
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
-      try {
-        const response = await fetch(ENDPOINTS.EDIT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(this.form),
-        });
 
-        const data = await response.json();
+      if (userStore.user.isAuthenticated){
+          try {
+            const response = await apiClient
+            .post(ENDPOINTS.EDIT, this.form, {
+            headers: { "Content-Type": "application/json" },
+          });
 
-        if (!response.ok) {
-          if (data.errors) {
-            for (const [field, messages] of Object.entries(data.errors)) {
-              this.errors[field] = messages.join(" ");
+          const data = response.data;
+          userStore.setUserInfo(this.form); // Atualiza as informações do usuário no store
+
+
+          if (!response.ok) {
+            if (data.errors) {
+              for (const [field, messages] of Object.entries(data.errors)) {
+                this.errors[field] = messages.join(" ");
+              }
             }
+            throw new Error(data.message || "Failed to save.");
           }
-          throw new Error(data.message || "Failed to save.");
+
+        } catch (error) {
+          alert(error.message || "Something went wrong.");
         }
-        else{
-          useUserStore.setUserInfo(this.form);
-        }
-      } catch (error) {
-        alert(error.message || "Something went wrong.");
       }
+        else{
+          alert("User not authenticated")
+        }
     },
   },
 };
-
 </script>
+
 
 <style scoped>
 #dataLocation {
@@ -534,9 +525,29 @@ export default {
   padding-top: 200px;
 }
 
+.custom-bg {
+  background-color: #ffffff; /* Cor azul personalizada */
+}
+
 .bg-white {
   padding-top: 20px;
   padding-bottom: 2rem;
   /* Adiciona um espaço interno inferior */
+}
+
+input {
+  background-color: #f9fafb; /* Cor padrão */
+  color: #1f2937; /* Cor do texto */
+  border: 1px solid transparent; /* Sem borda em modo readonly */
+}
+
+input:focus {
+  border-color: #60a5fa; /* Ajuste a borda ao focar */
+  outline: none;
+}
+
+input:not([readonly]) {
+  background-color: #ffffff; /* Mantenha a mesma cor de fundo */
+  border: 1px solid #d1d5db; /* Adicione borda suave */
 }
 </style>
