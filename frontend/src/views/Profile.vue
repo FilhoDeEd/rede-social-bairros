@@ -150,7 +150,7 @@
                     </div>
                   </div>
 
-                  <!-- Senha -->
+                  <!-- Senha
                   <div class="itemForProfile">
                     <label for="password-input"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Senha:</label>
@@ -165,21 +165,21 @@
                       <input type="password" id="password-input" 
                       v-model="form.password" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.name :''"
+                      :value="userStore.user.access ? userStore.user.password :''"
                         @change="validateField('password')" placeholder="Senha"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
                       <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
                     </div>
                   </div>
-                </div>
+                </div> -->
 
                 <!-- Linha inferior -->
                 <div class="rowForProfile mt-10 py-10 text-center">
 
                   <!-- Data de Nascimento -->
                   <div class="itemForProfile">
-                    <label for="birthdate-input"
+                    <label for="birthday-input"
                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Data
                       de Nascimento:</label>
                     <div class="relative">
@@ -190,14 +190,14 @@
                             d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
                         </svg>
                       </div>
-                      <input type="date" id="birthdate-input" 
-                      v-model="form.birthDate" 
+                      <input type="date" id="birthday-input" 
+                      v-model="form.birthday" 
                       :readonly="!editMode"
-                      :value="userStore.user.access ? userStore.user.birthDate :''"
-                        @change="validateField('birthDate')"
+                      :value="userStore.user.access ? userStore.user.birthday :''"
+                        @change="validateField('birthday')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
-                      <p v-if="errors.birthDate" class="text-red-500 text-xs">{{ errors.birthDate }}</p>
+                      <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                     </div>
                   </div>
 
@@ -212,13 +212,13 @@
                       :value="userStore.user.access ? userStore.user.gender :''"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="" disabled selected>Selecione um gênero</option>
-                        <option value="male">Masculino</option>
-                        <option value="female">Feminino</option>
-                        <option value="nonbinary">Não-Binário</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
                       </select>
                     </div>
                   </div>
-
+                </div>
                 </div>
               </div>
             </div>
@@ -271,7 +271,7 @@
                    :disabled="!editMode"
                     class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
                     <option value="">Selecione um Bairro</option>
-                    <option v-for="neighborhood in neighborhoods" :key="neighborhood.name" :value="neighborhood.name">
+                    <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
                       {{ neighborhood.name }}
                     </option>
                   </select>
@@ -305,21 +305,18 @@ export default {
   data() {
     return {
       form: {
-        id: "",
         name: "",
         surname: "",
         email: "",
-        username: "",
-        password: "",
         cellphone: "",
         gender: "",
         biografy: "",
-        birthDate: "",
-        status: "",
+        birthday: "",
         state: "",
         locality: "",
         neighborhood: "",
         neighborhood_id: "",
+        neighborhood_changed:"",
       },
       profileImage: null, // Variável para armazenar a nova imagem ou a atual
       errors: {},
@@ -352,12 +349,46 @@ export default {
       };
     },
 
-    async fetchState() {
+    onStateChange(event){
+      this.fetchCities();
+      this.validateField('state');
+    },
+    async fetchStates() {
       try {
-        const response = await axios.get(ENDPOINTS.USERS);
-        this.state = response.data;
+        const response = await axios.get(ENDPOINTS.STATES);
+        this.states = response.data;
       } catch (error) {
-        alert("Erro ao carregar o estado.");
+        alert("Erro ao carregar os estados.");
+      }
+    },
+    async fetchCities() {
+      if (!this.form.state) {
+        this.cities = [];
+        this.neighborhoods = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
+        this.cities = response.data;
+        this.neighborhoods = []; // Resetar bairros ao alterar a cidade
+      } catch (error) {
+        alert("Erro ao carregar as cidades.");
+      }
+    },
+    onCityChange(event){
+      this.fetchNeighborhoods();
+      this.validateField('locality');
+    },
+    async fetchNeighborhoods() {
+      if (!this.form.locality) {
+        this.neighborhoods = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
+        this.neighborhoods = response.data;
+      } catch (error) {
+        alert("Erro ao carregar os bairros.");
       }
     },
 
@@ -412,9 +443,9 @@ export default {
     },
 
     validateField(field) {
-      const calculateAge = (birthDate) => {
+      const calculateAge = (birthday) => {
         const today = new Date();
-        const birth = new Date(birthDate);
+        const birth = new Date(birthday);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDifference = today.getMonth() - birth.getMonth();
         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
@@ -424,13 +455,13 @@ export default {
       };
 
       switch (field) {
-        case "birthDate":
-          if (!this.form.birthDate) {
-            this.errors.birthDate = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthDate) < 16) {
-            this.errors.birthDate = "You must be at least 16 years old.";
+        case "birthday":
+          if (!this.form.birthday) {
+            this.errors.birthday = "Birth Date is required.";
+          } else if (calculateAge(this.form.birthday) < 16) {
+            this.errors.birthday = "You must be at least 16 years old.";
           } else {
-            this.errors.birthDate = "";
+            this.errors.birthday = "";
           }
           break;
         case "email":
@@ -442,29 +473,32 @@ export default {
             this.errors.email = "";
           }
           break;
-        case "username":
-          this.errors.username = this.form.username ? "" : "Username is required.";
-          break;
-        case "password":
-          this.errors.password = this.form.password
-            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
-            : "A senha é obrigatória.";
-          break;
+        // case "username":
+        //   this.errors.username = this.form.username ? "" : "Username is required.";
+        //   break;
+        // case "password":
+        //   this.errors.password = this.form.password
+        //     ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
+        //     (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+        //     (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+        //     (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+        //     (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+        //     : "A senha é obrigatória.";
+        //   break;
       }
     },
 
     async handleSubmit() {
       // Validate all fields
+      if (this.form.neighborhood_id != useUserStore.user.neighborhood_id){
+        this.form.neighborhood_changed = true
+      }
       Object.keys(this.form).forEach((field) => this.validateField(field));
 
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
 
       try {
-        const response = await fetch(ENDPOINTS.PROFILE, {
+        const response = await fetch(ENDPOINTS.EDIT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(this.form),
@@ -479,6 +513,9 @@ export default {
             }
           }
           throw new Error(data.message || "Failed to save.");
+        }
+        else{
+          useUserStore.setUserInfo(this.form);
         }
       } catch (error) {
         alert(error.message || "Something went wrong.");
