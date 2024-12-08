@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.db import transaction
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
@@ -64,6 +64,15 @@ class ForumListView(ListAPIView):
         neighborhood = user_profile.neighborhood
         return Forum.objects.filter(neighborhood=neighborhood)
 
+
+class ForumDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, slug):
+        forum = get_object_or_404(Forum, slug=slug)
+        serializer = ForumSerializer(forum)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # Listar os foruns (o sistema de busca já vem aqui) (retornar dados simples de vários foruns)
     # Há um queryset de foruns

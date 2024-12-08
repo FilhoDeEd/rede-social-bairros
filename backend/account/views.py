@@ -112,7 +112,8 @@ class DetailAccountView(APIView):
         data |= neighborhood_serializer.data
 
         return Response(data, status=status.HTTP_200_OK)
-    
+
+
 class UpdateProfileView(APIView):
     """
     """
@@ -120,24 +121,40 @@ class UpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        
         data = request.data
         account = request.user.account
 
-        account_serializer = UpdateAccountSerializer(account,data=data)
+        neighborhood_changed = data.pop('neighborhood_changed', False)
+        neighborhood_id = data.pop('neighborhood_id')
+
+        data.pop('neighborhood')
+        data.pop('locality')
+        data.pop('state')
+
+        account_serializer = UpdateAccountSerializer(account, data=data)
 
         errors = {}
 
         if not account_serializer.is_valid():
             add_errors(errors=errors, serializer_errors=account_serializer.errors)
-        
+
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-
-            account = account_serializer.save()
-                
+            with transaction.atomic():
+                if neighborhood_changed:
+                    current_user_profile = UserProfile.objects.get(account=account, active=True)
+                    current_user_profile.active = False
+                    current_user_profile.save()
+                    neighborhood = Neighborhood.objects.get(id=neighborhood_id)
+                    try:
+                        new_user_profile = UserProfile.objects.get(account=account, neighborhood=neighborhood)
+                        new_user_profile.active = True
+                        new_user_profile.save()
+                    except UserProfile.DoesNotExist:
+                        new_user_profile = UserProfile.objects.create(account=account, neighborhood=neighborhood)
+                account = account_serializer.save() 
         except Exception as e:
             return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
