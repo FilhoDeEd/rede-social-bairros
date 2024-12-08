@@ -32,7 +32,7 @@
     </div>
   </nav>
 </template>
-<script>
+<script>  
 
 export default {
   data() {

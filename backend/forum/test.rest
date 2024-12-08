@@ -1,5 +1,5 @@
 POST http://localhost:8000/forum/register/
-Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+Authorization: Token a10c285f71f9d70b93e6142525f16fd1189cb752
 Content-Type: application/json
 
 {
@@ -9,8 +9,8 @@ Content-Type: application/json
 
 ######
 
-GET http://localhost:8000/forum/list/?page=2
-Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+GET http://localhost:8000/forum/list/?page=1
+Authorization: Token a10c285f71f9d70b93e6142525f16fd1189cb752
 
 ######
 
