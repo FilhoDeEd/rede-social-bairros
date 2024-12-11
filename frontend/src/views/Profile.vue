@@ -454,25 +454,26 @@ export default {
           headers: { "Content-Type": "application/json" },
         });
 
+        // O Axios já lança um erro automaticamente para status codes de erro
         const data = response.data;
         
-        // Atualiza as informações do usuário mantendo o username original apenas se ele existir
+        // Atualiza as informações do usuário
         userStore.setUserInfo({
           ...this.form,
-          ...(originalUsername && { username: originalUsername }) // Adiciona username apenas se existir
+          ...(originalUsername && { username: originalUsername })
         });
 
-        if (!response.ok) {
-          if (data.errors) {
-            for (const [field, messages] of Object.entries(data.errors)) {
-              this.errors[field] = messages.join(" ");
-            }
-          }
-          throw new Error(data.message || "Failed to save.");
-        }
+        // Opcional: adicione uma mensagem de sucesso
+        alert("Perfil atualizado com sucesso!");
 
       } catch (error) {
-        alert(error.message || "Something went wrong.");
+        // Tratamento de erro mais específico 
+        if (error.response?.data?.errors) {
+          for (const [field, messages] of Object.entries(error.response.data.errors)) {
+            this.errors[field] = Array.isArray(messages) ? messages.join(" ") : messages;
+          }
+        }
+        alert(error.response?.data?.message || "Erro ao salvar as alterações.");
       }
     },
   },
