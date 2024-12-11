@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <navbar />
+  <main-layout>
     <main class="profile-page">
       <section class="relative block h-600-px">
         <div class="absolute top-0 w-full h-full bg-center bg-cover" style="
@@ -27,8 +26,7 @@
                   <div class="w-full lg:w-3/12 lg:order-2" style="padding-left: 100px;">
                     <div class="relative group">
                       <!-- Exibe a imagem de perfil -->
-                      <img alt="Profile Picture" :src="profileImage || team2"
-                        :value="userStore.user.username"
+                      <img alt="Profile Picture" :src="profileImage || team2" :value="userStore.user.username"
                         class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
 
                       <!-- Botão de upload visível no modo de edição -->
@@ -62,24 +60,18 @@
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                     <i class="fas mr-2 text-lg text-blueGray-400"></i>
                     <!-- Campo editável para o Nome -->
-                    <input type="text" id="name" 
-                    v-model="form.name" 
-                    :readonly="!editMode" 
-                    @focus="onFocus"
-                    @blur="onBlur"
-                    class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
-                    
-                    <input type="text" id="surname" 
-                    v-model="form.surname" 
-                    :readonly="!editMode" 
-                    @focus="onFocus"
-                    @blur="onBlur"
-                    class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
+                    <input type="text" id="name" v-model="form.name" :readonly="!editMode" @focus="onFocus"
+                      @blur="onBlur"
+                      class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
+
+                    <input type="text" id="surname" v-model="form.surname" :readonly="!editMode" @focus="onFocus"
+                      @blur="onBlur"
+                      class="border-none outline-none text-blueGray-700 font-bold uppercase focus:ring-0 focus:outline-none text-center" />
                   </div>
                   <!-- Input username -->
                   <div class="text-sm leading-normal mt-2 text-blueGray-400 font-semibold uppercase">
                     <!-- Exibição somente leitura do Username -->
-                    <span>{{ userStore.user.username }}</span>
+                    <span>@{{ userStore.user?.username }}</span>
                   </div>
                 </div>
 
@@ -88,11 +80,9 @@
                 <div class="relative mt-6">
                   <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
                   <div class="overflow-hidden">
-                    <textarea id="bio-textarea" 
-                    v-model="form.biography" 
-                    :readonly="!editMode"
-                    class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
-                    rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
+                    <textarea id="bio-textarea" v-model="form.biography" :readonly="!editMode"
+                      class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                      rows="4" placeholder="Escreva sua biografia aqui..."></textarea>
                   </div>
                   <p v-if="errors.biography" class="text-red-500 text-xs mt-2">{{ errors.biography }}</p>
                 </div>
@@ -113,9 +103,7 @@
                             d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
                         </svg>
                       </div>
-                      <input type="text" id="cellphone" 
-                      v-model="form.cellphone" 
-                      :readonly="!editMode"
+                      <input type="text" id="cellphone" v-model="form.cellphone" :readonly="!editMode"
                         @change="validateField('phone')" aria-describedby="helper-text-explanation"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
@@ -125,8 +113,7 @@
 
                   <!-- Email -->
                   <div class="itemForProfile">
-                    <label for="UserEmail"
-                      class="block mb-2 text-sm font-medium text-gray-900 ">Email:</label>
+                    <label for="UserEmail" class="block mb-2 text-sm font-medium text-gray-900 ">Email:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -135,9 +122,7 @@
                           <path d="M18 8.9l-7 4.2-7-4.2V14.5a2.5 2.5 0 002.5 2.5h9a2.5 2.5 0 002.5-2.5V8.9z" />
                         </svg>
                       </div>
-                      <input type="email" id="UserEmail" 
-                      v-model="form.email" 
-                      :readonly="!editMode"
+                      <input type="email" id="UserEmail" v-model="form.email" :readonly="!editMode"
                         @change="validateField('email')"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         required />
@@ -169,57 +154,48 @@
                   </div>
                 </div> -->
 
-                <!-- Linha inferior -->
-                <div class="rowForProfile mt-10 py-10 text-center">
+                  <!-- Linha inferior -->
+                  <div class="rowForProfile mt-10 py-10 text-center">
 
-                  <!-- Data de Nascimento -->
-                  <div class="itemForProfile">
-                    <label for="birthday-input"
-                      class="block mb-2 text-sm font-medium text-gray-900 ">Data
-                      de Nascimento:</label>
-                    <div class="relative">
-                      <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
-                        </svg>
+                    <!-- Data de Nascimento -->
+                    <div class="itemForProfile">
+                      <label for="birthday-input" class="block mb-2 text-sm font-medium text-gray-900 ">Data
+                        de Nascimento:</label>
+                      <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
+                          </svg>
+                        </div>
+                        <input type="date" id="birthday-input" v-model="form.birthday" :readonly="!editMode"
+                          @change="validateField('birthday')"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          required />
+                        <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                       </div>
-                      <input type="date" id="birthday-input" 
-                      v-model="form.birthday" 
-                      :readonly="!editMode"
-                        @change="validateField('birthday')"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        required />
-                      <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                     </div>
-                  </div>
 
-                  <!-- Gênero -->
-                  <div class="itemForProfile">
-  <label for="gender-select" class="block mb-2 text-sm font-medium text-gray-900">
-    Gênero:
-  </label>
-  <div class="relative">
-    <select
-      id="gender-select"
-      name="gender"
-      v-model="form.gender"
-      :disabled="!editMode"
-      class="custom-bg bg-blue-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    <!-- Gênero -->
+                    <div class="itemForProfile">
+                      <label for="gender-select" class="block mb-2 text-sm font-medium text-gray-900">
+                        Gênero:
+                      </label>
+                      <div class="relative">
+                        <select id="gender-select" name="gender" v-model="form.gender" :disabled="!editMode" class="custom-bg bg-blue-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
              focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 
-             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  
-             dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    >
-      <option value="" disabled selected>Selecione um gênero</option>
-      <option value="M">Masculino</option>
-      <option value="F">Feminino</option>
-      <option value="O">Outro</option>
-    </select>
-  </div>
-</div>
+             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  F
+             dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                          <option value="" disabled selected>Selecione um gênero</option>
+                          <option value="M">Masculino</option>
+                          <option value="F">Feminino</option>
+                          <option value="O">Outro</option>
+                        </select>
+                      </div>
+                    </div>
 
-                </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,11 +210,8 @@
               <div class="px-6 justify-end">
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
-                  <select 
-                  v-model="form.state"
-                  :value="userStore.user.state"
-                  @change="[fetchCities, validateField('state')]" 
-                  :disabled="!editMode"
+                  <select v-model="form.state" :value="userStore.user.state"
+                    @change="[fetchCities, validateField('state')]" :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                     <option v-for="state in states" :key="state.code" :value="state.code">
                       {{ state.name }}
@@ -248,9 +221,7 @@
 
                 <div class="relative w-full mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                  <select 
-                  v-model="form.locality" 
-                  @change="[fetchNeighborhoods, validateField('locality')]"
+                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]"
                     :disabled="!editMode"
                     class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
                     <option v-for="city in cities" :key="city.name" :value="city.name">
@@ -262,10 +233,7 @@
 
                 <div class="relative w-full mt-4">
                   <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
-                  <select 
-                  v-model="form.neighborhood"
-                   @change="validateField('neighborhood')" 
-                   :disabled="!editMode"
+                  <select v-model="form.neighborhood" @change="validateField('neighborhood')" :disabled="!editMode"
                     class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
                     <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
                       {{ neighborhood.name }}
@@ -279,15 +247,13 @@
       </section>
 
     </main>
-    <footer-component />
-  </div>
+  </main-layout>
 </template>
 
 <script>
 /* eslint-disable */
 import axios from "axios";
-import Navbar from "@/components/Navbars/AuthNavbar.vue";
-import FooterComponent from "@/components/Footers/Footer.vue";
+import MainLayout from "@/layouts/mainLayout.vue";
 import { onBeforeMount, reactive } from "vue";
 import { useUserStore, apiClient } from "@/store/user.js"; // Ajuste o caminho conforme necessário
 import { ENDPOINTS } from "../../../api.js";
@@ -295,8 +261,7 @@ import team2 from "@/assets/img/team-2-800x800.jpg";
 
 export default {
   components: {
-    Navbar,
-    FooterComponent,
+    MainLayout,
   },
   data() {
     return {
@@ -325,7 +290,7 @@ export default {
   },
   setup() {
     const userStore = useUserStore();
-    
+
     // // Inicializar o store e configurar o token
     // onBeforeMount(() => {
     //   const token = userStore.user?.access;
@@ -335,7 +300,7 @@ export default {
     //     axios.defaults.headers.common["Authorization"] = "";
     //   }
     // });
-    
+
     // Reactive form state
     const form = reactive({
       name: userStore.user?.name || "",
@@ -357,15 +322,15 @@ export default {
       userStore, // Expor o store para uso no template
       form, // Expor o formulário reativo
     };
-},
+  },
 
-async mounted() {
+  async mounted() {
     await this.fetchStates();
   },
 
 
   methods: {
-    onStateChange(event){
+    onStateChange(event) {
       this.fetchCities();
       this.validateField('state');
     },
@@ -391,7 +356,7 @@ async mounted() {
         alert("Erro ao carregar as cidades.");
       }
     },
-    onCityChange(event){
+    onCityChange(event) {
       this.fetchNeighborhoods();
       this.validateField('locality');
     },
@@ -418,7 +383,7 @@ async mounted() {
         }
       }
       this.editMode = !this.editMode;
-      if (this.editMode==false){
+      if (this.editMode == false) {
         this.handleSubmit()
       }
     },
@@ -467,52 +432,48 @@ async mounted() {
         case "password":
           this.errors.password = this.form.password
             ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-              (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-              (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-              (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-              (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
+            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
+            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
+            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
+            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
             : "A senha é obrigatória.";
           break;
       }
     },
 
     async handleSubmit() {
-      const userStore = useUserStore(); // Acessa o userStore diretamente
-      this.form.neighborhood_changed =
-        this.form.neighborhood_id !== userStore.user?.neighborhood_id;
+      const userStore = useUserStore();
+      
+      // Preserva o username original apenas se ele existir
+      const originalUsername = userStore.user?.username;
+      
+      this.form.neighborhood_changed = this.form.neighborhood_id !== userStore.user?.neighborhood_id;
 
-      Object.keys(this.form).forEach((field) => this.validateField(field));
+      try {
+        const response = await apiClient.post(ENDPOINTS.EDIT, this.form, {
+          headers: { "Content-Type": "application/json" },
+        });
 
-      if (Object.keys(this.errors).some((key) => this.errors[key])) return;
+        const data = response.data;
+        
+        // Atualiza as informações do usuário mantendo o username original apenas se ele existir
+        userStore.setUserInfo({
+          ...this.form,
+          ...(originalUsername && { username: originalUsername }) // Adiciona username apenas se existir
+        });
 
-
-      if (userStore.user.isAuthenticated){
-          try {
-            const response = await apiClient
-            .post(ENDPOINTS.EDIT, this.form, {
-            headers: { "Content-Type": "application/json" },
-          });
-
-          const data = response.data;
-          userStore.setUserInfo(this.form); // Atualiza as informações do usuário no store
-
-
-          if (!response.ok) {
-            if (data.errors) {
-              for (const [field, messages] of Object.entries(data.errors)) {
-                this.errors[field] = messages.join(" ");
-              }
+        if (!response.ok) {
+          if (data.errors) {
+            for (const [field, messages] of Object.entries(data.errors)) {
+              this.errors[field] = messages.join(" ");
             }
-            throw new Error(data.message || "Failed to save.");
           }
+          throw new Error(data.message || "Failed to save.");
+        }
 
-        } catch (error) {
-          alert(error.message || "Something went wrong.");
-        }
+      } catch (error) {
+        alert(error.message || "Something went wrong.");
       }
-        else{
-          alert("User not authenticated")
-        }
     },
   },
 };
@@ -526,7 +487,8 @@ async mounted() {
 }
 
 .custom-bg {
-  background-color: #ffffff; /* Cor azul personalizada */
+  background-color: #ffffff;
+  /* Cor azul personalizada */
 }
 
 .bg-white {
@@ -536,18 +498,24 @@ async mounted() {
 }
 
 input {
-  background-color: #f9fafb; /* Cor padrão */
-  color: #1f2937; /* Cor do texto */
-  border: 1px solid transparent; /* Sem borda em modo readonly */
+  background-color: #f9fafb;
+  /* Cor padrão */
+  color: #1f2937;
+  /* Cor do texto */
+  border: 1px solid transparent;
+  /* Sem borda em modo readonly */
 }
 
 input:focus {
-  border-color: #60a5fa; /* Ajuste a borda ao focar */
+  border-color: #60a5fa;
+  /* Ajuste a borda ao focar */
   outline: none;
 }
 
 input:not([readonly]) {
-  background-color: #ffffff; /* Mantenha a mesma cor de fundo */
-  border: 1px solid #d1d5db; /* Adicione borda suave */
+  background-color: #ffffff;
+  /* Mantenha a mesma cor de fundo */
+  border: 1px solid #d1d5db;
+  /* Adicione borda suave */
 }
 </style>
