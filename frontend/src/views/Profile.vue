@@ -453,19 +453,18 @@ export default {
         const response = await apiClient.post(ENDPOINTS.EDIT, this.form, {
           headers: { "Content-Type": "application/json" },
         });
-
-        // O Axios já lança um erro automaticamente para status codes de erro
-        const data = response.data;
         
-        // Atualiza as informações do usuário
+        // Usar os dados retornados da API
+        const updatedData = response.data;
+        
+        // Atualizar o userStore com os dados retornados
         userStore.setUserInfo({
           ...this.form,
+          ...updatedData,
           ...(originalUsername && { username: originalUsername })
         });
 
-        // Opcional: adicione uma mensagem de sucesso
         alert("Perfil atualizado com sucesso!");
-
       } catch (error) {
         // Tratamento de erro mais específico 
         if (error.response?.data?.errors) {

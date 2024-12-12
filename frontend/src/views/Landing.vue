@@ -9,7 +9,7 @@
                 v-for="forum in forumStore.forums" 
                 :key="forum.forum_id"  
                 class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
-                style="background-color: rgba(124, 122, 187, 1); width: 1500px; height: 415px;"
+                style="background-color: rgba(124, 122, 187, 1); width: 1200px; height: 350px;"
               >
                 <div class="flex h-full">
                   <!-- Imagem à esquerda -->
