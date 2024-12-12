@@ -105,9 +105,9 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import axios from 'axios'; // Importar o axios
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
+import { apiClient } from '../../store/user.js';
 
 export default {
   data() {
@@ -154,27 +154,18 @@ export default {
 
       
       try {
-        // Requisição HTTP usando axios
-        await axios
-          .post(ENDPOINTS.LOGIN, this.form)
-          .then(response =>{
-            this.userStore.setToken(response.data)
-            axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
-            this.router.push('/home')
-          })
-          .catch(error =>{
-            alert(error)
-          });
+        // Requisição de login usando o apiClient
+        const loginResponse = await apiClient.post(ENDPOINTS.LOGIN, this.form);
+        
+        // Configurar o token no store e no apiClient
+        this.userStore.setToken(loginResponse.data);
 
-        await axios
-          .get(ENDPOINTS.DETAIL)
-          .then(response =>{
-            this.userStore.setUserInfo(response.data)
-            this.router.push('/home')
-          })
-          .catch(error =>{
-            alert(error)
-          })
+        // Obter informações detalhadas do usuário
+        const userDetailsResponse = await apiClient.get(ENDPOINTS.DETAIL);
+        this.userStore.setUserInfo(userDetailsResponse.data);
+
+        // Redirecionar o usuário para a página inicial
+        this.router.push('/home');
       } catch (error) {
 
         // Manipulação de erro

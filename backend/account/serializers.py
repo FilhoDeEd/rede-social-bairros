@@ -24,15 +24,15 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['account_id', 'name', 'surname', 'gender', 'birthday', 'email', 'cellphone', 'agree_policy']
+        fields = ['account_id', 'name', 'surname', 'gender', 'birthday', 'email', 'cellphone', 'agree_policy', 'biography']
 
     def validate_agree_policy(self, value):
         if not value:
             raise serializers.ValidationError('Agree to the terms and conditions.')
         return value
 
-class UpdateAccountSerializer(serializers.ModelSerializer):
 
+class UpdateAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = [ 'name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']
+        fields = ['email', 'name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']
