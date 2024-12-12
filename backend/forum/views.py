@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from forum.serializers import ForumSerializer, ForumListSerializer
 from account.views import add_errors
-from forum.models import Forum
+from forum.models import Forum , Subscriber 
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -92,3 +92,43 @@ class ForumDetailView(APIView):
 # Excluir forum (acho que n precisa ser por agr tbm)
 
 
+class SubscribeView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, forum_id):
+        
+
+        if not forum_id:
+            return Response({'detail': 'Forum ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Obtém o fórum
+            forum = Forum.objects.get(id=forum_id)
+        except Forum.DoesNotExist:
+            return Response({'detail': 'Forum not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            # Obtém o perfil do usuário autenticado
+            account = request.user.account
+            user_profile = UserProfile.objects.get(account=account, active=True)
+        except UserProfile.DoesNotExist:
+            return Response({'detail': 'Active user profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Verifica se o usuário já está inscrito no fórum
+        if Subscriber.objects.filter(user_profile=user_profile, forum=forum).exists():
+            return Response({'detail': 'User already subscribed to this forum.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with transaction.atomic():
+                # Cria a inscrição
+                Subscriber.objects.create(user_profile=user_profile, forum=forum)
+
+                # Atualiza o contador de inscritos do fórum
+                forum.subscribers_count += 1
+                forum.save()
+
+            return Response({'detail': 'Successfully subscribed to the forum.'}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({'detail': f'An error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

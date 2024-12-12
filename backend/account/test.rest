@@ -18,7 +18,7 @@ POST http://localhost:8000/account/login/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "emailOrUsername": "johndote@example.com",
+    "emailOrUsername": "johndoet@example.com",
     "password": "password123"
 }
 

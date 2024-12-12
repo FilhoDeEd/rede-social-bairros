@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from user_profile.models import Neighborhood, UserProfile
 
 
+
 class Forum(models.Model):
     owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT, editable=False)
@@ -72,3 +73,18 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Subscriber(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.PROTECT, editable=False)
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE, editable=False)
+    subscription_date = models.DateField(editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.subscription_date = timezone.now()
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user_profile} | {self.forum} | {self.subscription_date}' 
