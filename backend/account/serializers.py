@@ -24,7 +24,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['account_id', 'name', 'surname', 'gender', 'birthday', 'email', 'cellphone', 'agree_policy']
+        fields = ['account_id', 'name', 'surname', 'gender', 'birthday', 'email', 'cellphone', 'agree_policy', 'biography']
 
     def validate_agree_policy(self, value):
         if not value:
