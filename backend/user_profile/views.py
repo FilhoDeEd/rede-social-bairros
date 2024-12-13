@@ -41,12 +41,11 @@ class NeighborhoodListAPIView(ListAPIView):
             raise NotFound(f"State {state_code} not found.")
 
         neighborhoods = Neighborhood.objects.filter(state=state_code, locality=city_name).values_list('id', 'name').order_by('name')
-        print(neighborhoods)
+
         if not neighborhoods.exists():
             raise NotFound(f"No neighborhoods found for city '{city_name}' in state '{state_code}'.")
         
         neighborhoods = [{'id': neighborhood[0], 'name': neighborhood[1]} for neighborhood in neighborhoods]
-
 
         return Response(neighborhoods, status=status.HTTP_200_OK)
 
@@ -71,4 +70,3 @@ def get_userProfiles(request):
                 {"error": "UserProfile not found."},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
