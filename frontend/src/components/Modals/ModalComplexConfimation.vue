@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isModalChangePasswordOpen" class="modal-overlay">
+    <div v-if="isModalDeleteAccountOpen" class="modal-overlay">
       <div class="modal-content">
         <button class="close-btn" @click="closeModal">X</button>
   
@@ -59,7 +59,7 @@
       };
     },
     props: {
-      isModalChangePasswordOpen: Boolean, // Propriedade para controlar se o modal está aberto
+      isModalDeleteAccountOpen: Boolean, // Propriedade para controlar se o modal está aberto
     },
     methods: {
         

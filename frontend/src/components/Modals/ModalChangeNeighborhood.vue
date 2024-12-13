@@ -51,7 +51,7 @@
           </button>
         </div>
       </form>
-      <ModalComplexConfimation v-if="isConfirmationModalOpen" :isModalChangePasswordOpen="isConfirmationModalOpen"
+      <ModalComplexConfimation v-if="isConfirmationModalOpen" :isModalDeleteAccountOpen="isConfirmationModalOpen"
         @close="isConfirmationModalOpen = false" @confirm="handleConfirmation" />
     </div>
   </div>
