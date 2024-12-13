@@ -211,6 +211,12 @@
 
                       <button type="button"
                         class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="logout()">
+                        Deslogar
+                      </button>
+
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
                         @click="openModalConfirm()">
                         Excluir conta
                       </button>
@@ -224,6 +230,7 @@
 
       </section>
 
+      <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword"></ModalChangePassword>
       <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange"></ModalChangeNeighborhood>
     </main>
   </main-layout>
@@ -232,18 +239,20 @@
 <script>
 /* eslint-disable */
 import MainLayout from "@/layouts/mainLayout.vue";
+import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
+import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore, apiClient } from "@/store/user.js"; // Ajuste o caminho conforme necessário
+import { useUserStore, apiClient } from "../store/user.js"; // Ajuste o caminho conforme necessário
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
-import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
 
 export default {
 
   components: {
     MainLayout,
     ModalChangeNeighborhood,
+    ModalChangePassword,
   },
   data() {
 
@@ -253,6 +262,8 @@ export default {
       editMode: false, // Determina se o formulário está em modo de edição
       team2, // Imagem do time
       isModalNeighChangeOpen: false,
+      isModalChangePasswordOpen: false,
+
       router,
     };
   },
@@ -293,6 +304,22 @@ export default {
     // Fecha o modal
     closeModalNeighChange() {
       this.isModalNeighChangeOpen = false;
+    },
+
+    // Abre o modal
+    openModalPasswordChange() {
+      this.isModalChangePasswordOpen = true;
+    },
+
+    // Fecha o modal
+    closeModalChangePassword() {
+      this.isModalChangePasswordOpen = false;
+    },
+
+    //Logout
+    logout(){
+      this.userStore.removeToken()
+      router.push('/login')
     },
 
     // Alterna entre modo de edição e visualização
@@ -398,7 +425,7 @@ export default {
 
     // Envia os dados do formulário para o backend
     async handleSubmit() {
-      const userStore = useUserStore();
+      const userStore = this.userStore;
 
       // Preserva o username original apenas se ele existir
       const originalUsername = userStore.user?.username;

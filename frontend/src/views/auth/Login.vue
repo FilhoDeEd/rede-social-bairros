@@ -104,10 +104,12 @@
 
 
 <script>
+/* eslint-disable */
 import { useRouter } from 'vue-router';
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
 import { apiClient } from '../../store/user.js';
+import axios from 'axios';
 
 export default {
   data() {
@@ -155,13 +157,13 @@ export default {
       
       try {
         // Requisição de login usando o apiClient
-        const loginResponse = await apiClient.post(ENDPOINTS.LOGIN, this.form);
+        const loginResponse = await axios.post(ENDPOINTS.LOGIN, this.form);
         
         // Configurar o token no store e no apiClient
         this.userStore.setToken(loginResponse.data);
 
         // Obter informações detalhadas do usuário
-        const userDetailsResponse = await apiClient.get(ENDPOINTS.DETAIL);
+        const userDetailsResponse = await axios.get(ENDPOINTS.DETAIL);
         this.userStore.setUserInfo(userDetailsResponse.data);
 
         // Redirecionar o usuário para a página inicial

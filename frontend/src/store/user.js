@@ -118,6 +118,7 @@ export const useUserStore = defineStore({
         localStorage.setItem('user.neighborhood_id','')
 
         delete apiClient.defaults.headers.common["Authorization"];
+        console.log("Logged Out")
     },
 
     setUserInfo(user){
