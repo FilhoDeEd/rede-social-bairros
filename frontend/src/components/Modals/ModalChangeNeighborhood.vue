@@ -1,0 +1,230 @@
+<template>
+    <div v-if="isModalNeighChangeOpen" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-btn" @click="closeModal">X</button>
+  
+        <!-- Conteúdo do modal -->
+        <form @submit.prevent="handleNeighborhoodChange">
+          <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Estado</label>
+            <select
+              v-model="form.state"
+              @change="onStateChange"
+              class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full"
+            >
+              <option value="">Selecione um Estado</option>
+              <option v-for="state in states" :key="state.code" :value="state.code">
+                {{ state.name }}
+              </option>
+            </select>
+            <span v-if="errors.state" class="text-red-500 text-xs">{{ errors.state }}</span>
+          </div>
+  
+          <!-- Cidade -->
+          <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Cidade</label>
+            <select
+              v-model="form.locality"
+              @change="onCityChange"
+              class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full"
+            >
+              <option value="">Selecione uma Cidade</option>
+              <option v-for="city in cities" :key="city.name" :value="city.name">
+                {{ city.name }}
+              </option>
+            </select>
+            <span v-if="errors.locality" class="text-red-500 text-xs">{{ errors.locality }}</span>
+          </div>
+  
+          <!-- Bairro -->
+          <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">Bairro</label>
+            <select
+              v-model="form.neighborhood"
+              @change="validateField('neighborhood')"
+              class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full"
+            >
+              <option value="">Selecione um Bairro</option>
+              <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
+                {{ neighborhood.name }}
+              </option>
+            </select>
+            <span v-if="errors.neighborhood" class="text-red-500 text-xs">{{ errors.neighborhood }}</span>
+          </div>
+  
+          <!-- Botão Confirmar -->
+          <div class="text-center mt-6">
+            <button
+              type="submit"
+              class="bg-indigo-500 text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+            >
+              Confirmar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </template>
+  
+  
+
+  <script>
+  /* eslint-disable */
+
+  import axios from 'axios';
+  import { router } from "../../router/index.js";
+  import { ENDPOINTS } from '../../../../api.js';
+  
+  export default {
+    data() {
+      return {
+        states: [], // Lista de estados
+        cities: [], // Lista de cidades
+        neighborhoods: [], // Lista de bairros
+        form: {
+          state: null, // Estado selecionado
+          locality: null, // Cidade selecionada
+          neighborhood: null, // Bairro selecionado
+        },
+        errors: {}, // Erros de validação
+        router,
+      };
+    },
+    props: {
+        isModalNeighChangeOpen: Boolean, // Propriedade para controlar se o modal está aberto
+    },
+  
+    methods: {
+
+    closeModal() {
+      this.$emit('close'); // Emite evento para o componente pai fechar o modal
+    },
+
+
+      // Buscar lista de estados
+      async fetchStates() {
+        try {
+          const response = await axios.get(ENDPOINTS.STATES);
+          this.states = response.data;
+        } catch {
+          alert('Erro ao carregar os estados.');
+        }
+      },
+  
+      // Buscar lista de cidades
+      async fetchCities() {
+        if (!this.form.state) {
+          this.cities = [];
+          this.neighborhoods = [];
+          return;
+        }
+        try {
+          const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
+          this.cities = response.data;
+          this.neighborhoods = [];
+        } catch {
+          alert('Erro ao carregar as cidades.');
+        }
+      },
+  
+      // Buscar lista de bairros
+      async fetchNeighborhoods() {
+        if (!this.form.locality) {
+          this.neighborhoods = [];
+          return;
+        }
+        try {
+          const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
+          this.neighborhoods = response.data;
+        } catch {
+          alert('Erro ao carregar os bairros.');
+        }
+      },
+  
+      // Quando o estado muda
+      onStateChange() {
+        this.fetchCities();
+        this.validateField('state');
+      },
+  
+      // Quando a cidade muda
+      onCityChange() {
+        this.fetchNeighborhoods();
+        this.validateField('locality');
+      },
+  
+      // Validação de campo
+      validateField(field) {
+        if (!this.form[field]) {
+          this.errors[field] = 'Campo obrigatório.';
+        } else {
+          delete this.errors[field];
+        }
+      },
+  
+      // Submissão do formulário
+      async handleNeighborhoodChange() {
+        this.errors = {}; // Limpar erros anteriores
+        this.validateField('neighborhood');
+  
+        if (Object.keys(this.errors).length > 0) return; // Não continuar se houver erros
+  
+        try {
+          const response = await axios.post(ENDPOINTS.EDIT_NEIGHBORHOOD, {
+            neighborhood_id: this.form.neighborhood,
+          });
+  
+          if (response.status === 200) {
+            // Redirecionar para /home
+            this.router.push('/home');
+          } else {
+            alert('Erro ao salvar o bairro. Tente novamente.');
+          }
+        } catch {
+          alert('Erro ao enviar os dados para o servidor.');
+        }
+      },
+    },
+  
+    mounted() {
+      // Buscar estados ao carregar o componente
+      this.fetchStates();
+    },
+  };
+  </script>
+  
+  <style scoped>
+/* Estilo para o modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Fundo opaco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+</style>
