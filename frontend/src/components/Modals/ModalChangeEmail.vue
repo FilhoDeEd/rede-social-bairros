@@ -1,32 +1,32 @@
 <template>
-    <div v-if="isModalChangePasswordOpen" class="modal-overlay">
+    <div v-if="isModalChangeEmailOpen" class="modal-overlay">
       <div class="modal-content">
         <button class="close-btn" @click="closeModal">X</button>
   
         <!-- Conteúdo do modal -->
-        <form @submit.prevent="handlePasswordChange">
+        <form @submit.prevent="handleEmailChange">
             <div class="flex gap-4 space-x-4">
 
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Senha</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Email</label>
                   <input
-                    type="password"
-                    v-model="form.password"
-                    @change="validateField('password')"
+                    type="email"
+                    v-model="form.email"
+                    @change="validateField('email')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
-                  <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
+                  <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
                 </div>
                 
                 <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar senha</label>
+                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar Email</label>
                   <input
-                    type="password"
-                    v-model="form.confirm_password"
-                    @change="validateField('confirm_password')"
+                    type="email"
+                    v-model="form.confirm_email"
+                    @change="validateField('confirm_email')"
                     class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   />
-                  <p v-if="errors.confirm_password" class="text-red-500 text-xs">{{ errors.confirm_password }}</p>
+                  <p v-if="errors.confirm_email" class="text-red-500 text-xs">{{ errors.confirm_email }}</p>
                 </div>
 
               </div>
@@ -59,15 +59,15 @@
       return {
         userStore: useUserStore(),
         form: {
-            password:"",
-            confirm_password:"",
+            email:"",
+            confirm_email:"",
         },
         errors: {}, // Erros de validação
         router,
       };
     },
     props: {
-        isModalChangePasswordOpen: Boolean, // Propriedade para controlar se o modal está aberto
+        isModalChangeEmailOpen: Boolean, // Propriedade para controlar se o modal está aberto
     },
   
     methods: {
@@ -78,42 +78,42 @@
   
     // Validação de campo
     validateField(field) {
-      this.errors = {}; // Limpar erros anteriores
+    this.errors = {}; // Limpar erros anteriores
       switch (field) {
-        case "password":
-          this.errors.password = this.form.password
-            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
-            : "A senha é obrigatória.";
+        case "email": //remove
+          if (!this.form.email) {
+            this.errors.email = "Email é obrigatório.";
+          } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
+            this.errors.email = "Formato de email inválido.";
+          } else {
+            this.errors.email = "";
+          }
           break;
-        case "confirm_password":
-          this.errors.confirm_password = this.form.confirm_password
-            ?(this.form.confirm_password === this.form.password ? "" : "As senhas não coincidem.")
-            : "A confirmação de senha obrigatória.";
+          case "confirm_email":
+          this.errors.confirm_email = this.form.confirm_email
+            ?(this.form.confirm_email === this.form.email ? "" : "Os emails não coincidem.")
+            : "A confirmação de email obrigatória.";
           break;
 
         default:
           this.errors[field] = "";
       }
     },
+  
     // Submissão do formulário
-    async handlePasswordChange() {
-      this.errors = {}
+    async handleEmailChange() {
+        this.errors = {}
         if (Object.keys(this.errors).length > 0) return; // Não continuar se houver erros
 
         try {
-            const response = await axios.post(ENDPOINTS.EDIT_PASSWORD, {
-            password: this.form.password,
+            const response = await axios.post(ENDPOINTS.EDIT_EMAIL, {
+            email: this.form.email,
             });
-
             if (response.status === 200) {
             this.userStore.removeToken();
             this.router.push('/login');
             } else {
-            alert('Erro ao salvar a senha. Tente novamente.');
+            alert('Erro ao salvar o email. Tente novamente.');
             }
         } catch (error) {
             console.error('Erro de comunicação com o servidor:', error);
