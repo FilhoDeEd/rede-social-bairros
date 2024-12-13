@@ -63,11 +63,18 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import { router } from "../../router/index.js";
+import { useRouter } from 'vue-router';
 import { ENDPOINTS } from '../../../../api.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
 
 export default {
+  setup() {
+    const router = useRouter();
+    
+    return {
+      router
+    }
+  },
   data() {
     return {
       states: [], // Lista de estados
@@ -79,7 +86,6 @@ export default {
         neighborhood: null, // Bairro selecionado
       },
       errors: {}, // Erros de validação
-      router,
       isConfirmationModalOpen: false, // Controle para o modal de login
     };
   },

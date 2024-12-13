@@ -202,19 +202,19 @@
 
 <script>
 /* eslint-disable */
+import { onBeforeMount, reactive } from "vue";
+import { useRouter } from 'vue-router'
+import { useUserStore } from "../store/user.js"
+import axios from 'axios'
 import MainLayout from "@/layouts/mainLayout.vue";
 import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
 import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
 import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
-import { onBeforeMount, reactive } from "vue";
-import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
-import router from "../router/index.js";
-import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
 
 export default {
-
+  name: 'Profile',
   components: {
     MainLayout,
     ModalChangeNeighborhood,
@@ -222,32 +222,17 @@ export default {
     ModalChangeEmail,
     ModalComplexConfimation,
   },
-  data() {
-
-    return {
-      profileImage: null, // Variável para armazenar a nova imagem ou a atual
-      errors: {}, // Armazena os erros de validação
-      editMode: false, // Determina se o formulário está em modo de edição
-      team2, // Imagem do time
-      isModalNeighChangeOpen: false,
-      isModalChangePasswordOpen: false,
-      isModalChangeEmailOpen: false,
-      isConfirmationModalOpen: false,
-      router,
-    };
-  },
   setup() {
     const userStore = useUserStore();
+    const router = useRouter();
 
-    // Verifica a autenticação do usuário antes de montar o componente
     onBeforeMount(() => {
       if (!userStore.user.isAuthenticated) {
         alert("Autenticação necessária");
-        router.push("/login");
+        router.push("/auth/login");
       }
     });
 
-    // Reactive form state
     const form = reactive({
       name: userStore.user?.name || "",
       surname: userStore.user?.surname || "",
@@ -258,11 +243,36 @@ export default {
     });
 
     return {
-      userStore, // Expor o store para uso no template
-      form, // Expor o formulário reativo
+      userStore,
+      form,
+      router,
     };
   },
-
+  data() {
+    const router = useRouter()
+    return {
+      profileImage: null,
+      errors: {},
+      editMode: false,
+      team2,
+      isModalNeighChangeOpen: false,
+      isModalChangePasswordOpen: false,
+      isModalChangeEmailOpen: false,
+      isConfirmationModalOpen: false,
+    };
+  },
+  mounted() {
+    if (this.userStore.user) {
+      this.form = {
+        name: this.userStore.user.name || "",
+        surname: this.userStore.user.surname || "",
+        cellphone: this.userStore.user.cellphone || "",
+        gender: this.userStore.user.gender || "",
+        biography: this.userStore.user.biography || "",
+        birthday: this.userStore.user.birthday || "",
+      };
+    }
+  },
   methods: {
     // Abre o modal
     openModalNeighChange() {
@@ -314,8 +324,8 @@ export default {
 
     //Logout
     logout(){
-      this.userStore.removeToken()
-      router.push('/login')
+      this.userStore.removeToken();
+      this.router.push('/auth/login');
     },
 
     async delete_account(){

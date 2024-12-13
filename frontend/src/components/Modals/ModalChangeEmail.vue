@@ -50,11 +50,19 @@
   /* eslint-disable */
 
   import axios from 'axios';
-  import { router } from "../../router/index.js";
+  import { useRouter } from 'vue-router';
   import { ENDPOINTS } from '../../../../api.js';
   import { useUserStore } from '../../store/user.js';
+  import { Chart } from 'chart.js/auto'
   
   export default {
+    setup() {
+      const router = useRouter();
+      
+      return {
+        router
+      }
+    },
     data() {
       return {
         userStore: useUserStore(),
@@ -63,7 +71,6 @@
             confirm_email:"",
         },
         errors: {}, // Erros de validação
-        router,
       };
     },
     props: {

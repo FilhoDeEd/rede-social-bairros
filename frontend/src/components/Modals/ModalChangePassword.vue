@@ -50,11 +50,18 @@
   /* eslint-disable */
 
   import axios from 'axios';
-  import { router } from "../../router/index.js";
+  import { useRouter } from 'vue-router';
   import { ENDPOINTS } from '../../../../api.js';
   import { useUserStore } from '../../store/user.js';
   
   export default {
+    setup() {
+      const router = useRouter();
+      
+      return {
+        router
+      }
+    },
     data() {
       return {
         userStore: useUserStore(),
@@ -63,7 +70,6 @@
             confirm_password:"",
         },
         errors: {}, // Erros de validação
-        router,
       };
     },
     props: {
@@ -111,7 +117,7 @@
 
             if (response.status === 200) {
             this.userStore.removeToken();
-            this.router.push('/login');
+            this.router.push('/home');
             } else {
             alert('Erro ao salvar a senha. Tente novamente.');
             }
