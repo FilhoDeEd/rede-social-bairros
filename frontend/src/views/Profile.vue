@@ -179,7 +179,7 @@
 
                       <button type="button"
                         class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="openModalConfirm()">
+                        @click="openModalConfirmDelete()">
                         Excluir conta
                       </button>
                     </div>
@@ -194,7 +194,9 @@
       <ModalChangeEmail :isModalChangeEmailOpen="isModalChangeEmailOpen" @close="closeModalEmailChange"></ModalChangeEmail>
       <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword"></ModalChangePassword>
       <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange"></ModalChangeNeighborhood>
-    </main>
+      <ModalComplexConfimation v-if="isConfirmationModalOpen" :isModalDeleteAccountOpen="isConfirmationModalOpen"
+        @close="isConfirmationModalOpen = false" @confirm="handleConfirmation" />
+     </main>
   </main-layout>
 </template>
 
@@ -203,12 +205,13 @@
 import MainLayout from "@/layouts/mainLayout.vue";
 import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
 import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
+import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
+import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
 import { onBeforeMount, reactive } from "vue";
 import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
-import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 
 export default {
 
@@ -216,7 +219,8 @@ export default {
     MainLayout,
     ModalChangeNeighborhood,
     ModalChangePassword,
-    ModalChangeEmail
+    ModalChangeEmail,
+    ModalComplexConfimation,
   },
   data() {
 
@@ -228,6 +232,7 @@ export default {
       isModalNeighChangeOpen: false,
       isModalChangePasswordOpen: false,
       isModalChangeEmailOpen: false,
+      isConfirmationModalOpen: false,
       router,
     };
   },
@@ -246,7 +251,6 @@ export default {
     const form = reactive({
       name: userStore.user?.name || "",
       surname: userStore.user?.surname || "",
-      email: userStore.user?.email || "",
       cellphone: userStore.user?.cellphone || "",
       gender: userStore.user?.gender || "",
       biography: userStore.user?.biography || "",
@@ -290,10 +294,42 @@ export default {
       this.isModalChangeEmailOpen = false;
     }, 
 
+    openModalConfirmDelete(){
+      this.isConfirmationModalOpen = true;
+    },
+
+    closeModalConfirmDelete(){
+      this.isConfirmationModalOpen = false;
+    }, 
+
+    handleConfirmation(isConfirmed){
+      this.closeModalConfirmDelete();
+      if(!isConfirmed){
+        console.log("is not confirmed")
+        return;
+      }
+      console.log("accounted deleted")
+      this.delete_account()
+    },
+
     //Logout
     logout(){
       this.userStore.removeToken()
       router.push('/login')
+    },
+
+    async delete_account(){
+      try{
+        const response_delete = await axios.post(ENDPOINTS.DELETE_ACCOUNT, this.userStore.user.id);
+        if(response_delete.success){
+          alert("Conta Excluída com sucesso");
+            this.logout();
+          } else{
+            alert("Erro ao excluir a conta")
+          }
+      } catch(error){
+        alert("Erro de conexão com o servidor ")
+      }
     },
 
     // Alterna entre modo de edição e visualização
