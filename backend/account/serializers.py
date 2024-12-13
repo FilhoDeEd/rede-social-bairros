@@ -32,7 +32,7 @@ class AccountSerializer(serializers.ModelSerializer):
         return value
 
 
-class UpdateAccountSerializer(serializers.ModelSerializer):
+class UpdateAccountBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['email', 'name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']
+        fields = ['name', 'surname', 'gender', 'birthday', 'cellphone', 'biography']
