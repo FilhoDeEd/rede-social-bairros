@@ -108,7 +108,6 @@
 import { useRouter } from 'vue-router';
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
-import { apiClient } from '../../store/user.js';
 import axios from 'axios';
 
 export default {
@@ -156,6 +155,7 @@ export default {
 
       
       try {
+        console.log(this.form.emailOrUsername, this.form.password)
         // Requisição de login usando o apiClient
         const loginResponse = await axios.post(ENDPOINTS.LOGIN, this.form);
         
@@ -164,6 +164,7 @@ export default {
 
         // Obter informações detalhadas do usuário
         const userDetailsResponse = await axios.get(ENDPOINTS.DETAIL);
+        console.log(userDetailsResponse.data)
         this.userStore.setUserInfo(userDetailsResponse.data);
 
         // Redirecionar o usuário para a página inicial
