@@ -1,5 +1,6 @@
-from django.db import models
 from account.models import Account
+from django.db import models
+from django.utils import timezone
 
 
 class UfChoices(models.TextChoices):
@@ -38,6 +39,9 @@ class Neighborhood(models.Model):
     state = models.CharField(max_length=2, choices=UfChoices.choices)
     country = models.CharField(max_length=255, default='Brazil')
 
+    create_date = models.DateTimeField(editable=False)
+    update_date = models.DateTimeField()
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -46,28 +50,45 @@ class Neighborhood(models.Model):
             )
         ]
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.create_date = timezone.now()
+        self.update_date = timezone.now()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.name}, {self.locality}, {self.state}'
 
 
 class UserProfile(models.Model):
     class StatusChoices(models.TextChoices):
-        RECEM_CHEGADO = 'RC', 'Recém Chegado'
-        VIZINHO_CURIOSO = 'VC', 'Vizinho Curioso'
-        VIZINHO_ATENTO = 'VA', 'Vizinho Atento'
-        VIZINHO_COLABORADOR = 'VL', 'Vizinho Colaborador'
-        VIZINHO_CONFIAVEL = 'VF', 'Vizinho Confiável'
-        VIZINHO_NOTAVEL = 'VN', 'Vizinho Notável'
-        VIZINHO_INSPIRADOR = 'VI', 'Vizinho Inspirador'
-        GUARDIAO_DO_BAIRRO = 'GB', 'Guardião do Bairro'
-        SABIO_DA_COMUNIDADE = 'SC', 'Sábio da Comunidade'
+        NEWCOMER = 'newcomer', 'Recém Chegado'
+        CURIOUS_NEIGHBOR = 'curious', 'Vizinho Curioso'
+        ATTENTIVE_NEIGHBOR = 'attentive', 'Vizinho Atento'
+        COLLABORATIVE_NEIGHBOR = 'collaborative', 'Vizinho Colaborador'
+        TRUSTWORTHY_NEIGHBOR = 'trustworthy', 'Vizinho Confiável'
+        NOTABLE_NEIGHBOR = 'notable', 'Vizinho Notável'
+        INSPIRING_NEIGHBOR = 'inspiring', 'Vizinho Inspirador'
+        NEIGHBORHOOD_GUARDIAN = 'guardian', 'Guardião do Bairro'
+        COMMUNITY_SAGE = 'sage', 'Sábio da Comunidade'
 
     trust_rate = models.FloatField(default=100.0)
     active = models.BooleanField(default=True)
+    status = models.CharField(max_length=31, choices=StatusChoices.choices, default=StatusChoices.NEWCOMER)
+
+    account = models.ForeignKey(Account, on_delete=models.PROTECT)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT)
-    status = models.CharField(max_length=255, choices=StatusChoices.choices, default=StatusChoices.RECEM_CHEGADO)
-    account = models.ForeignKey(Account, null=True, blank=True, on_delete=models.SET_NULL)
-    #perfil_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-    
+
+    create_date = models.DateTimeField(editable=False)
+    update_date = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.create_date = timezone.now()
+        self.update_date = timezone.now()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
-        return f'{self.account.name}'
+        if self.account:
+            return f'{self.account.user.username} | {self.id}'
+        return f'Anonymous | {self.id}'
