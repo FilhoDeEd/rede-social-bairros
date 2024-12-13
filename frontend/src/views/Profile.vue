@@ -19,7 +19,7 @@
       <section id="dataProfile" class="relative py-16 bg-blueGray-200">
 
         <div class="container mx-auto px-4" id="infoProfile">
-          <form @submit.prevent="handleSubmit">
+          <form @submit.prevent="openModalConfirmEdit">
             <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
               <div class="px-6 justify-end">
                 <div class="flex flex-wrap justify-end">
@@ -191,11 +191,30 @@
         </div>
 
       </section>
-      <ModalChangeEmail :isModalChangeEmailOpen="isModalChangeEmailOpen" @close="closeModalEmailChange"></ModalChangeEmail>
-      <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword"></ModalChangePassword>
-      <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange"></ModalChangeNeighborhood>
-      <ModalComplexConfimation v-if="isConfirmationModalOpen" :isModalDeleteAccountOpen="isConfirmationModalOpen"
-        @close="isConfirmationModalOpen = false" @confirm="handleConfirmation" />
+      <ModalChangeEmail 
+       :isModalChangeEmailOpen="isModalChangeEmailOpen"
+        @close="closeModalEmailChange"/>
+
+      <ModalChangePassword 
+        :isModalChangePasswordOpen="isModalChangePasswordOpen"
+        @close="closeModalChangePassword"/>
+
+      <ModalChangeNeighborhood 
+      :isModalNeighChangeOpen="isModalNeighChangeOpen" 
+      @close="closeModalNeighChange"/>
+
+      <ModalComplexConfimation 
+      v-if="isConfirmationModalOpen" 
+      :isModalDeleteAccountOpen="isConfirmationModalOpen" 
+      @close="closeModalConfirmDelete"
+      @confirm="handleConfirmation" />
+      
+      <ModalSimpleConfirmation 
+        :isSimpleConfirmModalOpen="isEditConfirmationModalOpen"
+        @close="closeModalConfirmEdit"
+        @confirm="handleEditConfirmation"
+      />
+  
      </main>
   </main-layout>
 </template>
@@ -207,6 +226,7 @@ import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhoo
 import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
 import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
+import ModalSimpleConfirmation from "../components/Modals/ModalSimpleConfirmation.vue";
 import { onBeforeMount, reactive } from "vue";
 import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
 import router from "../router/index.js";
@@ -221,6 +241,7 @@ export default {
     ModalChangePassword,
     ModalChangeEmail,
     ModalComplexConfimation,
+    ModalSimpleConfirmation,
   },
   data() {
 
@@ -233,6 +254,7 @@ export default {
       isModalChangePasswordOpen: false,
       isModalChangeEmailOpen: false,
       isConfirmationModalOpen: false,
+      isEditConfirmationModalOpen: false,
       router,
     };
   },
@@ -294,22 +316,42 @@ export default {
       this.isModalChangeEmailOpen = false;
     }, 
 
+    // Abre o modal
     openModalConfirmDelete(){
       this.isConfirmationModalOpen = true;
     },
 
+    // Fecha o modal
     closeModalConfirmDelete(){
       this.isConfirmationModalOpen = false;
     }, 
+    
+    // Abre o modal
+    openModalConfirmEdit(){
+      this.isEditConfirmationModalOpen = true;
+    },
+    
+    // Fecha o modal
+    closeModalConfirmEdit(){
+      this.isEditConfirmationModalOpen = false;
 
-    handleConfirmation(isConfirmed){
-      this.closeModalConfirmDelete();
-      if(!isConfirmed){
-        console.log("is not confirmed")
-        return;
+    },
+    
+    // Alterna entre modo de edição e visualização
+    toggleEdition() {
+      if (this.editMode) {
+        // Salvar: valida campos antes de alternar
+        Object.keys(this.form).forEach((field) => this.validateField(field));
+        if (Object.keys(this.errors).some((key) => this.errors[key])) {
+          alert("Por favor, corrija os erros antes de salvar.");
+          return;
+        }
       }
-      console.log("accounted deleted")
-      this.delete_account()
+      this.editMode = !this.editMode;
+      if (!this.editMode) {
+        this.openModalConfirmEdit();
+        this.handleEditConfirmation();
+      }
     },
 
     //Logout
@@ -332,22 +374,7 @@ export default {
       }
     },
 
-    // Alterna entre modo de edição e visualização
-    toggleEdition() {
-      if (this.editMode) {
-        // Salvar: valida campos antes de alternar
-        Object.keys(this.form).forEach((field) => this.validateField(field));
-        if (Object.keys(this.errors).some((key) => this.errors[key])) {
-          alert("Por favor, corrija os erros antes de salvar.");
-          return;
-        }
-      }
-      this.editMode = !this.editMode;
-      if (!this.editMode) {
-        this.handleSubmit();
-      }
-    },
-
+    
     validateField(field) {
       const calculateAge = (birthday) => {
         const today = new Date();
@@ -370,10 +397,10 @@ export default {
             this.errors.name = "";
           }
           break;
-
-        case "surname":
-          if (!this.form.surname) {
-            this.errors.surname = "Sobrenome é obrigatório.";
+          
+          case "surname":
+            if (!this.form.surname) {
+              this.errors.surname = "Sobrenome é obrigatório.";
           } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(this.form.surname)) {
             this.errors.surname = "Sobrenome inválido. Apenas letras e espaços são permitidos.";
           } else {
@@ -381,16 +408,16 @@ export default {
           }
           break;
 
-        case "cellphone":
-          if (!/^\(\d{2}\)\s\d{5}-\d{4}$/.test(this.form.cellphone)) {
+          case "cellphone":
+          if (!/^\(\d{2}\)\s\d{5}-\d{4}$/.test(this.form.cellphone) && !this.form.cellphone ==="") {
             this.errors.cellphone = "Formato de celular inválido. Exemplo: (11) 98765-4321";
           } else {
             this.errors.cellphone = "";
           }
           break;
-
-        case "birthday":
-          if (!this.form.birthday) {
+          
+          case "birthday":
+            if (!this.form.birthday) {
             this.errors.birthday = "Data de nascimento é obrigatória.";
           } else if (calculateAge(this.form.birthday) < 16) {
             this.errors.birthday = "Você deve ter pelo menos 16 anos.";
@@ -398,7 +425,7 @@ export default {
             this.errors.birthday = "";
           }
           break;
-
+          
         case "biography":
           if (this.form.biography.length > 300) {
             this.errors.biography = "A biografia deve ter no máximo 300 caracteres.";
@@ -406,12 +433,30 @@ export default {
             this.errors.biography = "";
           }
           break;
-
+          
           default:
           this.errors[field] = "";
       }
     },
+    
+    handleConfirmation(isConfirmed){
+      this.closeModalConfirmDelete();
+      if(!isConfirmed){
+        console.log("is not confirmed")
+        return;
+      }
+      console.log("accounted deleted")
+      this.delete_account()
+    },
 
+    handleEditConfirmation(isEditConfirmed){
+      if(!isEditConfirmed){
+        console.log("Not confirmed")
+        return;
+      }
+      this.closeModalConfirmEdit();
+      this.handleSubmit();
+    },
 
     // Envia os dados do formulário para o backend
     async handleSubmit() {
