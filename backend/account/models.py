@@ -1,6 +1,8 @@
+import hashlib
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db import transaction
 
 
 class Account(models.Model):
@@ -11,8 +13,6 @@ class Account(models.Model):
     --------
     - **user (OneToOneField)**: A one-to-one relationship with the `User` model. Links the account to the user.
       Deleting the user cascades and deletes the associated account.
-    - **active_user_profile (OneToOneField)**: A one-to-one relationship with the `UserProfile` model. Links the account to the
-      currenty user profile.
     - **name (CharField)**: The user's first name.
     - **surname (CharField)**: The user's last name.
     - **birthday (DateField)**: The user's date of birth.
@@ -41,6 +41,7 @@ class Account(models.Model):
     - **ban()**: Deactivates the user by setting their `User`'s `is_active` field to `False`.
     - **unban()**: Reactivates the user by setting their `User`'s `is_active` field to `True`.
     - **save(*args, **kwargs)**: Overrides the `save` method to set `join_date` during creation and update `update_date` on every save.
+    - **anonymize(self)**: Anonymizes the user's account by replacing personal data with placeholders.
     - **__str__()**: Returns the username of the associated `User`.
 
     Notes:
@@ -54,7 +55,6 @@ class Account(models.Model):
         OTHER = 'O', 'Outro'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    #active_user_profile = models.OneToOneField('user_profile.models.UserProfile', on_delete=models.PROTECT)
 
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
@@ -91,22 +91,6 @@ class Account(models.Model):
         """
         return self.user.is_active
 
-    # def set_active_user_profile(self, user_profile: UserProfile):
-    #     """
-    #     Set active UserProfile.
-
-    #     Args:
-    #         user_profile (UserProfile): The new active UserProfile.
-    #     """
-    #     if self.active_user_profile:
-    #         self.active_user_profile.active = False
-    #         self.active_user_profile.save()
-        
-    #     self.active_user_profile = user_profile
-    #     user_profile.active = True
-    #     user_profile.save()
-    #     self.save()
-
     def mute(self, days: int) -> None:
         """
         Mutes the user for a specified number of days.
@@ -118,6 +102,7 @@ class Account(models.Model):
         self.muted = True
         self.mute_date = timezone.now()
         self.mute_days = days
+        self.save()
 
     def unmute(self) -> None:
         """
@@ -126,6 +111,7 @@ class Account(models.Model):
         self.muted = False
         self.mute_date = None
         self.mute_days = None
+        self.save()
 
     def ban(self) -> None:
         """
@@ -133,6 +119,7 @@ class Account(models.Model):
         This makes the user inactive and unable to log in.
         """
         self.user.is_active = False
+        self.user.save()
 
     def unban(self) -> None:
         """
@@ -140,6 +127,7 @@ class Account(models.Model):
         This allows the user to log in again.
         """
         self.user.is_active = True
+        self.user.save()
 
     def save(self, *args, **kwargs):
         """
@@ -150,6 +138,37 @@ class Account(models.Model):
             self.join_date = timezone.now()
         self.update_date = timezone.now()
         return super().save(*args, **kwargs)
+    
+    def anonymize(self):
+        """
+        Anonymizes the user's account by replacing personal data with placeholders.
+        """
+        with transaction.atomic():
+            self.name = 'Anonymous'
+            self.surname = 'User'
+            self.birthday = None
+            self.gender = None
+            self.cellphone = None
+            self.biography = None
+
+            email_hash = hashlib.sha256(self.email.encode('utf-8')).hexdigest()
+            self.email = f'anonymous.{email_hash[:16]}@anonymous.invalid'
+
+            self.last_login = None
+            self.last_activity = None
+            self.last_password_change = None
+            self.last_neighborhood_change = None
+            self.muted = False
+            self.mute_date = None
+            self.mute_days = None
+            self.suspension_reason = None
+
+            self.user.username = f'anonymous_{self.user.id}'
+            self.user.set_unusable_password()
+            self.user.is_active = False
+            self.user.save()
+
+            self.save()
 
     def __str__(self):
         """

@@ -1,19 +1,21 @@
 from typing import Dict
-from account.serializers import AccountSerializer, UserSerializer, UpdateAccountSerializer
+from account.serializers import AccountSerializer, UserSerializer, UpdateAccountBaseSerializer
 
 from django.contrib.auth import authenticate
-from django.db import transaction
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, transaction
 
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user_profile.serializers import UserProfileSerializer, NeighborhoodSerializer
 from user_profile.models import Neighborhood, UserProfile
-
 
 
 def add_errors(errors: Dict, serializer_errors: Dict):
@@ -36,14 +38,15 @@ class RegisterView(APIView):
             'password': data.pop('password', ''),
         }
 
-        neighborhood_id = data.pop('neighborhood', '')
+        neighborhood_id = data.pop('neighborhood', None)
 
-        # Colocar um execept caso n receba o bairro
+        errors = {}
+
+        if not neighborhood_id:
+            errors['neighborhood'] = 'This field is required.'
 
         user_serializer = UserSerializer(data=user_data)
         account_serializer = AccountSerializer(data=data)
-
-        errors = {}
 
         if not user_serializer.is_valid():
             add_errors(errors=errors, serializer_errors=user_serializer.errors)
@@ -56,16 +59,21 @@ class RegisterView(APIView):
 
         try:
             neighborhood = Neighborhood.objects.get(id=neighborhood_id)
+        except Neighborhood.DoesNotExist:
+            return Response({'neighborhood': 'Invalid neighborhood ID.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
             with transaction.atomic():
                 user = user_serializer.save()
                 account = account_serializer.save(user=user)
                 UserProfile.objects.create(account=account, neighborhood=neighborhood)
                 Token.objects.create(user=user)
+        except IntegrityError as e:
+            return Response({'detail': f'Database error occurred: {e}.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': f'An unexpected error occurred: {e}.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({'detail': 'Success.'}, status=status.HTTP_201_CREATED)
+        return Response({'detail': 'Account successfully created.'}, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):
@@ -73,19 +81,23 @@ class LoginView(APIView):
     Handles user login requests.
     """
     def post(self, request):
-        username = request.data.get('emailOrUsername')
-        password = request.data.get('password')
+        username = request.data.get('emailOrUsername', '').strip()
+        password = request.data.get('password', '').strip()
+
+        if not username or not password:
+            return Response({'detail': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(username=username, password=password)
+        if not user:
+            raise AuthenticationFailed('Invalid credentials.')
 
-        if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({'access': token.key}, status=status.HTTP_200_OK)
-        else:
-            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
- 
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'access': token.key}, status=status.HTTP_200_OK)
+
+
 class DetailAccountView(APIView):
     """
+    Handles requests for user personal details.
     """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -96,13 +108,13 @@ class DetailAccountView(APIView):
             account = user.account
             user_profile = UserProfile.objects.get(account=account, active=True)
             neighborhood = user_profile.neighborhood
+
+            user_serializer = UserSerializer(user)
+            account_serializer = AccountSerializer(account)
+            user_profile_serializer = UserProfileSerializer(user_profile)
+            neighborhood_serializer = NeighborhoodSerializer(neighborhood)
         except Exception as e:
             return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        user_serializer = UserSerializer(user)
-        account_serializer = AccountSerializer(account)
-        user_profile_serializer = UserProfileSerializer(user_profile)
-        neighborhood_serializer = NeighborhoodSerializer(neighborhood)
 
         data = {}
         data |= user_serializer.data
@@ -113,9 +125,7 @@ class DetailAccountView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-class UpdateProfileView(APIView):
-    """
-    """
+class UpdateAccountBaseView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -123,39 +133,129 @@ class UpdateProfileView(APIView):
         data = request.data
         account = request.user.account
 
-        neighborhood_changed = data.pop('neighborhood_changed', False)
-        neighborhood_id = data.pop('neighborhood_id')
-
-        data.pop('neighborhood')
-        data.pop('locality')
-        data.pop('state')
-
-        account_serializer = UpdateAccountSerializer(account, data=data)
+        serializer = UpdateAccountBaseSerializer(account, data=data)
 
         errors = {}
 
-        if not account_serializer.is_valid():
-            add_errors(errors=errors, serializer_errors=account_serializer.errors)
+        if not serializer.is_valid():
+            add_errors(errors=errors, serializer_errors=serializer.errors)
 
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             with transaction.atomic():
-                if neighborhood_changed:
-                    current_user_profile = UserProfile.objects.get(account=account, active=True)
-                    current_user_profile.active = False
-                    current_user_profile.save()
-                    neighborhood = Neighborhood.objects.get(id=neighborhood_id)
-                    try:
-                        new_user_profile = UserProfile.objects.get(account=account, neighborhood=neighborhood)
-                        new_user_profile.active = True
-                        new_user_profile.save()
-                    except UserProfile.DoesNotExist:
-                        new_user_profile = UserProfile.objects.create(account=account, neighborhood=neighborhood)
-                account = account_serializer.save()
-                
-                updated_data = UpdateAccountSerializer(account).data
-                return Response(updated_data, status=status.HTTP_200_OK)
+                serializer.save()
         except Exception as e:
             return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'detail': 'Basic account details updated successfully.'}, status=status.HTTP_200_OK)
+
+
+class UpdateAccountEmailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        account = request.user.account
+        new_email = request.data.get('email', '').strip()
+
+        if not new_email:
+            return Response({'email': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            validate_email(new_email)
+        except ValidationError:
+            return Response({'email': 'Enter a valid email address.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            with transaction.atomic():
+                account.email = new_email
+                account.save()
+        except IntegrityError:
+            return Response({'email': 'This email address is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response({'detail': 'Account email updated successfully.'}, status=status.HTTP_200_OK)
+
+
+class UpdateAccountPasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        account = request.user.account
+        new_password = request.data.get('password', '').strip()
+
+        if not new_password:
+            return Response({'password': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            with transaction.atomic():
+                account.user.set_password(new_password)
+                account.user.save()
+        except Exception as e:
+            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response({'detail': 'Account password updated successfully.'}, status=status.HTTP_200_OK)
+
+
+class AnonymizeAccountView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        account = request.user.account
+        username = request.data.get('emailOrUsername', '').strip()
+        password = request.data.get('password', '').strip()
+
+        if not username or not password:
+            return Response({'detail': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(username=username, password=password)
+        if not user or user != account.user:
+            raise AuthenticationFailed('Invalid credentials.')
+
+        try:
+            with transaction.atomic():
+                account.anonymize()
+                Token.objects.filter(user=account.user).delete()
+        except Exception as e:
+            return Response({'detail': f'An error occurred while anonymizing the account: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'detail': 'Account anonymized successfully.'}, status=status.HTTP_200_OK)
+
+
+class UpdateNeighborhoodView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        account = request.user.account
+        neighborhood_id = request.data.get('neighborhood_id', None)
+
+        if not neighborhood_id:
+            return Response({'neighborhood_id': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            neighborhood = Neighborhood.objects.get(id=neighborhood_id)
+        except Neighborhood.DoesNotExist:
+            return Response({'neighborhood_id': 'Invalid neighborhood ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with transaction.atomic():
+                current_user_profile = UserProfile.objects.get(account=account, active=True)
+                current_user_profile.active = False
+                current_user_profile.save()
+
+                try:
+                    new_user_profile = UserProfile.objects.get(account=account, neighborhood=neighborhood)
+                    new_user_profile.active = True
+                    new_user_profile.save()
+                except UserProfile.DoesNotExist:
+                    UserProfile.objects.create(account=account, neighborhood=neighborhood, active=True)
+        except Exception as e:
+            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({'detail': 'Neighborhood updated successfully.'}, status=status.HTTP_200_OK)
