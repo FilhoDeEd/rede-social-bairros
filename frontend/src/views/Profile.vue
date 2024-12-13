@@ -90,7 +90,6 @@
 
                 <!-- Linha superior: div1, div2, div3 -->
                 <div class="rowForProfile mt-10 py-10 border-t border-blueGray-200 text-center">
-
                   <!-- Phone -->
                   <div class="itemForProfile">
                     <label for="cellphone-input" class="block mb-2 text-sm font-medium text-gray-900 ">Phone
@@ -110,49 +109,6 @@
                       <p v-if="errors.cellphone" class="text-red-500 text-xs">{{ errors.cellphone }}</p>
                     </div>
                   </div>
-
-                  <!-- Email -->
-                  <div class="itemForProfile">
-                    <label for="UserEmail" class="block mb-2 text-sm font-medium text-gray-900 ">Email:</label>
-                    <div class="relative">
-                      <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M2.94 6.94A2.5 2.5 0 015.5 5h9a2.5 2.5 0 012.5 1.94l-7 4.2-7-4.2z" />
-                          <path d="M18 8.9l-7 4.2-7-4.2V14.5a2.5 2.5 0 002.5 2.5h9a2.5 2.5 0 002.5-2.5V8.9z" />
-                        </svg>
-                      </div>
-                      <input type="email" id="UserEmail" v-model="form.email" :readonly="!editMode"
-                        @change="validateField('email')"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        required />
-                      <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
-                    </div>
-                  </div>
-
-                  <!-- Senha
-                  <div class="itemForProfile">
-                    <label for="password-input"
-                      class="block mb-2 text-sm font-medium text-gray-900 ">Senha:</label>
-                    <div class="relative">
-                      <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            d="M10 2a4 4 0 00-4 4v2a2 2 0 01-2 2v4a4 4 0 004 4h4a4 4 0 004-4v-4a2 2 0 01-2-2V6a4 4 0 00-4-4zm-1 6V6a1 1 0 112 0v2h-2z" />
-                        </svg>
-                      </div>
-                      <input type="password" id="password-input" 
-                      v-model="form.password" 
-                      :readonly="!editMode"
-                      :value="userStore.user.password"
-                        @change="validateField('password')" placeholder="Senha"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        required />
-                      <p v-if="errors.password" class="text-red-500 text-xs">{{ errors.password }}</p>
-                    </div>
-                  </div>
-                </div> -->
 
                   <!-- Linha inferior -->
                   <div class="rowForProfile mt-10 py-10 text-center">
@@ -211,6 +167,12 @@
 
                       <button type="button"
                         class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="openModalEmailChange()">
+                        Alterar Email
+                      </button>
+
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
                         @click="logout()">
                         Deslogar
                       </button>
@@ -229,7 +191,7 @@
         </div>
 
       </section>
-
+      <ModalChangeEmail :isModalChangeEmailOpen="isModalChangeEmailOpen" @close="closeModalEmailChange"></ModalChangeEmail>
       <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword"></ModalChangePassword>
       <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange"></ModalChangeNeighborhood>
     </main>
@@ -246,6 +208,7 @@ import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conf
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
+import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 
 export default {
 
@@ -253,6 +216,7 @@ export default {
     MainLayout,
     ModalChangeNeighborhood,
     ModalChangePassword,
+    ModalChangeEmail
   },
   data() {
 
@@ -263,7 +227,7 @@ export default {
       team2, // Imagem do time
       isModalNeighChangeOpen: false,
       isModalChangePasswordOpen: false,
-
+      isModalChangeEmailOpen: false,
       router,
     };
   },
@@ -315,6 +279,16 @@ export default {
     closeModalChangePassword() {
       this.isModalChangePasswordOpen = false;
     },
+
+    // Abre o modal
+    openModalEmailChange(){
+      this.isModalChangeEmailOpen = true;
+    },
+
+    // Fecha o modal
+    closeModalEmailChange(){
+      this.isModalChangeEmailOpen = false;
+    }, 
 
     //Logout
     logout(){
@@ -371,16 +345,6 @@ export default {
           }
           break;
 
-        case "email": //remove
-          if (!this.form.email) {
-            this.errors.email = "Email é obrigatório.";
-          } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
-            this.errors.email = "Formato de email inválido.";
-          } else {
-            this.errors.email = "";
-          }
-          break;
-
         case "cellphone":
           if (!/^\(\d{2}\)\s\d{5}-\d{4}$/.test(this.form.cellphone)) {
             this.errors.cellphone = "Formato de celular inválido. Exemplo: (11) 98765-4321";
@@ -407,17 +371,7 @@ export default {
           }
           break;
 
-        case "password":
-          this.errors.password = this.form.password
-            ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
-            (/[a-z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra minúscula.") ||
-            (/\d/.test(this.form.password) ? "" : "A senha deve conter ao menos um número.") ||
-            (/[\W_]/.test(this.form.password) ? "" : "A senha deve conter ao menos um caractere especial.") ||
-            (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
-            : "A senha é obrigatória.";
-          break;
-
-        default:
+          default:
           this.errors[field] = "";
       }
     },
