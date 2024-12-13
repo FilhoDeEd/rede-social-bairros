@@ -96,24 +96,21 @@ class DetailAccountView(APIView):
             account = user.account
             user_profile = UserProfile.objects.get(account=account, active=True)
             neighborhood = user_profile.neighborhood
-
-            account_serializer = AccountSerializer(account)
-            user_serializer = UserSerializer(user)
-            user_profile_serializer = UserProfileSerializer(user_profile)
-            neighborhood_serializer = NeighborhoodSerializer(neighborhood)
-
-            data = {}
-            data |= user_serializer.data
-            data |= account_serializer.data
-            data |= user_profile_serializer.data
-            data |= neighborhood_serializer.data
-
-            print("Debug - Dados retornados:", data)
-            
-            return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'detail': f'An unexpected error occurred: {e}'}, 
-                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': f'An unexpected error occurred: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        user_serializer = UserSerializer(user)
+        account_serializer = AccountSerializer(account)
+        user_profile_serializer = UserProfileSerializer(user_profile)
+        neighborhood_serializer = NeighborhoodSerializer(neighborhood)
+
+        data = {}
+        data |= user_serializer.data
+        data |= account_serializer.data
+        data |= user_profile_serializer.data
+        data |= neighborhood_serializer.data
+        
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class UpdateProfileView(APIView):
