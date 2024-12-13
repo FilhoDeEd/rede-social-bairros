@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated
-from forum.serializers import ForumSerializer, ForumListSerializer
+from forum.serializers import ForumSerializer, ForumListSerializer, ForumEditSerializer
 from account.views import add_errors
 from forum.models import Forum , Subscriber 
 
@@ -73,6 +73,35 @@ class ForumDetailView(APIView):
         forum = get_object_or_404(Forum, slug=slug)
         serializer = ForumSerializer(forum)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ForumEditView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, slug):
+        # Obtém o fórum pelo slug
+        forum = get_object_or_404(Forum, slug=slug)
+
+        account = self.request.user.account
+        
+        try:
+            user_profile = UserProfile.objects.get(account=account, active=True)
+        except UserProfile.DoesNotExist:
+            return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verifica se o usuário logado é o dono do fórum
+        if forum.owner != user_profile:
+            return Response({"detail": "Você não tem permissão para editar este fórum."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Serializa os dados recebidos, substituindo o fórum existente
+        forum_serializer = ForumEditSerializer(forum, data=request.data)
+
+        if forum_serializer.is_valid():
+            forum_serializer.save()  # Salva as alterações
+            return Response(forum_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Listar os foruns (o sistema de busca já vem aqui) (retornar dados simples de vários foruns)
     # Há um queryset de foruns

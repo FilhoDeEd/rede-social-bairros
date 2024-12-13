@@ -30,3 +30,11 @@ class ForumListSerializer(serializers.ModelSerializer):
             'slug',
             'popularity'
         ]
+
+class ForumEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Forum
+        fields = [
+            'title',
+            'description'
+        ]
