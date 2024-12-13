@@ -3,13 +3,13 @@ Content-Type: application/json
 
 {
     "username": "johndoet",
-    "password": "password123",
+    "password": "senha@19282",
     "name": "Márcio",
     "surname": "Silva",
     "birthday": "1920-01-01",
-    "email": "johndoet@example.com",
+    "email": "jhon.deot@gmail.com",
     "agree_policy": true,
-    "neighborhood": 1 
+    "neighborhood": 1
 }
 
 ######
@@ -18,8 +18,8 @@ POST http://localhost:8000/account/login/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "emailOrUsername": "johndoet@example.com",
-    "password": "password123"
+    "emailOrUsername": "jhon.deot@gmail.com",
+    "password": "senha@19282"
 }
 
 ######
@@ -29,25 +29,66 @@ Content-Type: application/json
 
 {
     "emailOrUsername": "johndoet",
-    "password": "password123"
+    "password": "senha@19282"
 }
 
 ######
 
 GET http://localhost:8000/account/detail/ HTTP/1.1
-Authorization: Token a10c285f71f9d70b93e6142525f16fd1189cb752
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
 
 ######
 
-POST http://localhost:8000/account/edit/ HTTP/1.1
-Authorization: Token 970a983577039f485fc19516cd520747c7fd1b85
+POST http://localhost:8000/account/update/ HTTP/1.1
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
 Content-Type: application/json
 
-{ 
-    "name": "Tiago",
+{
+    "name": "Jhon",
     "surname": "Silva",
-    "birthday": "1920-01-01",
-    "cellphone": "+55(19)98789-1234",
-    "gender": "O",
+    "birthday": "1970-01-01",
+    "cellphone": "+55 (11) 4002-8922",
+    "gender": "M",
     "biography": "era uma fez um belo site que um dia..."
+}
+
+######
+
+POST http://localhost:8000/account/update-email/ HTTP/1.1
+Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
+Content-Type: application/json
+
+{
+    "email": "jhon.deot.hdwq@gmail.com"
+}
+
+######
+
+POST http://localhost:8000/account/update-password/ HTTP/1.1
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
+Content-Type: application/json
+
+{
+    "password": "senha@19282"
+}
+
+######
+
+POST http://localhost:8000/account/update-neighborhood/ HTTP/1.1
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
+Content-Type: application/json
+
+{
+    "neighborhood_id": 1212
+}
+
+######
+
+POST http://localhost:8000/account/anonymize/ HTTP/1.1
+Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
+Content-Type: application/json
+
+{
+    "emailOrUsername": "jhon.deot.hdwq@gmail.com",
+    "password": "senha@19282"
 }
