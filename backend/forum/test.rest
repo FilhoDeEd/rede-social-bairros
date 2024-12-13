@@ -20,6 +20,12 @@ Content-Type: application/json
 }
 
 ######
+
+POST  http://localhost:8000/forum/delete/teste/ HTTP/1.1
+Authorization: Token ea6ba52f4d1bb15ca2037bf3a073ffc23e184354
+Content-Type: application/json
+
+######
 GET http://localhost:8000/forum/list/?page=1
 Authorization: Token a10c285f71f9d70b93e6142525f16fd1189cb752
 

@@ -103,6 +103,34 @@ class ForumEditView(APIView):
             return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class ForumDeleteView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, slug):
+        # Obtém o fórum pelo slug
+        forum = get_object_or_404(Forum, slug=slug)
+
+        # Obtém a conta do usuário logado
+        account = self.request.user.account
+        
+        try:
+            user_profile = UserProfile.objects.get(account=account, active=True)
+        except UserProfile.DoesNotExist:
+            return Response({"detail": "Perfil de usuário ativo não encontrado."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verifica se o usuário logado é o dono do fórum
+        if forum.owner != user_profile:
+            return Response({"detail": "Você não tem permissão para excluir este fórum."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Deleta o fórum
+        forum.delete()
+
+        return Response({"detail": "Fórum excluído com sucesso."}, status=status.HTTP_200_OK)
+
+
+
 # Listar os foruns (o sistema de busca já vem aqui) (retornar dados simples de vários foruns)
     # Há um queryset de foruns
     # O front deve pedir partes desse queryset
