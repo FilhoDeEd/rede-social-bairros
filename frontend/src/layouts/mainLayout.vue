@@ -18,7 +18,8 @@
 
                 <!-- Right Side: Profile -->
                 <div class="flex items-center">
-                    <button @click="$router.push('/profile')" class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 transition overflow-hidden">
+                    <button @click="$router.push('/profile')"
+                        class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 transition overflow-hidden">
                         <img src="https://via.placeholder.com/40" alt="Profile" class="w-full h-full object-cover">
                     </button>
                 </div>
@@ -26,19 +27,20 @@
         </nav>
 
         <!-- Container principal com flex row -->
-        <div class="flex flex-1 ">
+        <div class="flex flex-1">
             <!-- Sidebar sempre visível -->
             <aside class="w-64 border-r shadow-lg" style="background-color: #D76D65;">
                 <div class="flex flex-col h-full py-6">
                     <nav class="space-y-2">
                         <MenuItem v-for="item in menuItems" :key="item.id" :icon="item.icon" :title="item.title"
-                            :active="activeItem === item.id" @click="activeItem = item.id" :expanded="true" />
+                            :path="item.path" :active="activeItem === item.id" @click="activeItem = item.id"
+                            :expanded="true" />
                     </nav>
                 </div>
             </aside>
 
             <!-- Área de conteúdo -->
-            <div class="flex-1">
+            <div class="flex-1 bg-gray-100 overflow-auto">
                 <slot></slot>
             </div>
         </div>
@@ -47,16 +49,16 @@
 
 <script setup>
 import { ref } from 'vue'
-import MenuItem from '../components/MenuItem.vue'
+import MenuItem from '../components/Sidebar/MenuItem.vue'
 
 const activeItem = ref('home')
 
 const menuItems = [
-    { id: 'home', icon: 'home', title: 'Página Inicial' },
-    { id: 'forums', icon: 'forum', title: 'Fóruns' },
-    { id: 'events', icon: 'event', title: 'Eventos' },
-    { id: 'reports', icon: 'report', title: 'Denúncias' },
-    { id: 'about', icon: 'info', title: 'Sobre' }
+    { id: 'home', icon: 'home', title: 'Página Inicial', path: '/home' },
+    { id: 'forums', icon: 'forum', title: 'Fóruns', path: '/forums' },
+    { id: 'events', icon: 'event', title: 'Eventos', path: '/events' },
+    { id: 'reports', icon: 'report', title: 'Denúncias', path: '/reports' },
+    { id: 'about', icon: 'info', title: 'Sobre', path: '/about' }
 ]
 </script>
 

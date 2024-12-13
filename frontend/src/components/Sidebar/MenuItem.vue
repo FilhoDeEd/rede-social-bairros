@@ -1,6 +1,6 @@
 <template>
-     <button 
-        @click="$emit('click')"
+     <router-link 
+        :to="path"
         :class="[
             'w-full flex items-center px-4 py-3 transition-all duration-200',
             'hover:bg-gray-100 rounded-lg mx-2',
@@ -17,7 +17,7 @@
         >
             {{ title }}
         </span>
-    </button>
+    </router-link>
 </template>
 
 <script setup>
@@ -33,6 +33,10 @@ defineProps({
     active: {
         type: Boolean,
         default: false
+    },
+    path: {
+        type: String,
+        required: true
     },
     expanded: {
         type: Boolean,
