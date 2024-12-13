@@ -74,6 +74,7 @@ class ForumDetailView(APIView):
         serializer = ForumSerializer(forum)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class ForumEditView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -103,7 +104,6 @@ class ForumEditView(APIView):
             return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class ForumDeleteView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -128,25 +128,6 @@ class ForumDeleteView(APIView):
         forum.delete()
 
         return Response({"detail": "Fórum excluído com sucesso."}, status=status.HTTP_200_OK)
-
-
-
-# Listar os foruns (o sistema de busca já vem aqui) (retornar dados simples de vários foruns)
-    # Há um queryset de foruns
-    # O front deve pedir partes desse queryset
-        # Pode pedir um range de objetos (1 a 10, 11 a 20 e etc) ou aplicar um filtro (name contains value, numero de inscritos e etc)
-        # pode ser um paginate (page 1 -> 0 a 29; page 2 -> 30 a 59 e assim vai) (aí recebe a page como argumento)
-    # Deve ter algo pronto para paginação
-    # Um serializer para as informações básicas (serializer queryset -> many=True)
-    # Funciona para o infinit scroll ou para o paginas estáticas
-
-# Detalhar o forum (retorna os dados de um forum)
-    # Possivelmente irá utilizar o mesmo serializer do criar forum
-
-
-# Atualizar os dados do forum (acho que n precisa ser por agr)
-
-# Excluir forum (acho que n precisa ser por agr tbm)
 
 
 class SubscribeView(APIView):

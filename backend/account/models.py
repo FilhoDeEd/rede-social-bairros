@@ -146,7 +146,7 @@ class Account(models.Model):
         with transaction.atomic():
             self.name = 'Anonymous'
             self.surname = 'User'
-            self.birthday = None
+            self.birthday = '1970-1-1'
             self.gender = None
             self.cellphone = None
             self.biography = None

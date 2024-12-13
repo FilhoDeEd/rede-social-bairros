@@ -1,17 +1,17 @@
 
 POST http://localhost:8000/forum/register/
-Authorization: Token ea6ba52f4d1bb15ca2037bf3a073ffc23e184354
+Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
 Content-Type: application/json
 
 {
-  "title": "teste",
+  "title": "Meu Forum",
   "description": "This is an example description for the forum."
 }
 
 ######
 
-POST  http://localhost:8000/forum/edit/teste/ HTTP/1.1
-Authorization: Token ea6ba52f4d1bb15ca2037bf3a073ffc23e184354
+POST  http://localhost:8000/forum/edit/meu-forum/ HTTP/1.1
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
 Content-Type: application/json
 
 {
@@ -21,25 +21,26 @@ Content-Type: application/json
 
 ######
 
-POST  http://localhost:8000/forum/delete/teste/ HTTP/1.1
-Authorization: Token ea6ba52f4d1bb15ca2037bf3a073ffc23e184354
+POST  http://localhost:8000/forum/delete/meu-forum/ HTTP/1.1
+Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
 Content-Type: application/json
 
 ######
+
 GET http://localhost:8000/forum/list/?page=1
-Authorization: Token a10c285f71f9d70b93e6142525f16fd1189cb752
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
 
 ######
 
-GET http://localhost:8000/forum/list/?search=Exam
-Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+GET http://localhost:8000/forum/list/?search=natal
+Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
 
-#######
+######
 
 POST http://localhost:8000/forum/subscribe/1/
 Authorization: Token 056831ef3d4ee2f4043daaa50d7d60394aa7dd62
 
 ######
 
-GET http://localhost:8000/forum/detail/example-forum-title-5-14/
-Authorization: Token d144351b381386263890ee25e3fb9c4a32b1d4a9
+GET http://localhost:8000/forum/detail/meu-forum/
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520

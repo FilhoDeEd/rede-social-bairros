@@ -4,11 +4,16 @@ from django.utils.text import slugify
 from user_profile.models import Neighborhood, UserProfile
 
 
-
 class Forum(models.Model):
-    owner = models.ForeignKey(UserProfile, on_delete=models.PROTECT)
+    class TypeChoices(models.TextChoices):
+        DEFAULT = 'D', 'default'
+        USER = 'U', 'user'
+        EVENT = 'E', 'event'
+
+    owner = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.PROTECT)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.PROTECT, editable=False)
 
+    type = models.CharField(max_length=5, choices=TypeChoices.choices, default=TypeChoices.USER)
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, editable=False)
     description = models.TextField(max_length=2047)
@@ -87,4 +92,4 @@ class Subscriber(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.user_profile} | {self.forum} | {self.subscription_date}' 
+        return f'{self.user_profile} | {self.forum} | {self.subscription_date}'
