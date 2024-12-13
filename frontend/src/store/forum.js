@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { ENDPOINTS } from '../../../api';
-import { apiClient } from './user';
-
+import axios from 'axios';
 export const useForumStore = defineStore('forum', {
   state: () => ({
     forums: [], 
@@ -19,7 +18,7 @@ export const useForumStore = defineStore('forum', {
       this.error = null;
 
       try {
-        const response = await apiClient.get(`${ENDPOINTS.LIST_FORUNS}?page=${page}`);
+        const response = await axios.get(`${ENDPOINTS.LIST_FORUNS}?page=${page}`);
         this.forums = response.data.results;
         this.totalForums = response.data.count;
         this.currentPage = page;
@@ -37,7 +36,7 @@ export const useForumStore = defineStore('forum', {
     async searchForums(query) {
       this.isLoading = true;
       try {
-        const response = await apiClient.get(`${ENDPOINTS.LIST_FORUNS}?search=${query}`);
+        const response = await axios.get(`${ENDPOINTS.LIST_FORUNS}?search=${query}`);
         this.forums = response.data.forums;
         this.totalForums = response.data.count;
         this.currentPage = 1; // Reinicia para a página inicial após a busca

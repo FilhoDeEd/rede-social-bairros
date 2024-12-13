@@ -242,7 +242,7 @@ import MainLayout from "@/layouts/mainLayout.vue";
 import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
 import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore, apiClient } from "../store/user.js"; // Ajuste o caminho conforme necessário
+import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
@@ -371,7 +371,7 @@ export default {
           }
           break;
 
-        case "email":
+        case "email": //remove
           if (!this.form.email) {
             this.errors.email = "Email é obrigatório.";
           } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
@@ -433,7 +433,7 @@ export default {
       this.form.neighborhood_changed = this.form.neighborhood_id !== userStore.user?.neighborhood_id;
 
       try {
-        const response = await apiClient.post(ENDPOINTS.EDIT, this.form, {
+        const response = await axios.post(ENDPOINTS.EDIT, this.form, {
           headers: { "Content-Type": "application/json" },
         });
 
