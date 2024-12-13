@@ -2,11 +2,6 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { ENDPOINTS } from "../../../api";
 
-// Criação da instância global do axios
-const apiClient = axios.create({
-  timeout: 10000, // Timeout opcional para requisições
-});
-
 // Store do usuário
 export const useUserStore = defineStore({
   id: "user",
@@ -60,7 +55,7 @@ export const useUserStore = defineStore({
         this.user.isAuthenticated = true;
 
         // Configurar o cabeçalho Authorization no formato "Token <token>"
-        apiClient.defaults.headers.common["Authorization"] = `Token ${this.user.access}`;
+        axios.defaults.headers.common["Authorization"] = `Token ${this.user.access}`;
         console.log("User initialized", this.user);
       }
     },
@@ -73,7 +68,7 @@ export const useUserStore = defineStore({
       localStorage.setItem("user.access", data.access);
 
       // Atualizar o cabeçalho Authorization no formato "Token <token>"
-      apiClient.defaults.headers.common["Authorization"] = `Token ${data.access}`;
+      axios.defaults.headers.common["Authorization"] = `Token ${data.access}`;
     },
 
     removeToken(){
@@ -117,7 +112,8 @@ export const useUserStore = defineStore({
         localStorage.setItem('user.neighborhood','')
         localStorage.setItem('user.neighborhood_id','')
 
-        delete apiClient.defaults.headers.common["Authorization"];
+        delete axios.defaults.headers.common["Authorization"];
+        console.log("Logged Out")
     },
 
     setUserInfo(user){
@@ -161,7 +157,7 @@ export const useUserStore = defineStore({
 
     async refreshToken() {
       try {
-        const response = await apiClient.post(ENDPOINTS.REFRESH, {
+        const response = await axios.post(ENDPOINTS.REFRESH, {
           refresh: this.user.refresh,
         });
 
@@ -169,7 +165,7 @@ export const useUserStore = defineStore({
         localStorage.setItem("user.access", response.data.access);
 
         // Atualizar o cabeçalho Authorization no formato "Token <token>"
-        apiClient.defaults.headers.common["Authorization"] = `Token ${response.data.access}`;
+        axios.defaults.headers.common["Authorization"] = `Token ${response.data.access}`;
       } catch (error) {
         console.error(error);
         this.removeToken();
@@ -178,5 +174,3 @@ export const useUserStore = defineStore({
   },
 });
 
-// Exportar a instância personalizada para outros arquivos
-export { apiClient };

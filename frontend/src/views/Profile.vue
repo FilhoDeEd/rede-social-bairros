@@ -194,112 +194,89 @@
                         </select>
                       </div>
                     </div>
-
                   </div>
+                  <section class="flex justify-center items-center">
+                    <div class="flex space-x-4">
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="openModalNeighChange()">
+                        Alterar Bairro
+                      </button>
+
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="openModalPasswordChange()">
+                        Alterar Senha
+                      </button>
+
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="logout()">
+                        Deslogar
+                      </button>
+
+                      <button type="button"
+                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
+                        @click="openModalConfirm()">
+                        Excluir conta
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </div>
             </div>
           </form>
         </div>
+
       </section>
 
-      <section id="dataLocation" class="relative py-16 bg-blueGray-200">
-        <div class="container mx-auto px-4">
-          <form @submit.prevent="handleSubmit">
-            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
-              <div class="px-6 justify-end">
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Estado</label>
-                  <select v-model="form.state" :value="userStore.user.state"
-                    @change="[fetchCities, validateField('state')]" :disabled="!editMode"
-                    class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option v-for="state in states" :key="state.code" :value="state.code">
-                      {{ state.name }}
-                    </option>
-                  </select>
-                </div>
-
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Cidade</label>
-                  <select v-model="form.locality" @change="[fetchNeighborhoods, validateField('locality')]"
-                    :disabled="!editMode"
-                    class="border-0 px-3 py-3 bg-white text-blueGray-600 rounded text-sm shadow focus:outline-none focus:ring w-full">
-                    <option v-for="city in cities" :key="city.name" :value="city.name">
-                      {{ city.name }}
-
-                    </option>
-                  </select>
-                </div>
-
-                <div class="relative w-full mt-4">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Bairro</label>
-                  <select v-model="form.neighborhood" @change="validateField('neighborhood')" :disabled="!editMode"
-                    class="w-full bg-white border border-gray-300 rounded px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-blue-500">
-                    <option v-for="neighborhood in neighborhoods" :key="neighborhood.id" :value="neighborhood.id">
-                      {{ neighborhood.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </section>
-
+      <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword"></ModalChangePassword>
+      <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange"></ModalChangeNeighborhood>
     </main>
   </main-layout>
 </template>
 
 <script>
 /* eslint-disable */
-import axios from "axios";
 import MainLayout from "@/layouts/mainLayout.vue";
+import ModalChangeNeighborhood from "../components/Modals/ModalChangeNeighborhood.vue";
+import ModalChangePassword from "../components/Modals/ModalChangePassword.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore, apiClient } from "@/store/user.js"; // Ajuste o caminho conforme necessário
+import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
+import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
 
 export default {
+
   components: {
     MainLayout,
+    ModalChangeNeighborhood,
+    ModalChangePassword,
   },
   data() {
+
     return {
-      form: {
-        name: "",
-        surname: "",
-        email: "",
-        cellphone: "",
-        gender: "",
-        biography: "",
-        birthday: "",
-        state: "",
-        locality: "",
-        neighborhood: "",
-        neighborhood_id: "",
-        neighborhood_changed: "",
-      },
-      states: [], // Lista de estados
-      cities: [], // Lista de cidades
-      neighborhoods: [], // Lista de bairros
       profileImage: null, // Variável para armazenar a nova imagem ou a atual
-      errors: {},
+      errors: {}, // Armazena os erros de validação
       editMode: false, // Determina se o formulário está em modo de edição
-      team2,
+      team2, // Imagem do time
+      isModalNeighChangeOpen: false,
+      isModalChangePasswordOpen: false,
+
+      router,
     };
   },
   setup() {
     const userStore = useUserStore();
 
-    // // Inicializar o store e configurar o token
-    // onBeforeMount(() => {
-    //   const token = userStore.user?.access;
-    //   if (token) {
-    //     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-    //   } else {
-    //     axios.defaults.headers.common["Authorization"] = "";
-    //   }
-    // });
+    // Verifica a autenticação do usuário antes de montar o componente
+    onBeforeMount(() => {
+      if (!userStore.user.isAuthenticated) {
+        alert("Autenticação necessária");
+        router.push("/login");
+      }
+    });
 
     // Reactive form state
     const form = reactive({
@@ -310,13 +287,7 @@ export default {
       gender: userStore.user?.gender || "",
       biography: userStore.user?.biography || "",
       birthday: userStore.user?.birthday || "",
-      state: userStore.user?.state || "",
-      locality: userStore.user?.locality || "",
-      neighborhood: userStore.user?.neighborhood || "",
-      neighborhood_id: userStore.user?.neighborhood_id || "",
-      neighborhood_changed: false,
     });
-    console.log(form)
 
     return {
       userStore, // Expor o store para uso no template
@@ -324,55 +295,34 @@ export default {
     };
   },
 
-  async mounted() {
-    await this.fetchStates();
-  },
-
-
   methods: {
-    onStateChange(event) {
-      this.fetchCities();
-      this.validateField('state');
-    },
-    async fetchStates() {
-      try {
-        const response = await axios.get(ENDPOINTS.STATES);
-        this.states = response.data;
-      } catch (error) {
-        alert("Erro ao carregar os estados.");
-      }
-    },
-    async fetchCities() {
-      if (!this.form.state) {
-        this.cities = [];
-        this.neighborhoods = [];
-        return;
-      }
-      try {
-        const response = await axios.get(`${ENDPOINTS.CITIES}/${this.form.state}/`);
-        this.cities = response.data;
-        this.neighborhoods = []; // Resetar bairros ao alterar a cidade
-      } catch (error) {
-        alert("Erro ao carregar as cidades.");
-      }
-    },
-    onCityChange(event) {
-      this.fetchNeighborhoods();
-      this.validateField('locality');
-    },
-    async fetchNeighborhoods() {
-      if (!this.form.locality) {
-        this.neighborhoods = [];
-        return;
-      }
-      try {
-        const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
-        this.neighborhoods = response.data;
-      } catch (error) {
-        alert("Erro ao carregar os bairros.");
-      }
+    // Abre o modal
+    openModalNeighChange() {
+      this.isModalNeighChangeOpen = true;
     },
 
+    // Fecha o modal
+    closeModalNeighChange() {
+      this.isModalNeighChangeOpen = false;
+    },
+
+    // Abre o modal
+    openModalPasswordChange() {
+      this.isModalChangePasswordOpen = true;
+    },
+
+    // Fecha o modal
+    closeModalChangePassword() {
+      this.isModalChangePasswordOpen = false;
+    },
+
+    //Logout
+    logout(){
+      this.userStore.removeToken()
+      router.push('/login')
+    },
+
+    // Alterna entre modo de edição e visualização
     toggleEdition() {
       if (this.editMode) {
         // Salvar: valida campos antes de alternar
@@ -383,22 +333,15 @@ export default {
         }
       }
       this.editMode = !this.editMode;
-      if (this.editMode == false) {
-        this.handleSubmit()
+      if (!this.editMode) {
+        this.handleSubmit();
       }
     },
 
-    onFocus() {
-    },
-    onBlur() {
-    },
-
-
-
     validateField(field) {
-      const calculateAge = (birthDate) => {
+      const calculateAge = (birthday) => {
         const today = new Date();
-        const birth = new Date(birthDate);
+        const birth = new Date(birthday);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDifference = today.getMonth() - birth.getMonth();
         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
@@ -408,27 +351,62 @@ export default {
       };
 
       switch (field) {
-        case "birthDate":
-          if (!this.form.birthDate) {
-            this.errors.birthDate = "Birth Date is required.";
-          } else if (calculateAge(this.form.birthDate) < 16) {
-            this.errors.birthDate = "You must be at least 16 years old.";
+        case "name":
+          if (!this.form.name) {
+            this.errors.name = "Nome é obrigatório.";
+          } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(this.form.name)) {
+            this.errors.name = "Nome inválido. Apenas letras e espaços são permitidos.";
           } else {
-            this.errors.birthDate = "";
+            this.errors.name = "";
           }
           break;
-        case "email":
+
+        case "surname":
+          if (!this.form.surname) {
+            this.errors.surname = "Sobrenome é obrigatório.";
+          } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(this.form.surname)) {
+            this.errors.surname = "Sobrenome inválido. Apenas letras e espaços são permitidos.";
+          } else {
+            this.errors.surname = "";
+          }
+          break;
+
+        case "email": //remove
           if (!this.form.email) {
-            this.errors.email = "Email is required.";
+            this.errors.email = "Email é obrigatório.";
           } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
-            this.errors.email = "Invalid email format.";
+            this.errors.email = "Formato de email inválido.";
           } else {
             this.errors.email = "";
           }
           break;
-        case "username":
-          // this.errors.username = this.form.username ? "" : "Username is required.";
+
+        case "cellphone":
+          if (!/^\(\d{2}\)\s\d{5}-\d{4}$/.test(this.form.cellphone)) {
+            this.errors.cellphone = "Formato de celular inválido. Exemplo: (11) 98765-4321";
+          } else {
+            this.errors.cellphone = "";
+          }
           break;
+
+        case "birthday":
+          if (!this.form.birthday) {
+            this.errors.birthday = "Data de nascimento é obrigatória.";
+          } else if (calculateAge(this.form.birthday) < 16) {
+            this.errors.birthday = "Você deve ter pelo menos 16 anos.";
+          } else {
+            this.errors.birthday = "";
+          }
+          break;
+
+        case "biography":
+          if (this.form.biography.length > 300) {
+            this.errors.biography = "A biografia deve ter no máximo 300 caracteres.";
+          } else {
+            this.errors.biography = "";
+          }
+          break;
+
         case "password":
           this.errors.password = this.form.password
             ? (/[A-Z]/.test(this.form.password) ? "" : "A senha deve conter ao menos uma letra maiúscula.") ||
@@ -438,25 +416,30 @@ export default {
             (this.form.password.length >= 8 ? "" : "A senha deve ter no mínimo 8 caracteres.")
             : "A senha é obrigatória.";
           break;
+
+        default:
+          this.errors[field] = "";
       }
     },
 
+
+    // Envia os dados do formulário para o backend
     async handleSubmit() {
-      const userStore = useUserStore();
-      
+      const userStore = this.userStore;
+
       // Preserva o username original apenas se ele existir
       const originalUsername = userStore.user?.username;
-      
+
       this.form.neighborhood_changed = this.form.neighborhood_id !== userStore.user?.neighborhood_id;
 
       try {
-        const response = await apiClient.post(ENDPOINTS.EDIT, this.form, {
+        const response = await axios.post(ENDPOINTS.EDIT, this.form, {
           headers: { "Content-Type": "application/json" },
         });
-        
+
         // Usar os dados retornados da API
         const updatedData = response.data;
-        
+
         // Atualizar o userStore com os dados retornados
         userStore.setUserInfo({
           ...this.form,
@@ -466,7 +449,7 @@ export default {
 
         alert("Perfil atualizado com sucesso!");
       } catch (error) {
-        // Tratamento de erro mais específico 
+        // Tratamento de erro mais específico
         if (error.response?.data?.errors) {
           for (const [field, messages] of Object.entries(error.response.data.errors)) {
             this.errors[field] = Array.isArray(messages) ? messages.join(" ") : messages;
