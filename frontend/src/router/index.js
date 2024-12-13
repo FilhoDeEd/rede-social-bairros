@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
 import Profile from '../views/Profile.vue';
-
 import Landing from '@/views/Landing.vue';
 import Admin from "@/layouts/Admin.vue";
 import Auth from "@/layouts/Auth.vue";
@@ -60,44 +59,62 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/auth/login'
   },
   {
     path: '/home',
     component: Landing,
-    name: 'home'
+    name: 'home',
+    meta: { requiresAuth: true }
   },
   {
     path: '/forums',
     component: ForumPage,
-    name: 'forums'
+    name: 'forums',
+    meta: { requiresAuth: true }
   },
   {
     path: '/events',
     component: EventPage,
-    name: 'events'
+    name: 'events',
+    meta: { requiresAuth: true }
   },
   {
     path: '/reports',
     component: ReportPage,
-    name: 'reports'
+    name: 'reports',
+    meta: { requiresAuth: true }
   },
   {
     path: '/about',
     component: AboutPage,
-    name: 'about'
+    name: 'about',
+    meta: { requiresAuth: true }
   },
   {
     path: '/profile',
     component: Profile,
-    name: 'profile'
+    name: 'profile',
+    meta: { requiresAuth: true }
   },
-  { path: "/:pathMatch(.*)*", redirect: "/" },
+  { path: "/:pathMatch(.*)*", redirect: "/auth/login" },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('user.access') !== null;
+  
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/auth/login');
+  } else if (to.path.startsWith('/auth') && isAuthenticated) {
+    next('/home');
+  } else {
+    next();
+  }
 });
 
 export default router;
