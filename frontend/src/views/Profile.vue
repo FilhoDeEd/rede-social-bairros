@@ -458,30 +458,23 @@ export default {
       this.handleSubmit();
     },
 
-    // Envia os dados do formulário para o backend
     async handleSubmit() {
       const userStore = this.userStore;
 
-      // // Preserva o username original apenas se ele existir
-      // const originalUsername = userStore.user.account.username;
       try {
         const response = await axios.post(ENDPOINTS.EDIT, this.form, {
           headers: { "Content-Type": "application/json" },
         });
-
-        // Usar os dados retornados da API
         const updatedData = response.data;
 
-        // Atualizar o userStore com os dados retornados
         userStore.setUserInfo({
           ...this.form,
           ...updatedData,
-          // ...(originalUsername && { username: originalUsername })
         });
 
         alert("Perfil atualizado com sucesso!");
       } catch (error) {
-        // Tratamento de erro mais específico
+
         if (error.response?.data?.errors) {
           for (const [field, messages] of Object.entries(error.response.data.errors)) {
             this.errors[field] = Array.isArray(messages) ? messages.join(" ") : messages;
