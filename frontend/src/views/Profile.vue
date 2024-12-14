@@ -323,9 +323,19 @@ export default {
     },
 
     //Logout
-    logout(){
+    async logout() {
+      console.log('Iniciando logout...');
       this.userStore.removeToken();
-      this.router.push('/auth/login');
+      this.userStore.$reset();
+      
+      console.log('Token após remoção:', localStorage.getItem('user.access'));
+      
+      localStorage.removeItem('user.access');
+      localStorage.clear();
+      
+      console.log('Redirecionando para login...');
+      await this.router.push('/auth/login');
+      window.location.reload();
     },
 
     async delete_account(){

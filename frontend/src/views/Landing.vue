@@ -2,12 +2,13 @@
   <mainLayout>
     <div class="container mx-auto py-8 px-4">
       <main>
-        <section id="contenido">
+        <section id="conteudo">
           <h1 class="text-xl font-bold mb-4">Postagens</h1>
-          <div class="space-y-4">
+          <div class="space-y-4 w-3/4 pl-4">
             <article v-for="forum in forumStore.forums" :key="forum.forum_id"
-              class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
-              style="background-color: rgba(124, 122, 187, 1);">
+              class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+              style="background-color: rgba(124, 122, 187, 1);"
+              @click="navigateToForum(forum.slug)">
               <div class="flex h-full">
                 <!-- Imagem à esquerda -->
                 <div class="w-1/4 flex items-center">
@@ -17,15 +18,15 @@
 
                 <!-- Conteúdo à direita -->
                 <div class="flex-1 pl-8 text-right flex flex-col justify-between h-full">
-                  <a href="#" class="text-white flex flex-col h-full justify-between">
-                    <h2 :value="forum.title" class="text-4xl font-semibold mb-8">
+                  <div class="text-white flex flex-col h-full justify-between">
+                    <h2 :value="forum.title" class="text-4xl font-semibold mb-8 hover:text-gray-200">
                       {{ forum.title }}
                     </h2>
                     <div class="text-2xl text-gray-100 flex flex-col justify-between flex-grow">
                       <p class="mb-auto leading-relaxed">{{ forum.description }}</p>
                       <p class="mt-8">Popularidade: {{ forum.popularity }}</p>
                     </div>
-                  </a>
+                  </div>
                 </div>
               </div>
             </article>
@@ -39,6 +40,7 @@
 <script>
 import { useForumStore } from '@/store/forum.js';
 import { useUserStore } from '@/store/user.js';
+import { useRouter } from 'vue-router';
 import { onBeforeMount } from "vue";
 import mainLayout from '@/layouts/mainLayout.vue';
 
@@ -50,6 +52,7 @@ export default {
   setup() {
     const forumStore = useForumStore();
     const userStore = useUserStore();
+    const router = useRouter();
 
     onBeforeMount(() => {
       userStore.initStore();
@@ -60,14 +63,19 @@ export default {
       }
     });
 
-    const fetchForums = (page) => {
-      forumStore.fetchForums(page);
+    const navigateToForum = (slug) => {
+      console.log('Slug do fórum:', slug);
+      if (!slug) {
+        console.error('Slug não encontrado para o fórum');
+        return;
+      }
+      router.push(`/forums/${slug}`);
     };
 
     return {
       forumStore,
       userStore,
-      fetchForums,
+      navigateToForum,
     };
   },
 };

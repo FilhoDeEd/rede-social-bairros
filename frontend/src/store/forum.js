@@ -11,6 +11,7 @@ export const useForumStore = defineStore('forum', {
     previous: null, 
     isLoading: false, 
     error: null, 
+    currentForum: null,
   }),
   actions: {
     async fetchForums(page = 1) {
@@ -19,6 +20,8 @@ export const useForumStore = defineStore('forum', {
 
       try {
         const response = await axios.get(`${ENDPOINTS.LIST_FORUNS}?page=${page}`);
+        //a rever - André
+        console.log('Dados recebidos da API:', response.data.results); // Debug
         this.forums = response.data.results;
         this.totalForums = response.data.count;
         this.currentPage = page;
@@ -49,6 +52,37 @@ export const useForumStore = defineStore('forum', {
         this.isLoading = false;
       }
     },
+
+    //a rever - André
+    async fetchForumDetails(slug) {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        console.log('Buscando fórum com slug:', slug); // Debug
+        const response = await axios.get(`${ENDPOINTS.FORUM_DETAIL}/${slug}`);
+        console.log('Resposta da API:', response.data); // Debug
+        this.currentForum = response.data;
+        return response.data;
+      } catch (error) {
+        console.error('URL completa:', `${ENDPOINTS.FORUM_DETAIL}/${slug}`); // Debug
+        console.error('Erro completo:', error); // Debug
+        this.error = 'Erro ao carregar os detalhes do fórum.';
+        throw error;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    async submitReply(payload) {
+      try {
+        const response = await axios.post(ENDPOINTS.FORUM_REPLY, payload);
+        return response.data;
+      } catch (error) {
+        console.error('Erro ao enviar resposta:', error);
+        throw error;
+      }
+    }
   },
   getters: {
     totalPages: (state) => Math.ceil(state.totalForums / state.pageSize),

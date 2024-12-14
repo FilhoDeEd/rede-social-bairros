@@ -17,6 +17,7 @@ import ForumPage from '@/views/ForumPage.vue';
 import EventPage from '@/views/EventPage.vue';
 import ReportPage from '@/views/ReportPage.vue';
 import AboutPage from '@/views/AboutPage.vue';
+import ForumDetailPage from '@/views/ForumDetailPage.vue';
 
 const routes = [
   {
@@ -71,6 +72,12 @@ const routes = [
     path: '/forums',
     component: ForumPage,
     name: 'forums',
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/forums/:slug',
+    component: ForumDetailPage,
+    name: 'forum-detail',
     meta: { requiresAuth: true }
   },
   {
