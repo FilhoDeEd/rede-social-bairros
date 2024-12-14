@@ -15,8 +15,8 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='account_register'),
     path('login/', LoginView.as_view(), name='account_login'),
     path('update/', UpdateAccountBaseView.as_view(), name='account_update'),
-    path('anonymize/', AnonymizeAccountView.as_view(), name='account_anonymize'),
     path('update-neighborhood/', UpdateNeighborhoodView.as_view(), name='update_neighborhood'),
     path('update-email/', UpdateAccountEmailView.as_view(), name='update_email'),
     path('update-password/', UpdateAccountPasswordView.as_view(), name='update_password'),
+    path('anonymize/', AnonymizeAccountView.as_view(), name='account_anonymize'),
 ]

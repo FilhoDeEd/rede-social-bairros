@@ -207,16 +207,7 @@ class AnonymizeAccountView(APIView):
 
     def post(self, request):
         account = request.user.account
-        username = request.data.get('emailOrUsername', '').strip()
-        password = request.data.get('password', '').strip()
-
-        if not username or not password:
-            return Response({'detail': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        user = authenticate(username=username, password=password)
-        if not user or user != account.user:
-            raise AuthenticationFailed('Invalid credentials.')
-
+        
         try:
             with transaction.atomic():
                 account.anonymize()

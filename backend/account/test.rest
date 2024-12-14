@@ -88,7 +88,3 @@ POST http://localhost:8000/account/anonymize/ HTTP/1.1
 Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
 Content-Type: application/json
 
-{
-    "emailOrUsername": "jhon.deot.hdwq@gmail.com",
-    "password": "senha@19282"
-}
