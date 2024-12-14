@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { ENDPOINTS } from "../../../api";
 
-// Store do usuário
+
 export const useUserStore = defineStore({
   id: "user",
 
@@ -10,53 +9,66 @@ export const useUserStore = defineStore({
     user: {
       isAuthenticated: false,
       access: null,
-      refresh: null,
 
-      id: null,
-      name: null,
-      surname: null,
-      email: null,
-      username: null,
-      cellphone: null,
-      gender: null,
-      biography: null,
-      birthday: null,
-      status: null,
+      account: {
+        id: null,
+        username: null,
+        name: null,
+        surname: null,
+        gender: null,
+        birthday: null,
+        email: null,
+        cellphone: null,
+        agree_policy: null,
+        biography: null
+      },
 
-      state: null,
-      locality: null,
-      neighborhood: null,
-      neighborhood_id: null,
+      user_profle: {
+        id: null,
+        trust_rate: null,
+        active: null,
+        status: null
+      },
+
+      address: {
+        id: null,
+        state: null,
+        locality: null,
+        neighborhood: null
+      }
     },
   }),
 
   actions: {
     initStore() {
       if (localStorage.getItem("user.access")) {
-        this.user.access = localStorage.getItem("user.access");
-        this.user.refresh = localStorage.getItem("user.refresh");
-
-        this.user.id = localStorage.getItem("user.id");
-        this.user.email = localStorage.getItem("user.email");
-        this.user.name = localStorage.getItem("user.name");
-        this.user.surname = localStorage.getItem("user.surname");
-        this.user.username = localStorage.getItem("user.username");
-        this.user.cellphone = localStorage.getItem("user.cellphone");
-        this.user.gender = localStorage.getItem("user.gender");
-        this.user.biography = localStorage.getItem("user.biography");
-        this.user.birthday = localStorage.getItem("user.birthday");
-        this.user.status = localStorage.getItem("user.status");
-
-        this.user.state = localStorage.getItem("user.state");
-        this.user.locality = localStorage.getItem("user.locality");
-        this.user.neighborhood = localStorage.getItem("user.neighborhood");
-        this.user.neighborhood_id = localStorage.getItem("user.neighborhood_id");
-
-        this.user.isAuthenticated = true;
-
-        // Configurar o cabeçalho Authorization no formato "Token <token>"
-        axios.defaults.headers.common["Authorization"] = `Token ${this.user.access}`;
-        console.log("User initialized", this.user);
+          this.user.access = localStorage.getItem("user.access");
+      
+          this.user.account.id = localStorage.getItem("user.account.id");
+          this.user.account.username = localStorage.getItem("user.account.username");
+          this.user.account.name = localStorage.getItem("user.account.name");
+          this.user.account.surname = localStorage.getItem("user.account.surname");
+          this.user.account.gender = localStorage.getItem("user.account.gender");
+          this.user.account.birthday = localStorage.getItem("user.account.birthday");
+          this.user.account.email = localStorage.getItem("user.account.email");
+          this.user.account.cellphone = localStorage.getItem("user.account.cellphone");
+          this.user.account.agree_policy = localStorage.getItem("user.account.agree_policy");
+          this.user.account.biography = localStorage.getItem("user.account.biography");
+      
+          this.user.user_profle.id = localStorage.getItem("user.user_profle.id");
+          this.user.user_profle.trust_rate = localStorage.getItem("user.user_profle.trust_rate");
+          this.user.user_profle.active = localStorage.getItem("user.user_profle.active");
+          this.user.user_profle.status = localStorage.getItem("user.user_profle.status");
+      
+          this.user.address.id = localStorage.getItem("user.address.id");
+          this.user.address.state = localStorage.getItem("user.address.state");
+          this.user.address.locality = localStorage.getItem("user.address.locality");
+          this.user.address.neighborhood = localStorage.getItem("user.address.neighborhood");
+      
+          this.user.isAuthenticated = true;
+    
+          axios.defaults.headers.common["Authorization"] = `Token ${this.user.access}`;
+          console.log("User initialized", this.user);
       }
     },
 
@@ -67,110 +79,123 @@ export const useUserStore = defineStore({
       this.user.isAuthenticated = true;
       localStorage.setItem("user.access", data.access);
 
-      // Atualizar o cabeçalho Authorization no formato "Token <token>"
       axios.defaults.headers.common["Authorization"] = `Token ${data.access}`;
     },
 
-    removeToken(){
-        this.user.access = null
-        this.user.refresh = null
-        this.user.isAutheticated = false
-        this.user.id = false
-        this.user.name = false
-        this.user.email = false
-        this.user.surname= false
-        this.user.username= false
-        this.user.cellphone= false
-        this.user.gender= false
-        this.user.biography= false
-        this.user.birthday= false
-        this.user.status= false
+    removeToken() {
+      this.user.access = null;
+      this.user.isAuthenticated = false;
 
-        
-        this.user.state= false
-        this.user.locality= false
-        this.user.neighborhood= false
-        this.user.neighborhood_id= false
+      this.user.account = {
+        id: null,
+        username: null,
+        name: null,
+        surname: null,
+        gender: null,
+        birthday: null,
+        email: null,
+        cellphone: null,
+        agree_policy: null,
+        biography: null
+      };
 
+      this.user.user_profle = {
+        id: null,
+        trust_rate: null,
+        active: null,
+        status: null
+      };
 
-        localStorage.setItem('user.access','')
-        localStorage.setItem('user.refresh','')
-
-        localStorage.setItem('user.id','')
-        localStorage.setItem('user.name','')
-        localStorage.setItem('user.email','')
-        localStorage.setItem('user.surname','')
-        localStorage.setItem('user.username','')
-        localStorage.setItem('user.cellphone','')
-        localStorage.setItem('user.gender','')
-        localStorage.setItem('user.biography','')
-        localStorage.setItem('user.birthday','')
-        localStorage.setItem('user.status','')
-
-        localStorage.setItem('user.state','')
-        localStorage.setItem('user.locality','')
-        localStorage.setItem('user.neighborhood','')
-        localStorage.setItem('user.neighborhood_id','')
-
-        delete axios.defaults.headers.common["Authorization"];
-        console.log("Logged Out")
+      this.user.address = {
+        id: null,
+        state: null,
+        locality: null,
+        neighborhood: null
+      };
+    
+      localStorage.setItem("user.access", "");
+    
+      localStorage.setItem("user.account.id", "");
+      localStorage.setItem("user.account.username", "");
+      localStorage.setItem("user.account.name", "");
+      localStorage.setItem("user.account.surname", "");
+      localStorage.setItem("user.account.gender", "");
+      localStorage.setItem("user.account.birthday", "");
+      localStorage.setItem("user.account.email", "");
+      localStorage.setItem("user.account.cellphone", "");
+      localStorage.setItem("user.account.agree_policy", "");
+      localStorage.setItem("user.account.biography", "");
+    
+      localStorage.setItem("user.user_profle.id", "");
+      localStorage.setItem("user.user_profle.trust_rate", "");
+      localStorage.setItem("user.user_profle.active", "");
+      localStorage.setItem("user.user_profle.status", "");
+    
+      localStorage.setItem("user.address.id", "");
+      localStorage.setItem("user.address.state", "");
+      localStorage.setItem("user.address.locality", "");
+      localStorage.setItem("user.address.neighborhood", "");
+    
+      axios.defaults.headers.common["Authorization"] = "";
+    
+      console.log("Logged Out");
     },
 
-    setUserInfo(user){
-        console.log("setUserInfo",user)
+    setUserInfo(data) {
+      console.log("setUserInfo", data);
+    
+      this.user.account = {
+        id: data.account_id || null,
+        username: data.username || null,
+        name: data.name || null,
+        surname: data.surname || null,
+        gender: data.gender || null,
+        birthday: data.birthday || null,
+        email: data.email || null,
+        cellphone: data.cellphone || null,
+        agree_policy: data.agree_policy || null,
+        biography: data.biography || null
+      };
+    
+      this.user.user_profle = {
+        id: data.user_profile_id || null,
+        trust_rate: data.trust_rate || null,
+        active: data.active || null,
+        status: data.status || null
+      };
+    
+      this.user.address = {
+        id: data.neighborhood_id || null,
+        state: data.state || null,
+        locality: data.locality || null,
+        neighborhood: data.neighborhood || null
+      };
 
-        this.user.id = user.id
-        this.user.name = user.name
-        this.user.email = user.email
-        this.user.surname = user.surname
-        this.user.username = user.username
-        this.user.cellphone = user.cellphone
-        this.user.gender = user.gender
-        this.user.biography = user.biography
-        this.user.birthday = user.birthday
-        this.user.status = user.status
-
-        
-        this.user.state= user.state
-        this.user.locality= user.locality
-        this.user.neighborhood= user.neighborhood
-        this.user.neighborhood_id= user.neighborhood_id
-
-        localStorage.setItem('user.id', this.user.id)
-        localStorage.setItem('user.name', this.user.name)
-        localStorage.setItem('user.email', this.user.email)
-        localStorage.setItem('user.surname', this.user.surname)
-        localStorage.setItem('user.username', this.user.username)
-        localStorage.setItem('user.cellphone', this.user.cellphone)
-        localStorage.setItem('user.gender', this.user.gender)
-        localStorage.setItem('user.biography', this.user.biography)
-        localStorage.setItem('user.birthday', this.user.birthday)
-        localStorage.setItem('user.status', this.user.status)
-
-        localStorage.setItem('user.state', this.user.state)
-        localStorage.setItem('user.locality', this.user.locality)
-        localStorage.setItem('user.neighborhood', this.user.neighborhood)
-        localStorage.setItem('user.neighborhood_id', this.user.neighborhood_id)
-
-        console.log('User', this.user)
-    },
-
-    async refreshToken() {
-      try {
-        const response = await axios.post(ENDPOINTS.REFRESH, {
-          refresh: this.user.refresh,
-        });
-
-        this.user.access = response.data.access;
-        localStorage.setItem("user.access", response.data.access);
-
-        // Atualizar o cabeçalho Authorization no formato "Token <token>"
-        axios.defaults.headers.common["Authorization"] = `Token ${response.data.access}`;
-      } catch (error) {
-        console.error(error);
-        this.removeToken();
-      }
-    },
+      localStorage.setItem("user.access", this.user.access || "");
+    
+      localStorage.setItem("user.account.id", this.user.account.id || "");
+      localStorage.setItem("user.account.username", this.user.account.username || "");
+      localStorage.setItem("user.account.name", this.user.account.name || "");
+      localStorage.setItem("user.account.surname", this.user.account.surname || "");
+      localStorage.setItem("user.account.gender", this.user.account.gender || "");
+      localStorage.setItem("user.account.birthday", this.user.account.birthday || "");
+      localStorage.setItem("user.account.email", this.user.account.email || "");
+      localStorage.setItem("user.account.cellphone", this.user.account.cellphone || "");
+      localStorage.setItem("user.account.agree_policy", this.user.account.agree_policy || "");
+      localStorage.setItem("user.account.biography", this.user.account.biography || "");
+    
+      localStorage.setItem("user.user_profle.id", this.user.user_profle.id || "");
+      localStorage.setItem("user.user_profle.trust_rate", this.user.user_profle.trust_rate || "");
+      localStorage.setItem("user.user_profle.active", this.user.user_profle.active || "");
+      localStorage.setItem("user.user_profle.status", this.user.user_profle.status || "");
+    
+      localStorage.setItem("user.address.id", this.user.address.id || "");
+      localStorage.setItem("user.address.state", this.user.address.state || "");
+      localStorage.setItem("user.address.locality", this.user.address.locality || "");
+      localStorage.setItem("user.address.neighborhood", this.user.address.neighborhood || "");
+    
+      console.log("User", this.user);
+    }
   },
 });
 

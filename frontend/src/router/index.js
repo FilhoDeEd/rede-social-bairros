@@ -1,24 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router';
+//import Home from '../views/Landing.vue';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
-import Profile from '../views/Profile.vue';
-import Landing from '@/views/Landing.vue';
+import Profile from '../views/Profile.vue'
+// layouts
+import mainLayout from '@/layouts/mainLayout.vue'
+
+
+import Landing from '@/views/Landing.vue'
 import Admin from "@/layouts/Admin.vue";
 import Auth from "@/layouts/Auth.vue";
-
 // views for Admin layout
+
 import Dashboard from "@/views/admin/Dashboard.vue";
 import Settings from "@/views/admin/Settings.vue";
 import Tables from "@/views/admin/Tables.vue";
 import Maps from "@/views/admin/Maps.vue";
 
-// views for main layout
-import ForumPage from '@/views/ForumPage.vue';
-import EventPage from '@/views/EventPage.vue';
-import ReportPage from '@/views/ReportPage.vue';
-import AboutPage from '@/views/AboutPage.vue';
+
+// views without layouts
+import Index from "@/views/Index.vue";
+
+/* eslint-disable */
+
 
 const routes = [
+  
   {
     path: "/admin",
     redirect: "/admin/dashboard",
@@ -55,66 +62,47 @@ const routes = [
         path: "/auth/register",
         component: Register,
       },
+      {
+        path: "/",
+        component: Login
+      },
     ],
   },
-  {
-    path: '/',
-    redirect: '/auth/login'
-  },
+  // {
+  //   path: "/home",
+  //   component: Home,
+  // },
   {
     path: '/home',
     component: Landing,
-    name: 'home',
-    meta: { requiresAuth: true }
+    children: [
+      {
+        path: '',
+        component: mainLayout,  // Mudança aqui
+        name: 'mainLayout'  // Opcional: também atualizei o nome
+      },
+      // Outras rotas permanecem iguais
+    ]
   },
   {
-    path: '/forums',
-    component: ForumPage,
-    name: 'forums',
-    meta: { requiresAuth: true }
+    path: "/index",
+    component: Index,
   },
   {
-    path: '/events',
-    component: EventPage,
-    name: 'events',
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/reports',
-    component: ReportPage,
-    name: 'reports',
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/about',
-    component: AboutPage,
-    name: 'about',
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/profile',
+    path: "/profile",
     component: Profile,
-    name: 'profile',
-    meta: { requiresAuth: true }
+    name: 'Profile',
   },
-  { path: "/:pathMatch(.*)*", redirect: "/auth/login" },
+  // {
+  //   path: "/",
+  //   component: Index,
+  // },
+  { path: "/:pathMatch(.*)*", redirect: "/" },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-});
-
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('user.access') !== null;
-  
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/auth/login');
-  } else if (to.path.startsWith('/auth') && isAuthenticated) {
-    next('/home');
-  } else {
-    next();
-  }
 });
 
 export default router;

@@ -105,7 +105,7 @@
 
 <script>
 /* eslint-disable */
-import { useRouter } from 'vue-router';
+import router from '../../router/index.js';
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
 import axios from 'axios';
@@ -114,19 +114,20 @@ export default {
   data() {
     return {
       form: {
-        emailOrUsername: '', // Pode ser email ou username
+        emailOrUsername: '',
         password: ''
       },
-      errors: {}
+      errors: {},
+      router
     };
   },
+
   setup() {
-    const router = useRouter();
     const userStore = useUserStore()
-    return { router, userStore };
+    return { userStore };
   },
+
   methods: {
-    // Validação de campos
     validateField(field) {
       switch (field) {
         case 'emailOrUsername':
@@ -144,40 +145,30 @@ export default {
       }
     },
 
-    // Função de login
     async handleLogin() {
 
-      // Validar os campos
       Object.keys(this.form).forEach((field) => this.validateField(field));
 
-      // Verifica se há erros
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
-
       
       try {
-        console.log(this.form.emailOrUsername, this.form.password)
-        // Requisição de login usando o apiClient
+        console.log("Vasco")
         const loginResponse = await axios.post(ENDPOINTS.LOGIN, this.form);
-        
-        // Configurar o token no store e no apiClient
+        console.log(loginResponse.data)
+        console.log(loginResponse.errors)
+        console.log("Flamengo")
         this.userStore.setToken(loginResponse.data);
 
-        // Obter informações detalhadas do usuário
         const userDetailsResponse = await axios.get(ENDPOINTS.DETAIL);
-        console.log(userDetailsResponse.data)
         this.userStore.setUserInfo(userDetailsResponse.data);
 
-        // Redirecionar o usuário para a página inicial
-        this.router.push('/home');
+        router.push('/home');
       } catch (error) {
 
-        // Manipulação de erro
         if (error.response) {
-          // Resposta do servidor com status de erro
           const errorMessage = error.response.data.message || 'Something went wrong.';
           alert(errorMessage);
         } else {
-          // Erros fora do escopo do servidor (exemplo: falha de rede)
           console.error("Error:", error.message);
           alert('Unexpected error occurred.');
         }
