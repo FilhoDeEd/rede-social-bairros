@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from forum.serializers import ForumSerializer, ForumListSerializer, ForumEditSerializer
 from account.views import add_errors
 from forum.models import Forum , Subscriber 
+from django.utils.text import slugify
+
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -84,24 +86,28 @@ class ForumEditView(APIView):
         forum = get_object_or_404(Forum, slug=slug)
 
         account = self.request.user.account
-        
+
         try:
             user_profile = UserProfile.objects.get(account=account, active=True)
         except UserProfile.DoesNotExist:
-            return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid or inactive user."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Verifica se o usuário logado é o dono do fórum
         if forum.owner != user_profile:
-            return Response({"detail": "Você não tem permissão para editar este fórum."}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have permission to edit this forum."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Serializa os dados recebidos, substituindo o fórum existente
+        # Atualiza os dados e ajusta o slug com base no título
         forum_serializer = ForumEditSerializer(forum, data=request.data)
-
         if forum_serializer.is_valid():
-            forum_serializer.save()  # Salva as alterações
-            return Response(forum_serializer.data, status=status.HTTP_200_OK)
+            forum = forum_serializer.save()  # Salva os dados validados
+            # Atualiza o slug com base no novo título
+            forum.slug = slugify(forum.title)
+            forum.save()
+            return Response({"success": "success"}, status=status.HTTP_200_OK)
         else:
-            return Response(forum_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": forum_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class ForumDeleteView(APIView):
