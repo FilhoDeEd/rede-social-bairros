@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import transaction
+import random
+import string
 
 
 class Account(models.Model):
@@ -140,9 +142,7 @@ class Account(models.Model):
         return super().save(*args, **kwargs)
     
     def anonymize(self):
-        """
-        Anonymizes the user's account by replacing personal data with placeholders.
-        """
+   
         with transaction.atomic():
             self.name = 'Anonymous'
             self.surname = 'User'
@@ -151,8 +151,10 @@ class Account(models.Model):
             self.cellphone = None
             self.biography = None
 
+            # Hashing the email and adding a random number between 1 and 10000
             email_hash = hashlib.sha256(self.email.encode('utf-8')).hexdigest()
-            self.email = f'anonymous.{email_hash[:16]}@anonymous.invalid'
+            random_number = random.randint(1, 100000)
+            self.email = f'anonymous.{email_hash[:16]}_{random_number}@anonymous.invalid'
 
             self.last_login = None
             self.last_activity = None
