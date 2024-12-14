@@ -5,7 +5,9 @@ import Register from '../views/auth/Register.vue';
 import Profile from '../views/Profile.vue'
 // layouts
 import mainLayout from '@/layouts/mainLayout.vue'
-
+//visualizar forum
+import ForumList from "@/views/ForumList.vue";
+import ForumDetailPage from "@/views/ForumDetailPage.vue";
 
 import Landing from '@/views/Landing.vue'
 import Admin from "@/layouts/Admin.vue";
@@ -22,7 +24,6 @@ import Maps from "@/views/admin/Maps.vue";
 import Index from "@/views/Index.vue";
 
 /* eslint-disable */
-
 
 const routes = [
   
@@ -93,6 +94,18 @@ const routes = [
     component: Profile,
     name: 'Profile',
   },
+  {
+    path: "/forums",
+    component: ForumList,
+    name: 'ForumList',
+  },
+  //para o Edson ter algo com que trabalhar
+  {
+    path: "/forum-detail-page",
+    component: ForumDetailPage,
+    name: 'ForumDetailPage',
+  },
+
   // {
   //   path: "/",
   //   component: Index,
