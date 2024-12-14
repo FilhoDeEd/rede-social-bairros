@@ -35,7 +35,7 @@ Content-Type: application/json
 ######
 
 GET http://localhost:8000/account/detail/ HTTP/1.1
-Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
 
 ######
 
