@@ -1,28 +1,28 @@
 
 POST http://localhost:8000/forum/register/
-Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
 Content-Type: application/json
 
 {
-  "title": "Meu Forum",
+  "title": "teste",
   "description": "This is an example description for the forum."
 }
 
 ######
 
-POST  http://localhost:8000/forum/edit/meu-forum/ HTTP/1.1
-Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
+POST  http://localhost:8000/forum/edit/natal-chegando/ HTTP/1.1
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
 Content-Type: application/json
 
 {
-  "title": "natal",
+  "title": "ano novo",
   "description": "This is an example description for the forum."
 }
 
 ######
 
-POST  http://localhost:8000/forum/delete/meu-forum/ HTTP/1.1
-Authorization: Token 8eea8ac3c7d7f8acd2e461ffe60059cae04795bb
+POST  http://localhost:8000/forum/delete/teste/ HTTP/1.1
+Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
 Content-Type: application/json
 
 ######
