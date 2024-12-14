@@ -71,7 +71,7 @@
                   <!-- Input username -->
                   <div class="text-sm leading-normal mt-2 text-blueGray-400 font-semibold uppercase">
                     <!-- Exibição somente leitura do Username -->
-                    <span>@{{ userStore.user?.username }}</span>
+                    <span>@{{ userStore.user.account.username }}</span>
                   </div>
                 </div>
 
@@ -228,7 +228,7 @@ import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
 import ModalSimpleConfirmation from "../components/Modals/ModalSimpleConfirmation.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore, axios } from "../store/user.js"; // Ajuste o caminho conforme necessário
+import { useUserStore, axios } from "../store/user.js"; 
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
@@ -271,12 +271,12 @@ export default {
 
     // Reactive form state
     const form = reactive({
-      name: userStore.user?.name || "",
-      surname: userStore.user?.surname || "",
-      cellphone: userStore.user?.cellphone || "",
-      gender: userStore.user?.gender || "",
-      biography: userStore.user?.biography || "",
-      birthday: userStore.user?.birthday || "",
+      name: userStore.user.account.name || "",
+      surname: userStore.user.account.surname || "",
+      cellphone: userStore.user.account.cellphone || "",
+      gender: userStore.user.account.gender || "",
+      biography: userStore.user.account.biography || "",
+      birthday: userStore.user.account.birthday || "",
     });
 
     return {
@@ -362,7 +362,7 @@ export default {
 
     async delete_account(){
       try{
-        const response_delete = await axios.post(ENDPOINTS.DELETE_ACCOUNT, this.userStore.user.id);
+        const response_delete = await axios.post(ENDPOINTS.DELETE_ACCOUNT);
         if(response_delete.success){
           alert("Conta Excluída com sucesso");
             this.logout();
@@ -458,33 +458,23 @@ export default {
       this.handleSubmit();
     },
 
-    // Envia os dados do formulário para o backend
     async handleSubmit() {
       const userStore = this.userStore;
-
-      // Preserva o username original apenas se ele existir
-      const originalUsername = userStore.user?.username;
-
-      this.form.neighborhood_changed = this.form.neighborhood_id !== userStore.user?.neighborhood_id;
 
       try {
         const response = await axios.post(ENDPOINTS.EDIT, this.form, {
           headers: { "Content-Type": "application/json" },
         });
-
-        // Usar os dados retornados da API
         const updatedData = response.data;
 
-        // Atualizar o userStore com os dados retornados
         userStore.setUserInfo({
           ...this.form,
           ...updatedData,
-          ...(originalUsername && { username: originalUsername })
         });
 
         alert("Perfil atualizado com sucesso!");
       } catch (error) {
-        // Tratamento de erro mais específico
+
         if (error.response?.data?.errors) {
           for (const [field, messages] of Object.entries(error.response.data.errors)) {
             this.errors[field] = Array.isArray(messages) ? messages.join(" ") : messages;
