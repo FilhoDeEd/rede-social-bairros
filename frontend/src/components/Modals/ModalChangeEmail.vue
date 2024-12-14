@@ -1,84 +1,74 @@
 <template>
-    <div v-if="isModalChangeEmailOpen" class="modal-overlay">
-      <div class="modal-content">
-        <button class="close-btn" @click="closeModal">X</button>
-  
-        <!-- Conteúdo do modal -->
-        <form @submit.prevent="handleEmailChange">
-            <div class="flex gap-4 space-x-4">
+  <div v-if="isModalChangeEmailOpen" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-btn" @click="closeModal">X</button>
 
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Email</label>
-                  <input
-                    type="email"
-                    v-model="form.email"
-                    @change="validateField('email')"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  />
-                  <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
-                </div>
-                
-                <div class="relative w-full mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar Email</label>
-                  <input
-                    type="email"
-                    v-model="form.confirm_email"
-                    @change="validateField('confirm_email')"
-                    class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  />
-                  <p v-if="errors.confirm_email" class="text-red-500 text-xs">{{ errors.confirm_email }}</p>
-                </div>
+      <!-- Conteúdo do modal -->
+      <form @submit.prevent="handleEmailChange">
+        <div class="flex gap-4 space-x-4">
 
-              </div>
-            <!-- Botão Confirmar -->
-            <div class="text-center mt-6">
-                <button
-                type="submit"
-                class="bg-indigo-500 text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
-                >
-                Confirmar
-                </button>
-            </div>
-        </form>
-      </div>
+          <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Email</label>
+            <input type="email" v-model="form.email" @change="validateField('email')"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            <p v-if="errors.email" class="text-red-500 text-xs">{{ errors.email }}</p>
+          </div>
+
+          <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-varela mb-2">Confirmar Email</label>
+            <input type="email" v-model="form.confirm_email" @change="validateField('confirm_email')"
+              class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            <p v-if="errors.confirm_email" class="text-red-500 text-xs">{{ errors.confirm_email }}</p>
+          </div>
+
+        </div>
+        <!-- Botão Confirmar -->
+        <div class="text-center mt-6">
+          <button type="submit"
+            class="bg-indigo-500 text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
+            Confirmar
+          </button>
+        </div>
+      </form>
     </div>
-  </template>
-  
-  
+  </div>
+</template>
 
-  <script>
-  /* eslint-disable */
 
-  import axios from 'axios';
-  import { router } from "../../router/index.js";
-  import { ENDPOINTS } from '../../../../api.js';
-  import { useUserStore } from '../../store/user.js';
-  
-  export default {
-    data() {
-      return {
-        userStore: useUserStore(),
-        form: {
-            email:"",
-            confirm_email:"",
-        },
-        errors: {}, // Erros de validação
-        router,
-      };
-    },
-    props: {
-        isModalChangeEmailOpen: Boolean, // Propriedade para controlar se o modal está aberto
-    },
-  
-    methods: {
+
+<script>
+/* eslint-disable */
+
+import axios from 'axios';
+import { router } from "../../router/index.js";
+import { ENDPOINTS } from '../../../../api.js';
+import { useUserStore } from '../../store/user.js';
+
+export default {
+  data() {
+    return {
+      userStore: useUserStore(),
+      form: {
+        email: "",
+        confirm_email: "",
+      },
+      errors: {}, // Erros de validação
+      router,
+    };
+  },
+  props: {
+    isModalChangeEmailOpen: Boolean, // Propriedade para controlar se o modal está aberto
+  },
+
+  methods: {
 
     closeModal() {
       this.$emit('close'); // Emite evento para o componente pai fechar o modal
     },
-  
+
     // Validação de campo
     validateField(field) {
-    this.errors = {}; // Limpar erros anteriores
+      this.errors = {}; // Limpar erros anteriores
       switch (field) {
         case "email": //remove
           if (!this.form.email) {
@@ -89,9 +79,9 @@
             this.errors.email = "";
           }
           break;
-          case "confirm_email":
+        case "confirm_email":
           this.errors.confirm_email = this.form.confirm_email
-            ?(this.form.confirm_email === this.form.email ? "" : "Os emails não coincidem.")
+            ? (this.form.confirm_email === this.form.email ? "" : "Os emails não coincidem.")
             : "A confirmação de email obrigatória.";
           break;
 
@@ -99,33 +89,33 @@
           this.errors[field] = "";
       }
     },
-  
+
     // Submissão do formulário
     async handleEmailChange() {
-        this.errors = {}
-        if (Object.keys(this.errors).length > 0) return; // Não continuar se houver erros
+      this.errors = {}
+      if (Object.keys(this.errors).length > 0) return; // Não continuar se houver erros
 
-        try {
-            const response = await axios.post(ENDPOINTS.EDIT_EMAIL, {
-            email: this.form.email,
-            });
-            if (response.status === 200) {
-            this.userStore.removeToken();
-            this.router.push('/login');
-            } else {
-            alert('Erro ao salvar o email. Tente novamente.');
-            }
-        } catch (error) {
-            console.error('Erro de comunicação com o servidor:', error);
-            alert('Erro de comunicação com o servidor.');
+      try {
+        const response = await axios.post(ENDPOINTS.EDIT_EMAIL, {
+          email: this.form.email,
+        });
+        if (response.status === 200) {
+          this.userStore.removeToken();
+          this.router.push('/login');
+        } else {
+          alert('Erro ao salvar o email. Tente novamente.');
         }
+      } catch (error) {
+        console.error('Erro de comunicação com o servidor:', error);
+        alert('Erro de comunicação com o servidor.');
+      }
     },
-},
+  },
 
-  };
-  </script>
-  
-  <style scoped>
+};
+</script>
+
+<style scoped>
 /* Estilo para o modal */
 .modal-overlay {
   position: fixed;
@@ -133,7 +123,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* Fundo opaco */
+  background: rgba(0, 0, 0, 0.5);
+  /* Fundo opaco */
   display: flex;
   justify-content: center;
   align-items: center;
