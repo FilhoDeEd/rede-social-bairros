@@ -63,7 +63,7 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import { router } from "../../router/index.js";
+import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
 
@@ -185,14 +185,14 @@ export default {
         const response = await axios.post(ENDPOINTS.EDIT_NEIGHBORHOOD, {
           neighborhood_id: this.form.neighborhood,
         });
-
+        console.log(response.status)
         if (response.status === 200) {
-          this.router.push('/home'); // Redirecionar
+          router.push('/home'); 
         } else {
-          alert('Erro ao salvar o bairro.');
+          alert('Erro ao salvar o bairro. ' + response.errors);
         }
-      } catch {
-        alert('Erro ao enviar os dados.');
+      } catch(error) {
+        alert('Erro ao enviar os dados. ' + error);
       }
     },
   },
