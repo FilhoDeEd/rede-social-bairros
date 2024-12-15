@@ -4,8 +4,8 @@
       <main>
         <section id="conteudo">
           <h1 class="text-xl font-bold mb-4">Postagens</h1>
-          <div class="space-y-4">
-            <article v-for="forum in forumStore.forums" :key="forum.forum_id"
+          <div v-infinite-scroll="onLoadMore" class="space-y-4">
+            <div v-for="forum in forumListStore.forums" :key="forum.forum_id"
               class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
               style="background-color: rgba(124, 122, 187, 1);">
               <div class="flex h-full">
@@ -28,7 +28,7 @@
                   </a>
                 </div>
               </div>
-            </article>
+            </div>
           </div>
         </section>
       </main>
@@ -37,9 +37,10 @@
 </template>
 
 <script>
-import { useForumStore } from '@/store/forum.js';
+import { useInfiniteScroll } from '@vueuse/core'
+import { useForumListStore } from '@/store/forumListStore.js';
 import { useUserStore } from '@/store/user.js';
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 import mainLayout from '@/layouts/mainLayout.vue';
 
 export default {
@@ -48,26 +49,33 @@ export default {
     mainLayout
   },
   setup() {
-    const forumStore = useForumStore();
+    const forumListStore = useForumListStore();
     const userStore = useUserStore();
+    const el = ref<HTMLElement | null>(null)
+
+    useInfiniteScroll(
+      el,
+      async () => {
+        console.log("AOBA");
+        forumListStore.setPage(forumListStore.currentPage + 1);
+        await forumListStore.fetchForums();
+      },
+      { distance: 40 }
+    );
 
     onBeforeMount(() => {
-      userStore.initStore();
       if (userStore.user.isAuthenticated) {
-        forumStore.fetchForums(1);
+        if (forumListStore.forums.length === 0) {
+          forumListStore.fetchForums();
+        }
       } else {
         alert("Usuário Não Autorizado");
       }
     });
 
-    const fetchForums = (page) => {
-      forumStore.fetchForums(page);
-    };
-
     return {
-      forumStore,
-      userStore,
-      fetchForums,
+      forumListStore,
+      userStore
     };
   },
 };

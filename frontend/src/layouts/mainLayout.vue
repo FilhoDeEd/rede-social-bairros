@@ -12,9 +12,11 @@
                 <div class="w-half max-w-sm min-w-[200px]">
                     <div class="relative flex justify-end items-center">
                         <input
+                            v-model="searchQuery"
                             class="w-full bg-white placeholder:text-gray-400 text-gray-600 text-sm border border-slate-200 rounded-md pl-3 pr-24 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                            placeholder="UI Kits, Dashboards..." />
+                            placeholder="Busque por fóruns..." />
                         <button
+                            @click="handleSearch"
                             class="absolute flex items-center rounded bg-white py-1 px-4 border border-transparent text-center text-sm text-gray-100 transition-all shadow-sm hover:shadow focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -23,7 +25,7 @@
                                     d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Search
+                            Buscar
                         </button>
                     </div>
                 </div>
@@ -60,18 +62,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import MenuItem from '../components/Sidebar/MenuItem.vue'
+import { ref } from "vue";
+import MenuItem from "../components/Sidebar/MenuItem.vue";
+import { useForumListStore } from "../store/forumListStore.js";
+import router from "../router/index.js";
 
-const activeItem = ref('home')
+const activeItem = ref("home");
+const searchQuery = ref("");
 
 const menuItems = [
-    { id: 'home', icon: 'home', title: 'Página Inicial', path: '/home' },
-    { id: 'forums', icon: 'forum', title: 'Fóruns', path: '/forums' },
-    { id: 'events', icon: 'event', title: 'Eventos', path: '/events' },
-    { id: 'reports', icon: 'report', title: 'Denúncias', path: '/reports' },
-    { id: 'about', icon: 'info', title: 'Sobre', path: '/about' }
-]
+  { id: "home", icon: "home", title: "Página Inicial", path: "/home" },
+  { id: "forums", icon: "forum", title: "Fóruns", path: "/forums" },
+  { id: "events", icon: "event", title: "Eventos", path: "/events" },
+  { id: "reports", icon: "report", title: "Denúncias", path: "/reports" },
+  { id: "about", icon: "info", title: "Sobre", path: "/about" }
+];
+
+const forumListStore = useForumListStore();
+
+const handleSearch = async () => {
+  forumListStore.setSearchQuery(searchQuery.value);
+  await forumListStore.fetchForums();
+  router.push("/home");
+};
 </script>
 
 <style>

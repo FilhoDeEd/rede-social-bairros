@@ -7,7 +7,7 @@ Content-Type: application/json
     "name": "Márcio",
     "surname": "Silva",
     "birthday": "1920-01-01",
-    "email": "jhon.deot@gmail.com",
+    "email": "jhon.deot1@gmail.com",
     "agree_policy": true,
     "neighborhood": 1
 }
@@ -18,7 +18,7 @@ POST http://localhost:8000/account/login/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "emailOrUsername": "jhon.deot@gmail.com",
+    "emailOrUsername": "jhon.deot1@gmail.com",
     "password": "senha@19282"
 }
 
@@ -35,7 +35,7 @@ Content-Type: application/json
 ######
 
 GET http://localhost:8000/account/detail/ HTTP/1.1
-Authorization: Token 0b32659e7c17349859dd9e123c9ace264aed9520
+Authorization: Token 1a8d0fe9333b673edb464a6a4332b41f416c77ff
 
 ######
 
@@ -85,6 +85,6 @@ Content-Type: application/json
 ######
 
 POST http://localhost:8000/account/anonymize/ HTTP/1.1
-Authorization: Token c55d674ffd9e375f61d3be0a32c5d7f6403404a1
+Authorization: Token 1a8d0fe9333b673edb464a6a4332b41f416c77ff
 Content-Type: application/json
 
