@@ -68,6 +68,7 @@ import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
 import { useToast } from 'vue-toastification';
+import { useForumListStore } from '../../store/forumListStore.js';
 
 export default {
   data() {
@@ -79,13 +80,14 @@ export default {
         state: null,
         locality: null,
         neighborhood: null,
-        neighborhood_name: null
+        neighborhood_name: null,
       },
       errors: {},
       router,
       isConfirmationModalOpen: false,
       userStore: useUserStore(),
       toast: useToast(),
+      useForumList: useForumListStore(),
     };
   },
   props: {
@@ -213,8 +215,8 @@ export default {
         if (response.status === 200) {
           this.userStore.setUserInfo({ 'state': this.form.state, 'locality': this.form.locality, 'neighborhood': this.form.neighborhood_name, 'id': this.form.neighborhood })
           this.toast.success("Bairro trocado com sucesso!")
-          //set query vazio da home
-          //dar um fetch
+          this.useForumList.setSearchQuery("")
+          this.useForumList.fetchForums()
           router.push('/home');
         } else {
           this.toast.error('Erro ao salvar o bairro. ' + response.errors);
