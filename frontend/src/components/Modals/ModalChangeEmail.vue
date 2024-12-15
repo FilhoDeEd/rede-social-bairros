@@ -43,11 +43,13 @@ import axios from 'axios';
 import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
+import { useToast } from 'vue-toastification';
 
 export default {
   data() {
     return {
       userStore: useUserStore(),
+      toast: useToast(),
       form: {
         email: "",
         confirm_email: "",
@@ -102,13 +104,13 @@ export default {
         if (response.status === 200) {
           this.userStore.setUserInfo(this.form.email)
           this.userStore.removeToken();
+          this.toast.success("Email trocado com sucesso, refaça o login!")
           router.push('/login');
         } else {
-          alert('Erro ao salvar o email. Tente novamente.');
+          this.toast.error('Erro ao salvar o email. Tente novamente.');
         }
       } catch (error) {
-        console.error('Erro de comunicação com o servidor:', error);
-        alert('Erro de comunicação com o servidor.');
+        this.toast.error('Erro de comunicação com o servidor.');
       }
     },
   },

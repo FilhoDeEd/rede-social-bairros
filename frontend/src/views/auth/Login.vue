@@ -108,6 +108,7 @@
 import router from '../../router/index.js';
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
+import { useToast } from "vue-toastification";
 import axios from 'axios';
 
 export default {
@@ -123,8 +124,9 @@ export default {
   },
 
   setup() {
-    const userStore = useUserStore()
-    return { userStore };
+    const userStore = useUserStore();
+    const toast = useToast();
+    return { userStore, toast };
   },
 
   methods: {
@@ -152,22 +154,18 @@ export default {
       if (Object.keys(this.errors).some((key) => this.errors[key])) return;
       
       try {
-        console.log("Vasco")
         const loginResponse = await axios.post(ENDPOINTS.LOGIN, this.form);
-        console.log(loginResponse.data)
-        console.log(loginResponse.errors)
-        console.log("Flamengo")
         this.userStore.setToken(loginResponse.data);
 
         const userDetailsResponse = await axios.get(ENDPOINTS.DETAIL);
         this.userStore.setUserInfo(userDetailsResponse.data);
-
-        router.push('/home');
+        this.toast.success("Logged In!");
+       router.push('/home');
       } catch (error) {
 
         if (error.response) {
           const errorMessage = error.response.data.message || 'Usuário inválido ou não existente.';
-          alert(errorMessage);
+          this.toast.error(errorMessage);
         } else {
           console.error("Error:", error.message);
           alert('Unexpected error occurred.');

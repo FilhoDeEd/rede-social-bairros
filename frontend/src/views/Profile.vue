@@ -233,6 +233,7 @@ import axios from "axios";
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
+import { useToast } from "vue-toastification";
 
 export default {
 
@@ -247,10 +248,10 @@ export default {
   data() {
 
     return {
-      profileImage: null, // Variável para armazenar a nova imagem ou a atual
-      errors: {}, // Armazena os erros de validação
-      editMode: false, // Determina se o formulário está em modo de edição
-      team2, // Imagem do time
+      profileImage: null, 
+      errors: {}, 
+      editMode: false, 
+      team2, 
       isModalNeighChangeOpen: false,
       isModalChangePasswordOpen: false,
       isModalChangeEmailOpen: false,
@@ -261,11 +262,11 @@ export default {
   },
   setup() {
     const userStore = useUserStore();
+    const toast = useToast();
 
-    // Verifica a autenticação do usuário antes de montar o componente
     onBeforeMount(() => {
       if (!userStore.user.isAuthenticated) {
-        alert("Autenticação necessária");
+        toast.info("Autenticação necessária");
         router.push("/login");
       }
     });
@@ -281,8 +282,9 @@ export default {
     });
 
     return {
-      userStore, // Expor o store para uso no template
-      form, // Expor o formulário reativo
+      userStore, 
+      form, 
+      toast,
     };
   },
 
@@ -340,12 +342,11 @@ export default {
     
     enterEditMode() {
       this.editMode = true;
-      console.log("Entrando no modo de edição...");
     },
     
     saveChanges() {
       this.editMode = false;
-      console.log("Salvando as alterações...");
+      this.toast.info("Salvando as alterações...",{timeout:7000});
       this.openModalConfirmEdit()
     },
 
@@ -360,13 +361,13 @@ export default {
       try{
         const response_delete = await axios.post(ENDPOINTS.DELETE_ACCOUNT);
         if(response_delete.success){
-          alert("Conta Excluída com sucesso");
+          this.toast.success("Conta Excluída com sucesso");
             this.logout();
           } else{
-            alert("Erro ao excluir a conta")
+            this.toast.error("Erro ao excluir a conta")
           }
       } catch(error){
-        alert("Erro de conexão com o servidor ")
+        this.toast.error("Erro de conexão com o servidor ")
       }
     },
 
@@ -438,10 +439,8 @@ export default {
     handleConfirmation(isConfirmed){
       this.closeModalConfirmDelete();
       if(!isConfirmed){
-        console.log("is not confirmed")
         return;
       }
-      console.log("accounted deleted")
       this.delete_account()
     },
 
@@ -455,10 +454,9 @@ export default {
       const userStore = this.userStore;
 
       try {
-        console.log(this.form);
         const response = await axios.post(ENDPOINTS.EDIT, this.form);
         this.userStore.setUserInfo(this.form)
-
+        this.toast.success("Suas informações foram atualizadas!")
       } catch (error) {
         // Verifique se error.response existe antes de acessar os campos de erro
         if (error.response && error.response.data && error.response.data.errors) {
@@ -467,7 +465,7 @@ export default {
           }
         } else {
           // Caso a resposta de erro seja indefinida
-          alert(error.response?.data?.message || "Erro ao salvar as alterações.");
+          this.toast.error(error.response?.data?.message || "Erro ao salvar as alterações.");
         }
       }
     },
