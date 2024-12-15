@@ -166,7 +166,7 @@ export default {
       } catch (error) {
 
         if (error.response) {
-          const errorMessage = error.response.data.message || 'Something went wrong.';
+          const errorMessage = error.response.data.message || 'Usuário inválido ou não existente.';
           alert(errorMessage);
         } else {
           console.error("Error:", error.message);

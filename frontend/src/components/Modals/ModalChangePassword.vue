@@ -40,14 +40,12 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import { router } from "../../router/index.js";
+import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
-import { useUserStore } from '../../store/user.js';
 
 export default {
   data() {
     return {
-      userStore: useUserStore(),
       form: {
         password: "",
         confirm_password: "",
@@ -100,7 +98,6 @@ export default {
         });
 
         if (response.status === 200) {
-          this.userStore.removeToken();
           this.router.push('/login');
         } else {
           alert('Erro ao salvar a senha. Tente novamente.');

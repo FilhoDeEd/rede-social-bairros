@@ -48,8 +48,8 @@
                     <div class="py-6 px-3 mt-32 sm:mt-0">
                       <button id="editButton"
                         class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                        type="button" @click="toggleEdition">
-                        {{ editMode ? 'Salvar' : 'Editar' }} <!-- Mudança aqui -->
+                        type="button" @click="editMode ? saveChanges() : enterEditMode()">
+                        {{ editMode ? 'Salvar' : 'Editar' }} 
                       </button>
                     </div>
                   </div>
@@ -210,9 +210,9 @@
       @confirm="handleConfirmation" />
       
       <ModalSimpleConfirmation 
-        :isSimpleConfirmModalOpen="isEditConfirmationModalOpen"
-        @close="closeModalConfirmEdit"
-        @confirm="handleEditConfirmation"
+      :isSimpleConfirmModalOpen="isEditConfirmationModalOpen"
+      @close="closeModalConfirmEdit"
+      @confirm="handleEditConfirmation"
       />
   
      </main>
@@ -228,7 +228,8 @@ import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
 import ModalSimpleConfirmation from "../components/Modals/ModalSimpleConfirmation.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore, axios } from "../store/user.js"; 
+import { useUserStore } from "../store/user.js"; 
+import axios from "axios";
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
 import team2 from "@/assets/img/team-2-800x800.jpg";
@@ -273,10 +274,10 @@ export default {
     const form = reactive({
       name: userStore.user.account.name || "",
       surname: userStore.user.account.surname || "",
+      birthday: userStore.user.account.birthday || "",
       cellphone: userStore.user.account.cellphone || "",
       gender: userStore.user.account.gender || "",
       biography: userStore.user.account.biography || "",
-      birthday: userStore.user.account.birthday || "",
     });
 
     return {
@@ -337,22 +338,17 @@ export default {
 
     },
     
-    // Alterna entre modo de edição e visualização
-    toggleEdition() {
-      if (this.editMode) {
-        // Salvar: valida campos antes de alternar
-        Object.keys(this.form).forEach((field) => this.validateField(field));
-        if (Object.keys(this.errors).some((key) => this.errors[key])) {
-          alert("Por favor, corrija os erros antes de salvar.");
-          return;
-        }
-      }
-      this.editMode = !this.editMode;
-      if (!this.editMode) {
-        this.openModalConfirmEdit();
-        this.handleEditConfirmation();
-      }
+    enterEditMode() {
+      this.editMode = true;
+      console.log("Entrando no modo de edição...");
     },
+    
+    saveChanges() {
+      this.editMode = false;
+      console.log("Salvando as alterações...");
+      this.openModalConfirmEdit()
+    },
+
 
     //Logout
     logout(){
@@ -449,38 +445,30 @@ export default {
       this.delete_account()
     },
 
-    handleEditConfirmation(isEditConfirmed){
-      if(!isEditConfirmed){
-        console.log("Not confirmed")
-        return;
-      }
-      this.closeModalConfirmEdit();
-      this.handleSubmit();
+    handleEditConfirmation() {
+      this.editMode = false;
+      this.handleSubmit()
+      this.closeModalConfirmEdit(); 
     },
 
     async handleSubmit() {
       const userStore = this.userStore;
 
       try {
-        const response = await axios.post(ENDPOINTS.EDIT, this.form, {
-          headers: { "Content-Type": "application/json" },
-        });
-        const updatedData = response.data;
+        console.log(this.form);
+        const response = await axios.post(ENDPOINTS.EDIT, this.form);
+        this.userStore.setUserInfo(this.form)
 
-        userStore.setUserInfo({
-          ...this.form,
-          ...updatedData,
-        });
-
-        alert("Perfil atualizado com sucesso!");
       } catch (error) {
-
-        if (error.response?.data?.errors) {
+        // Verifique se error.response existe antes de acessar os campos de erro
+        if (error.response && error.response.data && error.response.data.errors) {
           for (const [field, messages] of Object.entries(error.response.data.errors)) {
             this.errors[field] = Array.isArray(messages) ? messages.join(" ") : messages;
           }
+        } else {
+          // Caso a resposta de erro seja indefinida
+          alert(error.response?.data?.message || "Erro ao salvar as alterações.");
         }
-        alert(error.response?.data?.message || "Erro ao salvar as alterações.");
       }
     },
   },
