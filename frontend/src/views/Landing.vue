@@ -2,7 +2,7 @@
   <mainLayout>
     <div class="container mx-auto py-8 px-4">
       <main>
-        <section id="contenido">
+        <section id="conteudo">
           <h1 class="text-xl font-bold mb-4">Postagens</h1>
           <div class="space-y-4">
             <article v-for="forum in forumStore.forums" :key="forum.forum_id"
