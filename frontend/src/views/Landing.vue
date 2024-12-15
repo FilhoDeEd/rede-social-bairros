@@ -63,7 +63,7 @@ export default {
       { distance: 40 }
     );
 
-    onBeforeMount(() => {
+    onBeforeMount(() => { //pensar melhor → caso de mudança de bairro não atualiza a DOM
       if (userStore.user.isAuthenticated) {
         if (forumListStore.forums.length === 0) {
           forumListStore.fetchForums();

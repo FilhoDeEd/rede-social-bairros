@@ -1,7 +1,7 @@
 <template>
   <main-layout>
-    <main class="profile-page">
-      <section class="relative block h-600-px">
+    <main>
+      <section class="relative block h-600-px -mt-24">
         <div class="absolute top-0 w-full h-full bg-center bg-cover" style="
             background-image: url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80');
           ">
@@ -16,45 +16,54 @@
         </div>
       </section>
 
-      <section id="dataProfile" class="relative py-16 bg-blueGray-200">
-
+      <section id="dataProfile" class="flex py-16 bg-blueGray-200">
         <div class="container mx-auto px-4" id="infoProfile">
+          
           <form @submit.prevent="openModalConfirmEdit">
             <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
-              <div class="px-6 justify-end">
-                <div class="flex flex-wrap justify-end">
-                  <div class="w-full lg:w-3/12 lg:order-2" style="padding-left: 100px;">
-                    <div class="relative group">
-                      <!-- Exibe a imagem de perfil -->
-                      <img alt="Profile Picture" :src="profileImage || team2" :value="userStore.user.username"
-                        class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
-
-                      <!-- Botão de upload visível no modo de edição -->
-                      <div v-if="editMode"
-                        class="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                        <label for="uploadImage" class="flex flex-col items-center cursor-pointer">
-                          <i class="fas fa-upload text-white text-2xl"></i>
-                          <span class="text-white text-sm">Editar</span>
-                        </label>
-                        <!-- Input oculto -->
-                        <input id="uploadImage" type="file" accept="image/*" @change="handleImageUpload"
-                          class="hidden" />
+              <!-- Container da Imagem de Perfil -->
+              <div class="relative pt-16 pb-8">
+                <div class="flex flex-wrap justify-center">
+                  <div class="w-full flex justify-center">
+                    <div class="relative">
+                      <img 
+                        alt="Foto de Perfil" 
+                        :src="profileImage || team2" 
+                        :value="userStore.user.username"
+                        style="width: 200px; height: 200px; min-width: 200px; min-height: 200px; max-width: 200px; max-height: 200px;"
+                        class="shadow-xl rounded-full object-cover border-4 border-white transition-transform duration-300"
+                      />
+                      
+                      <!-- Overlay de Upload -->
+                      <div 
+                        v-if="editMode"
+                        class="absolute inset-0 bg-black bg-opacity-30 rounded-full 
+                               flex items-center justify-center opacity-0 group-hover:opacity-100 
+                               transition duration-300"
+                      >
+                     
                       </div>
                     </div>
                   </div>
-
-                  <!-- Edit mode -->
-                  <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
-                    <div class="py-6 px-3 mt-32 sm:mt-0">
-                      <button id="editButton"
-                        class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                        type="button" @click="editMode ? saveChanges() : enterEditMode()">
-                        {{ editMode ? 'Salvar' : 'Editar' }}
-                      </button>
-                    </div>
+                  
+                  <!-- Botão de Editar -->
+                  <div class="w-full flex justify-end px-6 absolute top-4 right-0">
+                    <button 
+                      id="editButton"
+                      class="bg-emerald-500 active:bg-emerald-600 uppercase text-white 
+                             font-bold hover:shadow-md shadow text-xs px-6 py-3 
+                             rounded outline-none focus:outline-none
+                             transition-all duration-150 transform hover:scale-105"
+                      type="button" 
+                      @click="editMode ? saveChanges() : enterEditMode()"
+                    >
+                      {{ editMode ? 'Salvar' : 'Editar' }}
+                    </button>
                   </div>
                 </div>
+              </div>
 
+              <div class="px-6 justify-end">
                 <!-- Input nome -->
                 <div class="text-center mt-12">
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
 import Profile from '../views/Profile.vue'
+import AboutPage from '../views/AboutPage.vue'
 // layouts
 import mainLayout from '@/layouts/mainLayout.vue'
 //visualizar forum
@@ -101,15 +102,17 @@ const routes = [
   },
   //para o Edson ter algo com que trabalhar
   {
-    path: "/forum-detail-page",
+    path: "/forum",
     component: ForumDetailPage,
     name: 'ForumDetailPage',
   },
+  {
+    path: "/about",
+    component: AboutPage,
+    name: 'AboutPage',
+  },
 
-  // {
-  //   path: "/",
-  //   component: Index,
-  // },
+
   { path: "/:pathMatch(.*)*", redirect: "/" },
 ];
 
