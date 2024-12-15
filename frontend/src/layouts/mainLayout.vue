@@ -44,7 +44,7 @@
         <!-- Container principal com flex row -->
         <div class="flex flex-1">
             <!-- Sidebar sempre visível -->
-            <aside class="w-64 border-r shadow-lg" style="background-color: #D76D65;">
+            <aside class="w-64 shadow-lg" style="background-color: #D76D65;">
                 <div class="flex flex-col h-full py-6">
                     <nav class="space-y-2">
                         <MenuItem v-for="item in menuItems" :key="item.id" :icon="item.icon" :title="item.title"
@@ -55,7 +55,7 @@
             </aside>
 
             <!-- Área de conteúdo -->
-            <div class="flex-1 bg-gray-100 overflow-auto">
+            <div class="flex-1 bg-blueGray-600 overflow-hidden m-0 p-0">
                 <slot></slot>
             </div>
         </div>
