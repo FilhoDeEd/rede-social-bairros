@@ -15,6 +15,7 @@
                             v-model="searchQuery"
                             class="w-full bg-white placeholder:text-gray-400 text-gray-600 text-sm border border-slate-200 rounded-md pl-3 pr-24 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                             placeholder="Busque por fóruns..." />
+                            
                         <button
                             @click="handleSearch"
                             class="absolute flex items-center rounded bg-white py-1 px-4 border border-transparent text-center text-sm text-gray-100 transition-all shadow-sm hover:shadow focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"

@@ -63,7 +63,7 @@
 /* eslint-disable */
 
 import axios from 'axios';
-import  router  from "../../router/index.js";
+import router from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
@@ -72,16 +72,16 @@ import { useToast } from 'vue-toastification';
 export default {
   data() {
     return {
-      states: [], 
-      cities: [], 
-      neighborhoods: [], 
+      states: [],
+      cities: [],
+      neighborhoods: [],
       form: {
-        state: null, 
-        locality: null, 
-        neighborhood: null, 
+        state: null,
+        locality: null,
+        neighborhood: null,
         neighborhood_name: null
       },
-      errors: {}, 
+      errors: {},
       router,
       isConfirmationModalOpen: false,
       userStore: useUserStore(),
@@ -92,26 +92,26 @@ export default {
     isModalNeighChangeOpen: Boolean, // Propriedade para controlar se o modal está aberto
   },
 
-  components:{
+  components: {
     ModalComplexConfimation,
   },
 
-  computed:{
+  computed: {
     selectedNeighborhoodName() {
-    const selectedNeighborhood = this.neighborhoods.find(
-      neighborhood => neighborhood.id === this.form.neighborhood
-    );
-    return selectedNeighborhood ? selectedNeighborhood.name : '';
-  }
+      const selectedNeighborhood = this.neighborhoods.find(
+        neighborhood => neighborhood.id === this.form.neighborhood
+      );
+      return selectedNeighborhood ? selectedNeighborhood.name : '';
+    }
   },
 
   watch: {
-  'form.neighborhood'(newValue) {
-    const selectedNeighborhood = this.neighborhoods.find(
-      neighborhood => neighborhood.id === newValue
-    );
-    this.form.neighborhood_name = selectedNeighborhood ? selectedNeighborhood.name : '';
-  }
+    'form.neighborhood'(newValue) {
+      const selectedNeighborhood = this.neighborhoods.find(
+        neighborhood => neighborhood.id === newValue
+      );
+      this.form.neighborhood_name = selectedNeighborhood ? selectedNeighborhood.name : '';
+    }
   },
 
 
@@ -209,15 +209,17 @@ export default {
         const response = await axios.post(ENDPOINTS.EDIT_NEIGHBORHOOD, {
           neighborhood_id: this.form.neighborhood,
         });
-      
+
         if (response.status === 200) {
-          this.userStore.setUserInfo({'state':this.form.state, 'locality':this.form.locality, 'neighborhood':this.form.neighborhood_name , 'id':this.form.neighborhood})
+          this.userStore.setUserInfo({ 'state': this.form.state, 'locality': this.form.locality, 'neighborhood': this.form.neighborhood_name, 'id': this.form.neighborhood })
           this.toast.success("Bairro trocado com sucesso!")
-          router.push('/home'); 
+          //set query vazio da home
+          //dar um fetch
+          router.push('/home');
         } else {
           this.toast.error('Erro ao salvar o bairro. ' + response.errors);
         }
-      } catch(error) {
+      } catch (error) {
         this.toast.error('Erro ao enviar os dados. ' + error);
       }
     },
