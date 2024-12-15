@@ -49,7 +49,7 @@
                       <button id="editButton"
                         class="bg-emerald-500 active:bg-emerald-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         type="button" @click="editMode ? saveChanges() : enterEditMode()">
-                        {{ editMode ? 'Salvar' : 'Editar' }} 
+                        {{ editMode ? 'Salvar' : 'Editar' }}
                       </button>
                     </div>
                   </div>
@@ -103,7 +103,7 @@
                         </svg>
                       </div>
                       <input type="text" id="cellphone" v-model="form.cellphone" :readonly="!editMode"
-                        @change="validateField('phone')" aria-describedby="helper-text-explanation"
+                        @change="validateField('cellphone')" aria-describedby="helper-text-explanation"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
                       <p v-if="errors.cellphone" class="text-red-500 text-xs">{{ errors.cellphone }}</p>
@@ -191,31 +191,19 @@
         </div>
 
       </section>
-      <ModalChangeEmail 
-       :isModalChangeEmailOpen="isModalChangeEmailOpen"
-        @close="closeModalEmailChange"/>
+      <ModalChangeEmail :isModalChangeEmailOpen="isModalChangeEmailOpen" @close="closeModalEmailChange" />
 
-      <ModalChangePassword 
-        :isModalChangePasswordOpen="isModalChangePasswordOpen"
-        @close="closeModalChangePassword"/>
+      <ModalChangePassword :isModalChangePasswordOpen="isModalChangePasswordOpen" @close="closeModalChangePassword" />
 
-      <ModalChangeNeighborhood 
-      :isModalNeighChangeOpen="isModalNeighChangeOpen" 
-      @close="closeModalNeighChange"/>
+      <ModalChangeNeighborhood :isModalNeighChangeOpen="isModalNeighChangeOpen" @close="closeModalNeighChange" />
 
-      <ModalComplexConfimation 
-      v-if="isConfirmationModalOpen" 
-      :isModalDeleteAccountOpen="isConfirmationModalOpen" 
-      @close="closeModalConfirmDelete"
-      @confirm="handleConfirmation" />
-      
-      <ModalSimpleConfirmation 
-      :isSimpleConfirmModalOpen="isEditConfirmationModalOpen"
-      @close="closeModalConfirmEdit"
-      @confirm="handleEditConfirmation"
-      />
-  
-     </main>
+      <ModalComplexConfimation v-if="isConfirmationModalOpen" :isModalDeleteAccountOpen="isConfirmationModalOpen"
+        @close="closeModalConfirmDelete" @confirm="handleConfirmation" />
+
+      <ModalSimpleConfirmation :isSimpleConfirmModalOpen="isEditConfirmationModalOpen" @close="closeModalConfirmEdit"
+        @confirm="handleEditConfirmation" />
+
+    </main>
   </main-layout>
 </template>
 
@@ -228,7 +216,7 @@ import ModalChangeEmail from "../components/Modals/ModalChangeEmail.vue";
 import ModalComplexConfimation from "../components/Modals/ModalComplexConfimation.vue";
 import ModalSimpleConfirmation from "../components/Modals/ModalSimpleConfirmation.vue";
 import { onBeforeMount, reactive } from "vue";
-import { useUserStore } from "../store/user.js"; 
+import { useUserStore } from "../store/user.js";
 import axios from "axios";
 import router from "../router/index.js";
 import { ENDPOINTS } from "../../../api.js";
@@ -248,10 +236,10 @@ export default {
   data() {
 
     return {
-      profileImage: null, 
-      errors: {}, 
-      editMode: false, 
-      team2, 
+      profileImage: null,
+      errors: {},
+      editMode: false,
+      team2,
       isModalNeighChangeOpen: false,
       isModalChangePasswordOpen: false,
       isModalChangeEmailOpen: false,
@@ -282,8 +270,8 @@ export default {
     });
 
     return {
-      userStore, 
-      form, 
+      userStore,
+      form,
       toast,
     };
   },
@@ -310,68 +298,68 @@ export default {
     },
 
     // Abre o modal
-    openModalEmailChange(){
+    openModalEmailChange() {
       this.isModalChangeEmailOpen = true;
     },
 
     // Fecha o modal
-    closeModalEmailChange(){
+    closeModalEmailChange() {
       this.isModalChangeEmailOpen = false;
-    }, 
+    },
 
     // Abre o modal
-    openModalConfirmDelete(){
+    openModalConfirmDelete() {
       this.isConfirmationModalOpen = true;
     },
 
     // Fecha o modal
-    closeModalConfirmDelete(){
+    closeModalConfirmDelete() {
       this.isConfirmationModalOpen = false;
-    }, 
-    
+    },
+
     // Abre o modal
-    openModalConfirmEdit(){
+    openModalConfirmEdit() {
       this.isEditConfirmationModalOpen = true;
     },
-    
+
     // Fecha o modal
-    closeModalConfirmEdit(){
+    closeModalConfirmEdit() {
       this.isEditConfirmationModalOpen = false;
 
     },
-    
+
     enterEditMode() {
       this.editMode = true;
     },
-    
+
     saveChanges() {
       this.editMode = false;
-      this.toast.info("Salvando as alterações...",{timeout:7000});
+      this.toast.info("Salvando as alterações...", { timeout: 7000 });
       this.openModalConfirmEdit()
     },
 
 
     //Logout
-    logout(){
+    logout() {
       this.userStore.removeToken()
       router.push('/login')
     },
 
-    async delete_account(){
-      try{
+    async delete_account() {
+      try {
         const response_delete = await axios.post(ENDPOINTS.DELETE_ACCOUNT);
-        if(response_delete.success){
+        if (response_delete.success) {
           this.toast.success("Conta Excluída com sucesso");
-            this.logout();
-          } else{
-            this.toast.error("Erro ao excluir a conta")
-          }
-      } catch(error){
+          this.logout();
+        } else {
+          this.toast.error("Erro ao excluir a conta")
+        }
+      } catch (error) {
         this.toast.error("Erro de conexão com o servidor ")
       }
     },
 
-    
+
     validateField(field) {
       const calculateAge = (birthday) => {
         const today = new Date();
@@ -394,10 +382,10 @@ export default {
             this.errors.name = "";
           }
           break;
-          
-          case "surname":
-            if (!this.form.surname) {
-              this.errors.surname = "Sobrenome é obrigatório.";
+
+        case "surname":
+          if (!this.form.surname) {
+            this.errors.surname = "Sobrenome é obrigatório.";
           } else if (!/^[A-Za-zÀ-ÿ\s]+$/.test(this.form.surname)) {
             this.errors.surname = "Sobrenome inválido. Apenas letras e espaços são permitidos.";
           } else {
@@ -405,16 +393,18 @@ export default {
           }
           break;
 
-          case "cellphone":
-          if (!/^\(\d{2}\)\s\d{5}-\d{4}$/.test(this.form.cellphone) && !this.form.cellphone ==="") {
-            this.errors.cellphone = "Formato de celular inválido. Exemplo: (11) 98765-4321";
+        case "cellphone":
+          if (this.form.cellphone === "") {
+            this.errors.cellphone = ""; // Permite campo vazio (se necessário)
+          } else if (!/^(?:\+55\s?)?(\(?\d{2}\)?[\s\-]?)?\d{4,5}[\s\-]?\d{4}$/.test(this.form.cellphone)) {
+            this.errors.cellphone = "Formato de celular inválido. Exemplo: (xx) xxxxx-xxxx";
           } else {
             this.errors.cellphone = "";
           }
           break;
-          
-          case "birthday":
-            if (!this.form.birthday) {
+
+        case "birthday":
+          if (!this.form.birthday) {
             this.errors.birthday = "Data de nascimento é obrigatória.";
           } else if (calculateAge(this.form.birthday) < 16) {
             this.errors.birthday = "Você deve ter pelo menos 16 anos.";
@@ -422,7 +412,7 @@ export default {
             this.errors.birthday = "";
           }
           break;
-          
+
         case "biography":
           if (this.form.biography.length > 300) {
             this.errors.biography = "A biografia deve ter no máximo 300 caracteres.";
@@ -430,15 +420,15 @@ export default {
             this.errors.biography = "";
           }
           break;
-          
-          default:
+
+        default:
           this.errors[field] = "";
       }
     },
-    
-    handleConfirmation(isConfirmed){
+
+    handleConfirmation(isConfirmed) {
       this.closeModalConfirmDelete();
-      if(!isConfirmed){
+      if (!isConfirmed) {
         return;
       }
       this.delete_account()
@@ -447,7 +437,7 @@ export default {
     handleEditConfirmation() {
       this.editMode = false;
       this.handleSubmit()
-      this.closeModalConfirmEdit(); 
+      this.closeModalConfirmEdit();
     },
 
     async handleSubmit() {
