@@ -143,36 +143,40 @@ export const useUserStore = defineStore({
 
     setUserInfo(data) {
       console.log("setUserInfo", data);
-    
+  
+      // Atualizar os dados de forma segura
       this.user.account = {
-        id: data.account_id || null,
-        username: data.username || null,
-        name: data.name || null,
-        surname: data.surname || null,
-        gender: data.gender || null,
-        birthday: data.birthday || null,
-        email: data.email || null,
-        cellphone: data.cellphone || null,
-        agree_policy: data.agree_policy || null,
-        biography: data.biography || null
+          ...this.user.account, // Preserva valores existentes
+          id: data.account_id || this.user.account.id,
+          username: data.username || this.user.account.username,
+          name: data.name || this.user.account.name,
+          surname: data.surname || this.user.account.surname,
+          gender: data.gender || this.user.account.gender,
+          birthday: data.birthday || this.user.account.birthday,
+          email: data.email || this.user.account.email,
+          cellphone: data.cellphone || this.user.account.cellphone,
+          agree_policy: data.agree_policy || this.user.account.agree_policy,
+          biography: data.biography || this.user.account.biography,
       };
-    
+  
       this.user.user_profle = {
-        id: data.user_profile_id || null,
-        trust_rate: data.trust_rate || null,
-        active: data.active || null,
-        status: data.status || null
+          ...this.user.user_profle, // Preserva valores existentes
+          id: data.user_profile_id || this.user.user_profle.id,
+          trust_rate: data.trust_rate || this.user.user_profle.trust_rate,
+          active: data.active || this.user.user_profle.active,
+          status: data.status || this.user.user_profle.status,
       };
-    
+  
       this.user.address = {
-        id: data.neighborhood_id || null,
-        state: data.state || null,
-        locality: data.locality || null,
-        neighborhood: data.neighborhood || null
+          ...this.user.address, // Preserva valores existentes
+          id: data.neighborhood_id || this.user.address.id,
+          state: data.state || this.user.address.state,
+          locality: data.locality || this.user.address.locality,
+          neighborhood: data.neighborhood || this.user.address.neighborhood,
       };
-
+  
+      // Salvar no localStorage apenas as propriedades atualizadas
       localStorage.setItem("user.access", this.user.access || "");
-    
       localStorage.setItem("user.account.id", this.user.account.id || "");
       localStorage.setItem("user.account.username", this.user.account.username || "");
       localStorage.setItem("user.account.name", this.user.account.name || "");
@@ -183,19 +187,20 @@ export const useUserStore = defineStore({
       localStorage.setItem("user.account.cellphone", this.user.account.cellphone || "");
       localStorage.setItem("user.account.agree_policy", this.user.account.agree_policy || "");
       localStorage.setItem("user.account.biography", this.user.account.biography || "");
-    
+  
       localStorage.setItem("user.user_profle.id", this.user.user_profle.id || "");
       localStorage.setItem("user.user_profle.trust_rate", this.user.user_profle.trust_rate || "");
       localStorage.setItem("user.user_profle.active", this.user.user_profle.active || "");
       localStorage.setItem("user.user_profle.status", this.user.user_profle.status || "");
-    
+  
       localStorage.setItem("user.address.id", this.user.address.id || "");
       localStorage.setItem("user.address.state", this.user.address.state || "");
       localStorage.setItem("user.address.locality", this.user.address.locality || "");
       localStorage.setItem("user.address.neighborhood", this.user.address.neighborhood || "");
-    
-      console.log("User", this.user);
-    }
-  },
+  
+      console.log("User updated", this.user);
+  }
+}
+  
 });
 

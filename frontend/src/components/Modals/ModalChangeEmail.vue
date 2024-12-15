@@ -100,6 +100,7 @@ export default {
           email: this.form.email,
         });
         if (response.status === 200) {
+          this.userStore.setUserInfo(this.form.email)
           this.userStore.removeToken();
           router.push('/login');
         } else {

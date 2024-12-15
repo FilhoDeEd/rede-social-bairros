@@ -65,22 +65,25 @@
 import axios from 'axios';
 import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
+import { useUserStore } from '../../store/user.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
 
 export default {
   data() {
     return {
-      states: [], // Lista de estados
-      cities: [], // Lista de cidades
-      neighborhoods: [], // Lista de bairros
+      states: [], 
+      cities: [], 
+      neighborhoods: [], 
       form: {
-        state: null, // Estado selecionado
-        locality: null, // Cidade selecionada
-        neighborhood: null, // Bairro selecionado
+        state: null, 
+        locality: null, 
+        neighborhood: null, 
+        neighborhood_name: null
       },
-      errors: {}, // Erros de validação
+      errors: {}, 
       router,
-      isConfirmationModalOpen: false, // Controle para o modal de login
+      isConfirmationModalOpen: false,
+      userStore:useUserStore(),
     };
   },
   props: {
@@ -90,6 +93,25 @@ export default {
   components:{
     ModalComplexConfimation,
   },
+
+  computed:{
+    selectedNeighborhoodName() {
+    const selectedNeighborhood = this.neighborhoods.find(
+      neighborhood => neighborhood.id === this.form.neighborhood
+    );
+    return selectedNeighborhood ? selectedNeighborhood.name : '';
+  }
+  },
+
+  watch: {
+  'form.neighborhood'(newValue) {
+    const selectedNeighborhood = this.neighborhoods.find(
+      neighborhood => neighborhood.id === newValue
+    );
+    this.form.neighborhood_name = selectedNeighborhood ? selectedNeighborhood.name : '';
+  }
+  },
+
 
   methods: {
 
@@ -185,8 +207,9 @@ export default {
         const response = await axios.post(ENDPOINTS.EDIT_NEIGHBORHOOD, {
           neighborhood_id: this.form.neighborhood,
         });
-        console.log(response.status)
+      
         if (response.status === 200) {
+          this.userStore.setUserInfo({'state':this.form.state, 'locality':this.form.locality, 'neighborhood':this.form.neighborhood_name , 'id':this.form.neighborhood})
           router.push('/home'); 
         } else {
           alert('Erro ao salvar o bairro. ' + response.errors);

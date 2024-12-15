@@ -457,10 +457,8 @@ export default {
       try {
         console.log(this.form);
         const response = await axios.post(ENDPOINTS.EDIT, this.form);
-        console.log(response);
-        const updatedData = response.data;
+        this.userStore.setUserInfo(this.form)
 
-        alert("Perfil atualizado com sucesso!");
       } catch (error) {
         // Verifique se error.response existe antes de acessar os campos de erro
         if (error.response && error.response.data && error.response.data.errors) {
