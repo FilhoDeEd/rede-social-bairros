@@ -42,6 +42,7 @@
 import axios from 'axios';
 import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
+import { useToast } from 'vue-toastification';
 
 export default {
   data() {
@@ -52,6 +53,7 @@ export default {
       },
       errors: {}, // Erros de validação
       router,
+      toast: useToast(),
     };
   },
   props: {
@@ -98,13 +100,13 @@ export default {
         });
 
         if (response.status === 200) {
+          this.toast.success("Senha trocada. Refaça o Login!")
           this.router.push('/login');
         } else {
-          alert('Erro ao salvar a senha. Tente novamente.');
+          this.toast.error('Erro ao salvar a senha. Tente novamente.');
         }
       } catch (error) {
-        console.error('Erro de comunicação com o servidor:', error);
-        alert('Erro de comunicação com o servidor.');
+        this.toast.error('Erro de comunicação com o servidor.');
       }
     },
   },

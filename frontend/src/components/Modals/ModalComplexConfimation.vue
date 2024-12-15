@@ -47,24 +47,26 @@
   
   import axios from "axios";
   import { ENDPOINTS } from "../../../../api.js";
+import { useToast } from "vue-toastification";
   
   export default {
     data() {
       return {
         form: {
-          emailOrUsername: "", // Pode ser email ou username
+          emailOrUsername: "", 
           password: "",
         },
-        errors: {}, // Erros de validação
+        errors: {}, 
+        toast: useToast(),
       };
     },
     props: {
-      isModalDeleteAccountOpen: Boolean, // Propriedade para controlar se o modal está aberto
+      isModalDeleteAccountOpen: Boolean, 
     },
     methods: {
         
         closeModal() {
-        this.$emit("close"); // Emite evento para o componente pai fechar o modal
+        this.$emit("close"); 
         },
   
         // Validação de campos
@@ -91,13 +93,13 @@
                 const loginResponse = await axios.post(ENDPOINTS.LOGIN, this.form);
 
                 if (loginResponse.status === 200) {
-                    this.$emit('confirm', true); // Confirmação bem-sucedida
+                    this.$emit('confirm', true); 
                     this.closeModal();
                 } else {
-                    this.$emit('confirm', false); // Falha na autenticação
+                    this.$emit('confirm', false); 
                 }
             } catch {
-                alert('Erro ao autenticar. Tente novamente.');
+                this.toast.error('Erro ao autenticar. Tente novamente.');
             }
         },
     },

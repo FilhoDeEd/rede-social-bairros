@@ -67,6 +67,7 @@ import  router  from "../../router/index.js";
 import { ENDPOINTS } from '../../../../api.js';
 import { useUserStore } from '../../store/user.js';
 import ModalComplexConfimation from './ModalComplexConfimation.vue';
+import { useToast } from 'vue-toastification';
 
 export default {
   data() {
@@ -83,7 +84,8 @@ export default {
       errors: {}, 
       router,
       isConfirmationModalOpen: false,
-      userStore:useUserStore(),
+      userStore: useUserStore(),
+      toast: useToast(),
     };
   },
   props: {
@@ -126,7 +128,7 @@ export default {
         const response = await axios.get(ENDPOINTS.STATES);
         this.states = response.data;
       } catch {
-        alert('Erro ao carregar os estados.');
+        this.toast.error('Erro ao carregar os estados.');
       }
     },
 
@@ -142,7 +144,7 @@ export default {
         this.cities = response.data;
         this.neighborhoods = [];
       } catch {
-        alert('Erro ao carregar as cidades.');
+        this.toast.error('Erro ao carregar as cidades.');
       }
     },
 
@@ -156,7 +158,7 @@ export default {
         const response = await axios.get(`${ENDPOINTS.NEIGHBORHOODS}/${this.form.state}/${this.form.locality}/`);
         this.neighborhoods = response.data;
       } catch {
-        alert('Erro ao carregar os bairros.');
+        this.toast.error('Erro ao carregar os bairros.');
       }
     },
 
@@ -195,7 +197,7 @@ export default {
     handleConfirmation(isConfirmed) {
       this.isConfirmationModalOpen = false; // Fecha o modal de confirmação
       if (!isConfirmed) {
-        alert('Confirmação falhou. Tente novamente.');
+        this.toast.error('Confirmação falhou. Tente novamente.');
         return;
       }
 
@@ -210,12 +212,13 @@ export default {
       
         if (response.status === 200) {
           this.userStore.setUserInfo({'state':this.form.state, 'locality':this.form.locality, 'neighborhood':this.form.neighborhood_name , 'id':this.form.neighborhood})
+          this.toast.success("Bairro trocado com sucesso!")
           router.push('/home'); 
         } else {
-          alert('Erro ao salvar o bairro. ' + response.errors);
+          this.toast.error('Erro ao salvar o bairro. ' + response.errors);
         }
       } catch(error) {
-        alert('Erro ao enviar os dados. ' + error);
+        this.toast.error('Erro ao enviar os dados. ' + error);
       }
     },
   },

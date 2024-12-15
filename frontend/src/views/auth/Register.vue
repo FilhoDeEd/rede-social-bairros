@@ -178,6 +178,7 @@
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { ENDPOINTS } from '../../../../api.js';
+import { useToast } from 'vue-toastification';
 
 /*eslint-disable*/
 export default {
@@ -204,7 +205,8 @@ export default {
   },
   setup() {
     const router = useRouter();
-    return { router };
+    const toast = useToast();
+    return { router, toast };
 
   },
   async mounted() {
@@ -335,7 +337,7 @@ export default {
           headers: { "Content-Type": "application/json" },
         });
 
-        console.log("Conta criada com sucesso!");
+        this.toast.success("Conta criada com sucesso! Faça o login!")
         this.router.push('/auth/login');
       } catch (error) {
         if (error.response && error.response.data.errors) {
@@ -343,7 +345,7 @@ export default {
             this.errors[field] = messages.join(" ");
           }
         } else {
-          alert(error.message || "Algo deu errado.");
+          this.toast.error(error.message || "Algo deu errado.");
         }
       }
     },
