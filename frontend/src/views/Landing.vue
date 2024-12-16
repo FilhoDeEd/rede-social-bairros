@@ -4,15 +4,19 @@
       <main>
         <section id="conteudo">
           <h1 class="text-xl font-bold mb-4">Postagens</h1>
-          <div v-infinite-scroll="onLoadMore" class="space-y-4">
-            <div v-for="forum in forumListStore.forums" :key="forum.forum_id"
+
+          <!-- Lista de Fóruns -->
+          <div class="space-y-4">
+            <div
+              v-for="forum in forumListStore.forums"
+              :key="forum.forum_id"
               class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
-              style="background-color: rgba(124, 122, 187, 1);">
+              style="background-color: rgba(124, 122, 187, 1);"
+            >
               <div class="flex h-full">
                 <!-- Imagem à esquerda -->
                 <div class="w-1/4 flex items-center">
-                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full"
-                    style="height: 70%;">
+                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full" style="height: 70%;" />
                 </div>
 
                 <!-- Conteúdo à direita -->
@@ -30,6 +34,24 @@
               </div>
             </div>
           </div>
+
+          <!-- Paginação -->
+          <div class="flex justify-between mt-8">
+            <button
+              class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+              :disabled="forumListStore.currentPage === 1"
+              @click="onPreviousPage"
+            >
+              Anterior
+            </button>
+            <button
+              class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+              :disabled="!forumListStore.next"
+              @click="onNextPage"
+            >
+              Próxima
+            </button>
+          </div>
         </section>
       </main>
     </div>
@@ -37,33 +59,37 @@
 </template>
 
 <script>
-import { useInfiniteScroll } from '@vueuse/core'
-import { useForumListStore } from '@/store/forumListStore.js';
-import { useUserStore } from '@/store/user.js';
-import { onBeforeMount, ref } from "vue";
-import mainLayout from '@/layouts/mainLayout.vue';
+import { onBeforeMount } from "vue";
+import { useForumListStore } from "@/store/forumListStore.js";
+import { useUserStore } from "@/store/user.js";
+import mainLayout from "@/layouts/mainLayout.vue";
 
 export default {
-  name: 'Landing',
+  name: "Landing",
   components: {
-    mainLayout
+    mainLayout,
   },
   setup() {
     const forumListStore = useForumListStore();
     const userStore = useUserStore();
-    const el = ref<HTMLElement | null>(null)
 
-    useInfiniteScroll(
-      el,
-      async () => {
-        console.log("AOBA");
+    // Função para carregar a página anterior
+    const onPreviousPage = async () => {
+      if (forumListStore.currentPage > 1) {
+        forumListStore.setPage(forumListStore.currentPage - 1);
+        await forumListStore.fetchForums();
+      }
+    };
+
+    // Função para carregar a próxima página
+    const onNextPage = async () => {
+      if (forumListStore.next) {
         forumListStore.setPage(forumListStore.currentPage + 1);
         await forumListStore.fetchForums();
-      },
-      { distance: 40 }
-    );
+      }
+    };
 
-    onBeforeMount(() => { //pensar melhor → caso de mudança de bairro não atualiza a DOM
+    onBeforeMount(() => {
       if (userStore.user.isAuthenticated) {
         if (forumListStore.forums.length === 0) {
           forumListStore.fetchForums();
@@ -75,11 +101,14 @@ export default {
 
     return {
       forumListStore,
-      userStore
+      onPreviousPage,
+      onNextPage,
+      userStore,
     };
   },
 };
 </script>
+
 
 <style>
 /* Global Reset */
