@@ -5,11 +5,11 @@
             <div class="flex items-center justify-between h-full px-4">
                 <!-- Left Side: Logo -->
                 <div class="flex items-center space-x-4">
-                    <h1 class="text-xl font-bold text-gray-800">MyApp</h1>
+                    <h1 class="text-xl font-bold text-gray-800">Bonds</h1>
                 </div>
 
                 <!-- Center: Search Bar -->
-                <div class="w-half max-w-sm min-w-[200px]">
+                <div class="w-searchbar max-w-sm min-w-[200px]">
                     <div class="relative flex justify-end items-center">
                         <input
                             v-model="searchQuery"
@@ -35,7 +35,10 @@
                 <div class="flex items-center">
                     <button @click="$router.push('/profile')"
                         class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 transition overflow-hidden">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="w-full h-full object-cover">
+                        <img 
+                        alt="Foto de Perfil" 
+                        :src="profileImage || team2" 
+                        class="w-full h-full object-cover">
                     </button>
                 </div>
             </div>
@@ -44,7 +47,7 @@
         <!-- Container principal com flex row -->
         <div class="flex flex-1">
             <!-- Sidebar sempre visível -->
-            <aside class="w-64 shadow-lg" style="background-color: #D76D65;">
+            <aside class="shadow-lg" style="background-color: rgb(235, 143, 138);">
                 <div class="flex flex-col h-full py-6">
                     <nav class="space-y-2">
                         <MenuItem v-for="item in menuItems" :key="item.id" :icon="item.icon" :title="item.title"
@@ -68,14 +71,15 @@ import MenuItem from "../components/Sidebar/MenuItem.vue";
 import { useForumListStore } from "../store/forumListStore.js";
 import router from "../router/index.js";
 
+import team2 from "@/assets/img/team-2-800x800.jpg";
+
 const activeItem = ref("home");
 const searchQuery = ref("");
 
 const menuItems = [
   { id: "home", icon: "home", title: "Página Inicial", path: "/home" },
   { id: "forums", icon: "forum", title: "Fóruns", path: "/forums" },
-  { id: "events", icon: "event", title: "Eventos", path: "/events" },
-  { id: "reports", icon: "report", title: "Denúncias", path: "/reports" },
+  
   { id: "about", icon: "info", title: "Sobre", path: "/about" }
 ];
 

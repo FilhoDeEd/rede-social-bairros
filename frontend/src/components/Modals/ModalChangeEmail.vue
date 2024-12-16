@@ -25,7 +25,9 @@
         <!-- Botão Confirmar -->
         <div class="text-center mt-6">
           <button type="submit"
-            class="bg-indigo-500 text-white text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
+            class="bg-emerald-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-emerald-600 
+                   focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                   transition duration-300 transform hover:scale-105">
             Confirmar
           </button>
         </div>

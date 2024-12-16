@@ -1874,6 +1874,10 @@ select {
   max-height: 860px;
 }
 
+.min-h-\[800px\] {
+  min-height: 500px;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1888,6 +1892,10 @@ select {
 
 .w-1\/2 {
   width: 50%;
+}
+
+.w-1\/4 {
+  width: 25%;
 }
 
 .w-3\/4 {
@@ -1946,6 +1954,15 @@ select {
 .w-half {
   width: 50%;
 }
+
+.w-searchbar {
+  width: 66%;
+}
+
+.ml-\[-120px\] {
+  margin-left: -135px;
+}
+
 
 .min-w-0 {
   min-width: 0px;
@@ -3782,6 +3799,9 @@ select {
   padding-top: 0.25rem;
 }
 
+.\-pt-8 {
+  padding-top: -2rem;
+}
 
 
 .pt-12 {
@@ -5032,6 +5052,9 @@ select {
     max-width: 7rem;
   }
   
+  .w-\[70\%\] {
+    width: 70%;
+  }
 
   .md\:w-8\/12 {
     width: 66.666667%;
