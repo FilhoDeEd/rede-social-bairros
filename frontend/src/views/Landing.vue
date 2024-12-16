@@ -35,57 +35,49 @@
             </div>
           </div>
 
-          <!-- Paginação -->
-          <div class="flex justify-between mt-8">
-            <button
-              class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-              :disabled="forumListStore.currentPage === 1"
-              @click="onPreviousPage"
-            >
-              Anterior
-            </button>
-            <button
-              class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-              :disabled="!forumListStore.next"
-              @click="onNextPage"
-            >
-              Próxima
-            </button>
-          </div>
+          <!-- Componente de carregamento infinito -->
+          <InfiniteLoading
+            @infinite="onLoadMore"
+            spinner="waveDots"
+            :identifier="forumListStore.next"
+          />
         </section>
       </main>
     </div>
   </mainLayout>
 </template>
 
+
 <script>
-import { onBeforeMount } from "vue";
+import mainLayout from "@/layouts/mainLayout.vue";
 import { useForumListStore } from "@/store/forumListStore.js";
 import { useUserStore } from "@/store/user.js";
-import mainLayout from "@/layouts/mainLayout.vue";
+import { onBeforeMount } from "vue";
+import InfiniteLoading from "v3-infinite-loading/lib/v3-infinite-loading.es.js";
+import "v3-infinite-loading/lib/style.css";
 
 export default {
   name: "Landing",
   components: {
     mainLayout,
+    InfiniteLoading,
   },
   setup() {
     const forumListStore = useForumListStore();
     const userStore = useUserStore();
 
-    // Função para carregar a página anterior
-    const onPreviousPage = async () => {
-      if (forumListStore.currentPage > 1) {
-        forumListStore.setPage(forumListStore.currentPage - 1);
-        await forumListStore.fetchForums();
+    // Função para carregar mais itens
+    const onLoadMore = async ($state) => {
+      if (!forumListStore.next) {
+        $state.complete(); // Finaliza o carregamento se não houver mais páginas
+        return;
       }
-    };
 
-    // Função para carregar a próxima página
-    const onNextPage = async () => {
-      if (forumListStore.next) {
-        forumListStore.setPage(forumListStore.currentPage + 1);
+      try {
         await forumListStore.fetchForums();
+        $state.loaded(); // Indica que os itens foram carregados
+      } catch (error) {
+        $state.error(); // Indica erro no carregamento
       }
     };
 
@@ -101,14 +93,11 @@ export default {
 
     return {
       forumListStore,
-      onPreviousPage,
-      onNextPage,
-      userStore,
+      onLoadMore,
     };
   },
 };
 </script>
-
 
 <style>
 /* Global Reset */
@@ -156,6 +145,7 @@ aside {
 .w-64 {
   width: 16rem;
 }
+
 
 /* Responsividade para telas grandes */
 @media (min-width: 1024px) {
