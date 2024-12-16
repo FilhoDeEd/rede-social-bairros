@@ -100,22 +100,26 @@
         <!-- Posts Section -->
         <div class="w-3/4">
           <div class="space-y-4">
-            <article v-for="forum in forumStore.forums" :key="forum.forum_id"
-              class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
+            <article class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
               style="background-color: rgba(124, 122, 187, 1);">
               <div class="flex h-full">
+                <!-- Imagem do autor do comentário -->
                 <div class="w-1/4 flex items-center">
-                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full"
-                    style="height: 70%;">
+                  <img src="https://via.placeholder.com/300x200" alt="Imagem do autor" class="object-cover w-full" style="height: 70%;">
                 </div>
+                
+                <!-- Conteúdo do comentário -->
                 <div class="flex-1 pl-8 text-right flex flex-col justify-between h-full">
                   <a href="#" class="text-white flex flex-col h-full justify-between">
-                    <h2 :value="forum.title" class="text-4xl font-semibold mb-8">
-                      {{ forum.title }}
-                    </h2>
+                    <!-- Título ou nome do autor -->
+                    <h2 class="text-4xl font-semibold mb-8">Nome do Autor</h2>
+                    
+                    <!-- Texto do comentário -->
                     <div class="text-2xl text-gray-100 flex flex-col justify-between flex-grow">
-                      <p class="mb-auto leading-relaxed">{{ forum.description }}</p>
-                      <p class="mt-8">Popularidade: {{ forum.popularity }}</p>
+                      <p class="mb-auto leading-relaxed">Este é o conteúdo fixo de um comentário. O autor compartilha sua opinião ou observação aqui.</p>
+                      
+                      <!-- Detalhes do comentário -->
+                      <p class="mt-8">Publicado há 2 horas</p>
                     </div>
                   </a>
                 </div>
@@ -155,37 +159,27 @@
 
 <script setup>
 import MainLayout from '../layouts/mainLayout.vue';
-import { useForumStore } from '@/store/forum.js';
-import { onBeforeMount, ref } from 'vue';
+import { ref } from 'vue';
 
-const forumStore = useForumStore();
-const editMode = ref(false);
+// Dados mockados do fórum
 const forumData = ref({
   title: 'Como melhorar a segurança do nosso bairro?',
-  description: 'Participe da discussão e compartilhe suas ideias para uma comunidade mais segura'
+  description: 'Participe da discussão e compartilhe suas ideias para uma comunidade mais segura',
+  popularity: 89,
+  createdAt: '15 de Janeiro, 2024',
+  creator: 'Usuário',
+  members: 150,
 });
+
+// Estado para o modo de edição
+const editMode = ref(false);
 
 const toggleEdition = () => {
-  if (editMode.value) {
-    // Aqui você implementaria a lógica para salvar as alterações
-    saveChanges();
-  }
   editMode.value = !editMode.value;
-};
-
-const saveChanges = async () => {
-  try {
-    // Implementar a lógica de salvamento aqui
-    // await forumStore.updateForumDetails(forumData.value);
-    alert('Alterações salvas com sucesso!');
-  } catch (error) {
-    alert('Erro ao salvar as alterações');
+  if (!editMode.value) {
+    alert('Alterações salvas (simulado)');
   }
 };
-
-onBeforeMount(() => {
-  forumStore.fetchForums(1);
-});
 </script>
 
 <style scoped>
