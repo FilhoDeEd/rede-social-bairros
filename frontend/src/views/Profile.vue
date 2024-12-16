@@ -16,11 +16,11 @@
         </div>
       </section>
 
-      <section id="dataProfile" class="flex py-16 bg-blueGray-200">
-        <div class="container mx-auto px-4" id="infoProfile">
+      <section id="dataProfile" class="flex bg-blueGray-200 ">
+        <div class="container mx-auto px-4 -pt-8 " id="infoProfile">
           
           <form @submit.prevent="openModalConfirmEdit">
-            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+            <div class="relative flex flex-col  min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
               <!-- Container da Imagem de Perfil -->
               <div class="relative pt-16 pb-8">
                 <div class="flex flex-wrap justify-center">
@@ -87,7 +87,7 @@
 
                 <!-- Biografia -->
                 <div class="relative mt-6">
-                  <label for="bio-textarea" class="block mb-2 text-sm font-medium text-blueGray-700">Biografia</label>
+                  <label for="bio-textarea" class="block mb-2 text-sm font-medium text-gray-900">Biografia</label>
                   <div class="overflow-hidden">
                     <textarea id="bio-textarea" v-model="form.biography" :readonly="!editMode"
                       class="w-full resize-none border border-gray-300 rounded-lg px-3 py-2 align-top sm:text-sm focus:ring-blue-500 focus:border-blue-500"
@@ -97,12 +97,11 @@
                 </div>
 
 
-                <!-- Linha superior: div1, div2, div3 -->
-                <div class="rowForProfile mt-10 py-10 border-t border-blueGray-200 text-center">
-                  <!-- Phone -->
-                  <div class="itemForProfile">
-                    <label for="cellphone-input" class="block mb-2 text-sm font-medium text-gray-900 ">Phone
-                      number:</label>
+                <!-- Linha com 3 colunas -->
+                <div class="flex flex-row gap-4 mt-10 py-10 border-t border-blueGray-200">
+                  <!-- Coluna 1: Celular -->
+                  <div class="flex-1 px-4">
+                    <label for="cellphone-input" class="block mb-2 text-sm font-medium text-gray-900">Nº Celular:</label>
                     <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -113,87 +112,88 @@
                       </div>
                       <input type="text" id="cellphone" v-model="form.cellphone" :readonly="!editMode"
                         @change="validateField('cellphone')" aria-describedby="helper-text-explanation"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
                       <p v-if="errors.cellphone" class="text-red-500 text-xs">{{ errors.cellphone }}</p>
                     </div>
                   </div>
 
-                  <!-- Linha inferior -->
-                  <div class="rowForProfile mt-10 py-10 text-center">
-
-                    <!-- Data de Nascimento -->
-                    <div class="itemForProfile">
-                      <label for="birthday-input" class="block mb-2 text-sm font-medium text-gray-900 ">Data
-                        de Nascimento:</label>
-                      <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                            fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
-                          </svg>
-                        </div>
-                        <input type="date" id="birthday-input" v-model="form.birthday" :readonly="!editMode"
-                          @change="validateField('birthday')"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          required />
-                        <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
+                  <!-- Coluna 2: Data de Nascimento -->
+                  <div class="flex-1 px-4">
+                    <label for="birthday-input" class="block mb-2 text-sm font-medium text-gray-900">Data de Nascimento:</label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 start-0 flex items-center pl-4 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                          fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M6 2a2 2 0 00-2 2v1H2v2h2v9a2 2 0 002 2h8a2 2 0 002-2V7h2V5h-2V4a2 2 0 00-2-2H6zm8 15H6v-9h8v9z" />
+                        </svg>
                       </div>
-                    </div>
-
-                    <!-- Gênero -->
-                    <div class="itemForProfile">
-                      <label for="gender-select" class="block mb-2 text-sm font-medium text-gray-900">
-                        Gênero:
-                      </label>
-                      <div class="relative">
-                        <select id="gender-select" name="gender" v-model="form.gender" :disabled="!editMode" class="custom-bg bg-blue-100 border border-gray-300 text-gray-900 text-sm rounded-lg 
-             focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 
-             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  F
-             dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                          <option value="" disabled selected>Selecione um gênero</option>
-                          <option value="M">Masculino</option>
-                          <option value="F">Feminino</option>
-                          <option value="O">Outro</option>
-                        </select>
-                      </div>
+                      <input type="date" id="birthday-input" v-model="form.birthday" :readonly="!editMode"
+                        @change="validateField('birthday')"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                        required />
+                      <p v-if="errors.birthday" class="text-red-500 text-xs">{{ errors.birthday }}</p>
                     </div>
                   </div>
-                  <section class="flex justify-center items-center">
-                    <div class="flex space-x-4">
-                      <button type="button"
-                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="openModalNeighChange()">
-                        Alterar Bairro
-                      </button>
 
-                      <button type="button"
-                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="openModalPasswordChange()">
-                        Alterar Senha
-                      </button>
-
-                      <button type="button"
-                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="openModalEmailChange()">
-                        Alterar Email
-                      </button>
-
-                      <button type="button"
-                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="logout()">
-                        Deslogar
-                      </button>
-
-                      <button type="button"
-                        class="bg-blueGray-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-blueGray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-                        @click="openModalConfirmDelete()">
-                        Excluir conta
-                      </button>
+                  <!-- Coluna 3: Gênero -->
+                  <div class="flex-1 px-4">
+                    <label for="gender-select" class="block mb-2 text-sm font-medium text-gray-900">Gênero:</label>
+                    <div class="relative">
+                      <select id="gender-select" name="gender" v-model="form.gender" :disabled="!editMode" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="" disabled selected>Selecione um gênero</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
+                      </select>
                     </div>
-                  </section>
+                  </div>
                 </div>
+                <section class="flex justify-center items-center">
+                  <div class="flex space-x-4">
+                    <button type="button"
+                      class="bg-emerald-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-emerald-600 
+                             focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                             transition duration-300 transform hover:scale-105"
+                      @click="openModalNeighChange()">
+                      Alterar Bairro
+                    </button>
+
+                    <button type="button"
+                      class="bg-emerald-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-emerald-600 
+                             focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                             transition duration-300 transform hover:scale-105"
+                      @click="openModalPasswordChange()">
+                      Alterar Senha
+                    </button>
+
+                    <button type="button"
+                      class="bg-emerald-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-emerald-600 
+                             focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                             transition duration-300 transform hover:scale-105"
+                      @click="openModalEmailChange()">
+                      Alterar Email
+                    </button>
+
+                    <button type="button"
+                      class="bg-emerald-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-emerald-600 
+                             focus:outline-none focus:ring-2 focus:ring-emerald-500 
+                             transition duration-300 transform hover:scale-105"
+                      @click="logout()">
+                      Deslogar
+                    </button>
+
+                    <button type="button"
+                      class="bg-red-500 text-white py-2 px-6 rounded-lg shadow-md hover:bg-red-600 
+                             focus:outline-none focus:ring-2 focus:ring-red-500 
+                             transition duration-300 transform hover:scale-105"
+                      @click="openModalConfirmDelete()">
+                      Excluir conta
+                    </button>
+                  </div>
+                </section>
               </div>
             </div>
           </form>
@@ -510,5 +510,9 @@ input:not([readonly]) {
   /* Mantenha a mesma cor de fundo */
   border: 1px solid #d1d5db;
   /* Adicione borda suave */
+}
+
+#infoProfile form > div {
+  min-height: 800px;
 }
 </style>

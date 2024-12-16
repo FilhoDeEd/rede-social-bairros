@@ -102,7 +102,7 @@ const routes = [
   },
   //para o Edson ter algo com que trabalhar
   {
-    path: "/forum",
+    path: "/forum-detail-page",
     component: ForumDetailPage,
     name: 'ForumDetailPage',
   },
