@@ -12,8 +12,7 @@
               <div class="flex h-full">
                 <!-- Imagem à esquerda -->
                 <div class="w-1/4 flex items-center">
-                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full"
-                    style="height: 70%;">
+                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full" style="height: 70%;" />
                 </div>
 
                 <!-- Conteúdo à direita -->
@@ -31,40 +30,54 @@
               </div>
             </div>
           </div>
+
+          <!-- Componente de carregamento infinito -->
+          <InfiniteLoading
+            @infinite="onLoadMore"
+            spinner="waveDots"
+            :identifier="forumListStore.next"
+          />
         </section>
       </main>
     </div>
   </mainLayout>
 </template>
 
+
 <script>
-import { useInfiniteScroll } from '@vueuse/core'
-import { useForumListStore } from '@/store/forumListStore.js';
-import { useUserStore } from '@/store/user.js';
-import { onBeforeMount, ref } from "vue";
-import mainLayout from '@/layouts/mainLayout.vue';
+import mainLayout from "@/layouts/mainLayout.vue";
+import { useForumListStore } from "@/store/forumListStore.js";
+import { useUserStore } from "@/store/user.js";
+import { onBeforeMount } from "vue";
+import InfiniteLoading from "v3-infinite-loading/lib/v3-infinite-loading.es.js";
+import "v3-infinite-loading/lib/style.css";
 
 export default {
-  name: 'Landing',
+  name: "Landing",
   components: {
-    mainLayout
+    mainLayout,
+    InfiniteLoading,
   },
   setup() {
     const forumListStore = useForumListStore();
     const userStore = useUserStore();
-    const el = ref<HTMLElement | null>(null)
 
-    useInfiniteScroll(
-      el,
-      async () => {
-        console.log("AOBA");
-        forumListStore.setPage(forumListStore.currentPage + 1);
+    // Função para carregar mais itens
+    const onLoadMore = async ($state) => {
+      if (!forumListStore.next) {
+        $state.complete(); // Finaliza o carregamento se não houver mais páginas
+        return;
+      }
+
+      try {
         await forumListStore.fetchForums();
-      },
-      { distance: 40 }
-    );
+        $state.loaded(); // Indica que os itens foram carregados
+      } catch (error) {
+        $state.error(); // Indica erro no carregamento
+      }
+    };
 
-    onBeforeMount(() => { //pensar melhor → caso de mudança de bairro não atualiza a DOM
+    onBeforeMount(() => {
       if (userStore.user.isAuthenticated) {
         if (forumListStore.forums.length === 0) {
           forumListStore.fetchForums();
@@ -76,7 +89,7 @@ export default {
 
     return {
       forumListStore,
-      userStore
+      onLoadMore,
     };
   },
 };
@@ -128,6 +141,7 @@ aside {
 .w-64 {
   width: 16rem;
 }
+
 
 /* Responsividade para telas grandes */
 @media (min-width: 1024px) {
