@@ -1,12 +1,13 @@
 <template>
   <mainLayout>
-    <div class="container mx-auto py-8 px-4">
-      <main>
-        <section id="conteudo">
-          <h1 class="text-xl font-bold mb-4">Postagens</h1>
-          <div v-infinite-scroll="onLoadMore" class="space-y-4">
+    <div class="mx-auto py-8 px-4 bg-white">
+      <main class="flex-1">
+        <section id="conteudo ">
+          
+          <div v-infinite-scroll="onLoadMore" class="space-y-4 ml-[-120px]">
+       
             <div v-for="forum in forumListStore.forums" :key="forum.forum_id"
-              class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200"
+              class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200 w-[70%] mx-auto"
               style="background-color: rgba(124, 122, 187, 1);">
               <div class="flex h-full">
                 <!-- Imagem à esquerda -->
