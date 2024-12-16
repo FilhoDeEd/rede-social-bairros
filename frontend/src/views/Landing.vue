@@ -17,7 +17,7 @@
 
                 <!-- Conteúdo à direita -->
                 <div class="flex-1 pl-8 text-right flex flex-col justify-between h-full">
-                  <a href="#" class="text-white flex flex-col h-full justify-between">
+                  <router-link :to="{ name: 'ForumDetailPage', params: { slug: forum.slug } }" class="text-white flex flex-col h-full justify-between">
                     <h2 :value="forum.title" class="text-4xl font-semibold mb-8">
                       {{ forum.title }}
                     </h2>
@@ -25,7 +25,7 @@
                       <p class="mb-auto leading-relaxed">{{ forum.description }}</p>
                       <p class="mt-8">Popularidade: {{ forum.popularity }}</p>
                     </div>
-                  </a>
+                  </router-link>
                 </div>
               </div>
             </div>

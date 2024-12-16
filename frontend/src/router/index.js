@@ -100,11 +100,12 @@ const routes = [
     component: ForumList,
     name: 'ForumList',
   },
-  //para o Edson ter algo com que trabalhar
+  //para o Edson ter algo com que trabalhar.
   {
-    path: "/forum-detail-page",
+    path: "/forum/:slug",
     component: ForumDetailPage,
     name: 'ForumDetailPage',
+    props: true,
   },
   {
     path: "/about",
