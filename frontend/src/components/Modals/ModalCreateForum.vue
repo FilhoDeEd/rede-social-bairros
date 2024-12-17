@@ -54,18 +54,21 @@
         this.$emit('close'); // Emite o evento para o componente pai fechar o modal
       },
 
-      handleSubmit() {
+      async handleSubmit() {
         try {
             const response = await axios.post(ENDPOINTS.REGISTER_FORUM,{
-            data: this.form,
+            title : this.form.title,
+            description : this.form.description,
+
             });
-            if(response.status === 200){
+            if(response.status === 201){
                 this.toast.success('Fórum Criado: ', this.form.title);
                 this.closeModal();
-                this.$router.push("/home")
+                this.$router.push("/forum/"+response.data.slug)
             }
             else{
                 this.toast.error("Erro ao tentar criar fórum")
+                console.log(response.error)
             }
 
         } catch(error){
