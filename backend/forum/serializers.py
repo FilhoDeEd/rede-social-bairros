@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 
 class ForumSerializer(serializers.ModelSerializer):
-    creator = serializers.CharField(source='get_creator_name')
+    creator = serializers.CharField(source='get_creator_name', read_only=True)
 
     class Meta:
         model = Forum
