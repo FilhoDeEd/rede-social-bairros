@@ -1,23 +1,33 @@
 <template>
   <mainLayout>
-    <div class="mx-auto py-8 px-4 bg-white">
+    <!-- Navbar específica da Landing -->
+    <div class="mx-auto  bg-white">
+      <div class="w-full flex justify-end h-[40px] py-4" style="background-color: rgba(124, 122, 187, 1);">
+        <button class="px-6 py-2 mr-10 text-white font-semibold rounded-lg transition-all duration-200 hover:bg-opacity-90"
+          style="background-color: rgb(240, 117, 117);">
+          <span>Criar Fórum</span>
+        </button>
+      </div>
+
       <main class="flex-1">
         <section id="conteudo ">
-          
+
           <div v-infinite-scroll="onLoadMore" class="space-y-4 ml-[-120px]">
-       
+
             <div v-for="forum in forumListStore.forums" :key="forum.forum_id"
               class="p-4 shadow rounded hover:shadow-lg transition-shadow duration-200 w-[70%] mx-auto"
-              style="background-color: rgba(124, 122, 187, 1);">
+              style="background-color: rgb(124, 122, 187, 1);">
               <div class="flex h-full">
                 <!-- Imagem à esquerda -->
                 <div class="w-1/4 flex items-center">
-                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full" style="height: 70%;" />
+                  <img src="https://via.placeholder.com/300x200" alt="Forum image" class="object-cover w-full"
+                    style="height: 70%;" />
                 </div>
 
                 <!-- Conteúdo à direita -->
                 <div class="flex-1 pl-8 text-right flex flex-col justify-between h-full">
-                  <router-link :to="{ name: 'ForumDetailPage', params: { slug: forum.slug } }" class="text-white flex flex-col h-full justify-between">
+                  <router-link :to="{ name: 'ForumDetailPage', params: { slug: forum.slug } }"
+                    class="text-white flex flex-col h-full justify-between">
                     <h2 :value="forum.title" class="text-4xl font-semibold mb-8">
                       {{ forum.title }}
                     </h2>
@@ -32,17 +42,13 @@
           </div>
 
           <!-- Componente de carregamento infinito -->
-          <InfiniteLoading
-            @infinite="onLoadMore"
-            spinner="waveDots"
-            :identifier="forumListStore.next"
-          >
-          <template #complete>
-            <div class="text-center text-gray-500 mt-4">
-              <span>"Isso é tudo, pessoal" ~ Pernalonga</span>
-            </div>
-          </template>
-        </InfiniteLoading>
+          <InfiniteLoading @infinite="onLoadMore" spinner="waveDots" :identifier="forumListStore.next">
+            <template #complete>
+              <div class="text-center text-gray-500 mt-4">
+                <span>"Isso é tudo, pessoal" ~ Pernalonga</span>
+              </div>
+            </template>
+          </InfiniteLoading>
         </section>
       </main>
     </div>
@@ -226,5 +232,11 @@ footer {
   color: #fff;
   padding: 1rem;
   text-align: center;
+}
+
+/* Estilo adicional para o botão */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

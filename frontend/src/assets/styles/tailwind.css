@@ -1549,6 +1549,11 @@ select {
   margin-bottom: 2rem;
 }
 
+.\-mb-8 {
+  margin-bottom: -2rem;
+}
+
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -1591,6 +1596,10 @@ select {
 
 .mr-8 {
   margin-right: 2rem;
+}
+
+.mr-10 {
+  margin-right: 2.5rem;
 }
 
 .mr-auto {
@@ -1879,7 +1888,7 @@ select {
 }
 
 .min-h-screen {
-  min-height: 100vh;
+  min-height: 120vh;
 }
 
 .min-h-screen-75 {
