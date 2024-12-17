@@ -69,24 +69,3 @@ export const useForumListStore = defineStore("forumListStore", {
         }
     }
 });
-// async fetchForums() {
-//     if (this.loading) return;
-
-//     this.loading = true;
-//     this.error = null;
-
-//     try {
-//       const response = await axios.get(ENDPOINTS.LIST_FORUNS, {
-//         params: { page: this.currentPage },
-//       });
-
-//       const { results, count, next } = response.data;
-//       this.forums = results;
-//       this.count = count;
-//       this.next = next;
-//     } catch (error) {
-//       this.error = error.response?.data?.detail || "Erro ao carregar fóruns.";
-//     } finally {
-//       this.loading = false;
-//     }
-//   },
