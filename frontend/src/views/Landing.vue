@@ -44,6 +44,12 @@
           </template>
         </InfiniteLoading>
         </section>
+        <div>
+          <ModalCreateForum
+            :isModalOpen="isModalOpen"
+            @close="isModalOpen = false"
+          />
+        </div>
       </main>
     </div>
   </mainLayout>
@@ -57,12 +63,14 @@ import { useUserStore } from "@/store/user.js";
 import { onBeforeMount } from "vue";
 import InfiniteLoading from "v3-infinite-loading/lib/v3-infinite-loading.es.js";
 import "v3-infinite-loading/lib/style.css";
+import ModalCreateForum from "../components/Modals/ModalCreateForum.vue";
 
 export default {
   name: "Landing",
   components: {
     mainLayout,
     InfiniteLoading,
+    ModalCreateForum,
   },
   setup() {
     const forumListStore = useForumListStore();
@@ -91,13 +99,21 @@ export default {
       } else {
         alert("Usuário Não Autorizado");
       }
-    });
+    })
+    
+    ;
 
     return {
       forumListStore,
       onLoadMore,
+      isModalOpen = false,
     };
   },
+  methods:{
+    openModal(){
+      this.isModalOpen = true;
+    }
+  }
 };
 </script>
 
