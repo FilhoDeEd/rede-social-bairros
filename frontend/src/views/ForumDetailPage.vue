@@ -63,7 +63,7 @@
 
       <div class="bg-white p-6 rounded-lg shadow mb-8">
         <div class="container mx-auto">
-          <h2 class="text-2xl font-bold mb-4">Engaje no forum!</h2>
+          <h2 class="text-2xl font-bold mb-4">Engaje no fórum!</h2>
 
           <!-- Área de criação de post -->
           <div class="border rounded-lg p-4">
@@ -134,20 +134,20 @@
           <div class="space-y-4">
             <div class="p-3 bg-gray-50 rounded">
               <h4 class="font-medium">Participantes</h4>
-              <p class="text-gray-600">150 membros ativos</p>
+              <p class="text-gray-600">{{ forumData.members }} membros ativos</p>
             </div>
             <div class="p-3 bg-gray-50 rounded">
               <h4 class="font-medium">Criado em</h4>
-              <p class="text-gray-600">15 de Janeiro, 2024</p>
+              <p class="text-gray-600">{{ forumData.createdAt }}</p>
             </div>
             <div class="p-3 bg-gray-50 rounded">
               <h4 class="font-medium">Criado por</h4>
-              <p class="text-gray-600">Usuário</p>
+              <p class="text-gray-600">{{ forumData.creator }}</p>
             </div>
             <div class="p-3 bg-gray-50 rounded">
               <h4 class="font-medium">Popularidade</h4>
               <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Alta</span>
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">{{ forumData.popularity }}</span>
               </div>
             </div>
           </div>
@@ -158,21 +158,61 @@
 </template>
 
 <script setup>
+ /* eslint-disable */
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import MainLayout from '../layouts/mainLayout.vue';
-import { ref } from 'vue';
+import { ENDPOINTS } from '../../../api';
+import axios from "axios";
+import router from "../router/index.js";
 
-// Dados mockados do fórum
 const forumData = ref({
-  title: 'Como melhorar a segurança do nosso bairro?',
-  description: 'Participe da discussão e compartilhe suas ideias para uma comunidade mais segura',
-  popularity: 89,
-  createdAt: '15 de Janeiro, 2024',
-  creator: 'Usuário',
-  members: 150,
+  title: '',
+  description: '',
+  popularity: 0,
+  createdAt: '',
+  creator: '',
+  members: 0,
 });
 
-// Estado para o modo de edição
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('pt-BR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+
 const editMode = ref(false);
+const route = useRoute();
+
+const fetchForum = async () => {
+  const slug = route.params.slug;
+  try {
+    const response = await axios.get(`${ENDPOINTS.FORUM_DETAIL}/${slug}/`);
+    console.log(response.data)
+    if (!response.status === 200) {
+      throw new Error('Erro ao buscar dados do fórum');
+    }
+    forumData.value = {
+      title: response.data.title,
+      description: response.data.description,
+      popularity: response.data.popularity,
+      createdAt: formatDate(response.data.creation_date),
+      creator: response.data.creator,
+      members: response.data.subscribers_count,
+    };
+  } catch (error) {
+    console.error(error);
+    router.push('/home');
+  }
+};
+
+// Carrega os dados ao montar o componente
+onMounted(() => {
+  fetchForum();
+});
 
 const toggleEdition = () => {
   editMode.value = !editMode.value;

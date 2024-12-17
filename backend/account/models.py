@@ -172,6 +172,12 @@ class Account(models.Model):
 
             self.save()
 
+    def full_name(self):
+        """
+        Returns the user's full name.
+        """
+        return self.name + ' ' + self.surname
+
     def __str__(self):
         """
         Returns the string representation of the `Account`, which is the username of the linked `User`.

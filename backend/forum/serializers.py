@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 
 class ForumSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(source='get_creator_name')
+
     class Meta:
         model = Forum
         fields = [
@@ -13,9 +15,10 @@ class ForumSerializer(serializers.ModelSerializer):
             'subscribers_count',
             'popularity',
             'creation_date',
-            'update_date'
+            'update_date',
+            'creator'
         ]
-        read_only_fields = ['id', 'slug', 'creation_date', 'update_date', 'subscribers_count', 'popularity']
+        read_only_fields = ['id', 'slug', 'creation_date', 'update_date', 'subscribers_count', 'popularity', 'creator']
 
 
 class ForumListSerializer(serializers.ModelSerializer):
