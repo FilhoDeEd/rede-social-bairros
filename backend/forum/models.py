@@ -76,6 +76,15 @@ class Forum(models.Model):
         """
         self.popularity = self.subscribers_count * 10
 
+    def get_creator_name(self):
+        """
+        TODO
+        """
+        if self.owner:
+            return self.owner.account.full_name()
+        else:
+            return 'Sistema'
+
     def __str__(self):
         return self.title
 

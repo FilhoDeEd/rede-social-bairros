@@ -20,6 +20,8 @@ export const ENDPOINTS = {
   STATES: `${USER_PROFILE_URL}/states`,
   CITIES: `${USER_PROFILE_URL}/cities`,
   NEIGHBORHOODS:`${USER_PROFILE_URL}/neighborhoods`,
+
   LIST_FORUNS: `${FORUM_URL}/list/`,
-  REGISTER_FORUM: `${FORUM_URL}/register/`
+  FORUM_DETAIL: `${FORUM_URL}/detail`,
+  REGISTER_FORUM: `${FORUM_URL}/register/`,
 };
