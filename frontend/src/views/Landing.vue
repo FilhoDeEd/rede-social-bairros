@@ -36,7 +36,13 @@
             @infinite="onLoadMore"
             spinner="waveDots"
             :identifier="forumListStore.next"
-          />
+          >
+          <template #complete>
+            <div class="text-center text-gray-500 mt-4">
+              <span>"Isso é tudo, pessoal" ~ Pernalonga</span>
+            </div>
+          </template>
+        </InfiniteLoading>
         </section>
       </main>
     </div>
