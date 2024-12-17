@@ -22,5 +22,6 @@ export const ENDPOINTS = {
   NEIGHBORHOODS:`${USER_PROFILE_URL}/neighborhoods`,
 
   LIST_FORUNS: `${FORUM_URL}/list/`,
-  FORUM_DETAIL: `${FORUM_URL}/detail`
+  FORUM_DETAIL: `${FORUM_URL}/detail`,
+  REGISTER_FORUM: `${FORUM_URL}/register`
 };

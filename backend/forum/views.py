@@ -38,11 +38,11 @@ class ForumRegisterView(APIView):
             with transaction.atomic():
                 account = request.user.account
                 user_profile = UserProfile.objects.get(account=account, active=True)
-                forum_serializer.save(owner=user_profile, neighborhood=user_profile.neighborhood)
+                forum = forum_serializer.save(owner=user_profile, neighborhood=user_profile.neighborhood)
         except Exception as e:
             return Response({'detail': f'An unexpected error occurred. {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({'detail': 'Success.'}, status=status.HTTP_201_CREATED)
+        return Response({'detail': 'Success.', 'slug': forum.slug}, status=status.HTTP_201_CREATED)
 
 
 class ForumListView(ListAPIView):
