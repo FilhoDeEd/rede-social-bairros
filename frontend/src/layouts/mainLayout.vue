@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-h-screen w-full bg-blueGray-600">
+    <div class="flex flex-col min-h-screen w-full bg-white">
         <!-- Navbar -->
         <nav class="w-full h-24 shadow-md" style="background-color: #D76D65;">
             <div class="flex items-center justify-between h-full px-4">
@@ -58,7 +58,7 @@
             </aside>
 
             <!-- Área de conteúdo -->
-            <div class="flex-1 bg-blueGray-600 overflow-hidden m-0 p-0">
+            <div class="flex-1 bg-white overflow-hidden h-full   m-0 p-0">
                 <slot></slot>
             </div>
         </div>
