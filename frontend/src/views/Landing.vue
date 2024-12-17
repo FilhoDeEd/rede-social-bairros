@@ -4,7 +4,9 @@
     <div class="mx-auto  bg-white">
       <div class="w-full flex justify-end h-[40px] py-4" style="background-color: rgba(124, 122, 187, 1);">
         <button class="px-6 py-2 mr-10 text-white font-semibold rounded-lg transition-all duration-200 hover:bg-opacity-90"
-          style="background-color: rgb(240, 117, 117);">
+          style="background-color: rgb(240, 117, 117);"
+          @click="openModal"
+          >
           <span>Criar Fórum</span>
         </button>
       </div>
@@ -52,6 +54,7 @@
         </section>
         <div>
           <ModalCreateForum
+            v-if="isModalOpen"
             :isModalOpen="isModalOpen"
             @close="isModalOpen = false"
           />
@@ -77,6 +80,11 @@ export default {
     mainLayout,
     InfiniteLoading,
     ModalCreateForum,
+  },
+  data() {
+    return {
+      isModalOpen: false, // Defina aqui no data
+    };
   },
   setup() {
     const forumListStore = useForumListStore();
@@ -105,21 +113,21 @@ export default {
       } else {
         alert("Usuário Não Autorizado");
       }
-    })
-    
-    ;
+    });
 
     return {
       forumListStore,
       onLoadMore,
-      isModalOpen = false,
     };
   },
-  methods:{
-    openModal(){
-      this.isModalOpen = true;
-    }
-  }
+  methods: {
+    openModal() {
+      this.isModalOpen = true; // Abre o modal
+    },
+    closeModal() {
+      this.isModalOpen = false; // Fecha o modal
+    },
+  },
 };
 </script>
 
